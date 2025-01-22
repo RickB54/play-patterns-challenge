@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
-// Use multiple placeholder images for better testing
 const PLACEHOLDER_IMAGES = [
   "https://images.unsplash.com/photo-1487887235947-a955ef187fcc",
   "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
@@ -22,8 +21,16 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
 
   useEffect(() => {
     if (currentTable) {
-      console.log("Current Table URL changed:", currentTable);
-      // Reset error state and retry count when URL changes
+      // Test image URL directly
+      const testImage = new Image();
+      testImage.onload = () => {
+        console.log("Image URL is valid and loadable:", currentTable);
+      };
+      testImage.onerror = (error) => {
+        console.error("Image URL failed pre-load test:", currentTable, error);
+      };
+      testImage.src = currentTable;
+
       setImageError(false);
       setRetryCount(0);
     }
@@ -33,25 +40,41 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     console.error("Failed to load image:", currentTable);
     console.log("Current retry count:", retryCount);
     
-    const maxRetries = 3; // Increased from 1 to 3
+    // Try to fetch the image URL to check for CORS or other issues
+    fetch(currentTable || '')
+      .then(response => {
+        if (!response.ok) {
+          console.error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.blob();
+      })
+      .then(() => {
+        console.log("Image URL is accessible via fetch");
+      })
+      .catch(error => {
+        console.error("Fetch error:", error);
+      });
+    
+    const maxRetries = 3;
     
     if (retryCount < maxRetries) {
       console.log(`Attempting retry ${retryCount + 1} of ${maxRetries}`);
       setRetryCount(prev => prev + 1);
       setImageError(false);
       
-      // Add a longer delay between retries
       setTimeout(() => {
         console.log("Retrying image load...");
+        // Force a new image load by updating the URL
         setCurrentTableLocal(currentTable);
-      }, 3000); // Increased from 2000 to 3000ms
+      }, 3000);
     } else if (!imageError) {
       console.log("Max retries reached, switching to placeholder");
       setImageError(true);
       setCurrentPlaceholderIndex(prev => (prev + 1) % PLACEHOLDER_IMAGES.length);
       toast({
         title: "Image Load Error",
-        description: "Using placeholder image while table loads. Please check your internet connection.",
+        description: `Failed to load image. Error details have been logged to console.`,
         variant: "destructive",
       });
     }
@@ -71,8 +94,9 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
         alt="Pool Table Setup"
         className="w-full h-auto rounded-lg"
         onError={handleImageError}
-        key={`${currentTable}-${retryCount}-${Date.now()}`} // Added timestamp to force re-render
+        key={`${currentTable}-${retryCount}-${Date.now()}`}
         onLoad={() => console.log("Image loaded successfully:", currentTable)}
+        crossOrigin="anonymous"
       />
     </Card>
   );
