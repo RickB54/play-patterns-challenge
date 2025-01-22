@@ -3,26 +3,26 @@ const STORAGE_URL = 'https://rlqxhxpxfbfkbgktzjnk.supabase.co/storage/v1/object/
 
 export const tableImages = {
   easy: [
-    `${STORAGE_URL}easy-1.jpg`,
-    `${STORAGE_URL}easy-2.jpg`,
-    `${STORAGE_URL}easy-3.jpg`
+    `${STORAGE_URL}ea-1.jpg`,
+    `${STORAGE_URL}ea-2.jpg`,
+    `${STORAGE_URL}ea-3.jpg`
   ],
   intermediate: [
-    `${STORAGE_URL}intermediate-1.jpg`,
-    `${STORAGE_URL}intermediate-2.jpg`,
-    `${STORAGE_URL}intermediate-3.jpg`,
-    `${STORAGE_URL}intermediate-4.jpg`,
-    `${STORAGE_URL}intermediate-5.jpg`
+    `${STORAGE_URL}in-1.jpg`,
+    `${STORAGE_URL}in-2.jpg`,
+    `${STORAGE_URL}in-3.jpg`,
+    `${STORAGE_URL}in-4.jpg`,
+    `${STORAGE_URL}in-5.jpg`
   ],
   advanced: [
-    `${STORAGE_URL}advanced-1.jpg`,
-    `${STORAGE_URL}advanced-2.jpg`,
-    `${STORAGE_URL}advanced-3.jpg`
+    `${STORAGE_URL}ad-1.jpg`,
+    `${STORAGE_URL}ad-2.jpg`,
+    `${STORAGE_URL}ad-3.jpg`
   ],
   expert: [
-    `${STORAGE_URL}expert-1.jpg`,
-    `${STORAGE_URL}expert-2.jpg`,
-    `${STORAGE_URL}expert-3.jpg`
+    `${STORAGE_URL}ex-1.jpg`,
+    `${STORAGE_URL}ex-2.jpg`,
+    `${STORAGE_URL}ex-3.jpg`
   ]
 };
 
