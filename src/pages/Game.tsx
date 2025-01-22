@@ -13,7 +13,8 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import { useToast } from "@/hooks/use-toast";
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7";
+// Use a more reliable fallback image
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1461749280684-dccba630e2f6";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -32,11 +33,8 @@ const Game = () => {
   const [currentTable, setCurrentTableLocal] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
-
-  // New state to track if all players have entered scores
   const [allScoresEntered, setAllScoresEntered] = useState(false);
 
-  // Check if all players have entered their scores
   useEffect(() => {
     const activePlayerScores = scores.slice(0, playerCount);
     const allHaveScored = activePlayerScores.every(score => score > 0);
@@ -72,20 +70,22 @@ const Game = () => {
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
     
-    const maxRetries = difficulty === 'easy' ? 0 : 2;
+    // Reduced retry attempts to minimize glitchy appearance
+    const maxRetries = 1;
     
     if (retryCount < maxRetries) {
       setRetryCount(prev => prev + 1);
       setImageError(false);
       
+      // Add a longer delay between retries
       setTimeout(() => {
         setCurrentTableLocal(currentTable);
-      }, 1000);
+      }, 2000);
     } else if (!imageError) {
       setImageError(true);
       toast({
         title: "Image Load Error",
-        description: "Failed to load table image. Using placeholder.",
+        description: "Using placeholder image while table loads.",
         variant: "destructive",
       });
     }
@@ -112,7 +112,6 @@ const Game = () => {
         Enter Score
       </button>
 
-      {/* Show difficulty selector and Select Table button when all players have scored */}
       {allScoresEntered && (
         <div className="mt-6 space-y-4">
           <Select value={difficulty} onValueChange={setDifficulty}>
