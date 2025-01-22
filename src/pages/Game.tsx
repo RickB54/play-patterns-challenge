@@ -119,11 +119,6 @@ const Game = () => {
         </>
       )}
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Click the Settings Icon below to Start a new round or to set other
-        preferences.
-      </p>
-
       <button
         onClick={() => navigate("/settings")}
         className="mt-auto mx-auto p-4"
