@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const PLACEHOLDER_IMAGE = "/placeholder.svg";
 
@@ -13,15 +13,10 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   const { toast } = useToast();
   const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    if (currentTable && currentTable !== PLACEHOLDER_IMAGE) {
-      setHasError(false);
-    }
-  }, [currentTable]);
-
   const handleImageError = () => {
-    if (!hasError && currentTable !== PLACEHOLDER_IMAGE) {
-      console.log("Image failed to load:", currentTable);
+    if (currentTable && currentTable !== PLACEHOLDER_IMAGE && !hasError) {
+      console.log("Image failed to load, switching to placeholder:", currentTable);
+      
       setHasError(true);
       setCurrentTableLocal(PLACEHOLDER_IMAGE);
       
@@ -33,6 +28,7 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     }
   };
 
+  // Only use placeholder if there's an error or no current table
   const imageSource = hasError || !currentTable ? PLACEHOLDER_IMAGE : currentTable;
 
   return (
