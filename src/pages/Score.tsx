@@ -20,6 +20,10 @@ const Score = () => {
     return "grid grid-cols-2 gap-4";
   };
 
+  const allPlayersScored = scores
+    .slice(0, playerCount)
+    .every(score => score > 0);
+
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex items-center mb-8">
@@ -55,6 +59,15 @@ const Score = () => {
           </Card>
         ))}
       </div>
+
+      {allPlayersScored && (
+        <button
+          onClick={() => navigate("/winners-circle")}
+          className="mt-8 w-full btn-primary"
+        >
+          View Winner's Circle
+        </button>
+      )}
     </div>
   );
 };
