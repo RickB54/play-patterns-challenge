@@ -5,7 +5,7 @@ import { useGameStore } from "@/store/gameStore";
 
 const WinnersCircle = () => {
   const navigate = useNavigate();
-  const { playerCount, playerNames, scores } = useGameStore();
+  const { playerCount, playerNames, scores, resetGame } = useGameStore();
 
   // Create array of player indices and sort by score
   const playerRankings = Array.from({ length: playerCount }, (_, i) => i)
@@ -30,6 +30,11 @@ const WinnersCircle = () => {
       rankings.push({ position: currentPosition, playerIndices });
       currentPosition += playerIndices.length;
     });
+
+  const handleLeaveGame = () => {
+    resetGame();
+    navigate("/");
+  };
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -74,8 +79,8 @@ const WinnersCircle = () => {
         <button onClick={() => navigate("/game")} className="w-full btn-primary">
           Continue Playing
         </button>
-        <button onClick={() => navigate("/score")} className="w-full btn-secondary">
-          Back to Scores
+        <button onClick={handleLeaveGame} className="w-full btn-destructive">
+          Leave The Game
         </button>
       </div>
     </div>
