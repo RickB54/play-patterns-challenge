@@ -40,30 +40,41 @@ const Game = () => {
     }
   };
 
-  return (
-    <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-      <div className="flex flex-col gap-6">
-        {isPracticeMode ? (
+  if (isPracticeMode) {
+    return (
+      <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
+        <div className="flex flex-col gap-6">
           <PracticeMode 
             difficulty={difficulty}
             setDifficulty={setDifficulty}
           />
-        ) : (
-          <>
-            {currentTableLocal && (
-              <PoolTableImage 
-                currentTable={currentTableLocal} 
-                setCurrentTableLocal={setCurrentTableLocal}
-              />
-            )}
-            <GameControls 
-              allScoresEntered={allScoresEntered}
-              difficulty={difficulty}
-              setDifficulty={setDifficulty}
-              handleSelectTable={handleSelectTable}
-            />
-          </>
+        </div>
+
+        <button
+          onClick={() => navigate("/settings")}
+          className="mt-auto mx-auto p-4"
+        >
+          <Settings className="w-8 h-8" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
+      <div className="flex flex-col gap-6">
+        {currentTableLocal && (
+          <PoolTableImage 
+            currentTable={currentTableLocal} 
+            setCurrentTableLocal={setCurrentTableLocal}
+          />
         )}
+        <GameControls 
+          allScoresEntered={allScoresEntered}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          handleSelectTable={handleSelectTable}
+        />
       </div>
 
       <button
