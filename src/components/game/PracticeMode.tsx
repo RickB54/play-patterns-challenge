@@ -24,25 +24,24 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="space-y-4">
-        <label className="block text-sm font-medium">Level of Difficulty</label>
-        <DifficultySelector difficulty={difficulty} setDifficulty={setDifficulty} />
-      </div>
+      <DifficultySelector difficulty={difficulty} setDifficulty={setDifficulty} />
       
       {difficulty && (
-        <button 
-          onClick={handleSelectTable} 
-          className="w-full btn-secondary"
-        >
-          Select Table
-        </button>
-      )}
+        <>
+          <button 
+            onClick={handleSelectTable} 
+            className="w-full btn-secondary"
+          >
+            Select Table
+          </button>
 
-      {currentTableLocal && (
-        <PoolTableImage 
-          currentTable={currentTableLocal} 
-          setCurrentTableLocal={setCurrentTableLocal}
-        />
+          {currentTableLocal && (
+            <PoolTableImage 
+              currentTable={currentTableLocal} 
+              setCurrentTableLocal={setCurrentTableLocal}
+            />
+          )}
+        </>
       )}
     </div>
   );
