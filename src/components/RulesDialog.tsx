@@ -33,7 +33,7 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
           <li>• Enter Scores: After each player's turn, input their score. Each ball legally pocketed (except 8-ball) is 1 point. The 8-Ball is 2 points.</li>
           <li>• The Player's turn ends at the first missed ball.</li>
           <li>• Next Round: After all players complete their turns, select another pool table setup.</li>
-          <li>• End Game: View final scores by pressing Enter Scores. Highest score wins.</li>
+          <li>• End Game: This ends the game and sends you to the Winner's Circle. Press Leave Game or go back into the game by pressing Continue Playing.</li>
         </ul>
       </>
     ),
@@ -43,7 +43,6 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
         <ul className="space-y-2 text-sm">
           <li>• Start New Round: Move to a new randomly selected pool table setup.</li>
           <li>• Settings: Adjust game settings or choose other options.</li>
-          <li>• End Game: This ends the game and sends you to the Winner's Circle. Press Leave Game or go back into the game by pressing Continue Playing.</li>
           <li>• Rules: Review these rules anytime through settings.</li>
         </ul>
       </>
