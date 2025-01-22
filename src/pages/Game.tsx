@@ -54,7 +54,7 @@ const Game = () => {
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
     
-    // For Easy difficulty, we know there are only 3 images
+    // For Easy difficulty, we don't retry since we know there are only 3 images
     const maxRetries = difficulty === 'easy' ? 0 : 2;
     
     if (retryCount < maxRetries) {
