@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Settings } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -9,17 +9,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useGameStore } from "@/store/gameStore";
+import { getRandomTable } from "@/constants/tableImages";
+import { useToast } from "@/hooks/use-toast";
 
 const Game = () => {
   const navigate = useNavigate();
-  const [showDifficulty, setShowDifficulty] = useState(false);
-  const [difficulty, setDifficulty] = useState("");
+  const { toast } = useToast();
+  const { difficulty: storedDifficulty, usedTables, addUsedTable, setCurrentTable } = useGameStore();
+  const [showDifficulty, setShowDifficulty] = useState(!storedDifficulty);
+  const [difficulty, setDifficulty] = useState(storedDifficulty || "");
+  const [currentTable, setCurrentTableLocal] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (difficulty) {
+      const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
+      setCurrentTableLocal(newTable);
+      setCurrentTable(newTable);
+      addUsedTable(difficulty, newTable);
+    }
+  }, [difficulty]);
+
+  const handleSelectTable = () => {
+    if (difficulty) {
+      const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
+      setCurrentTableLocal(newTable);
+      setCurrentTable(newTable);
+      addUsedTable(difficulty, newTable);
+      toast({
+        title: "New Table Selected",
+        description: `Difficulty: ${difficulty}`,
+      });
+    }
+  };
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <Card className="p-4 glass-card">
         <img
-          src="/placeholder.svg"
+          src={currentTable || "/placeholder.svg"}
           alt="Pool Table Setup"
           className="w-full h-auto rounded-lg"
         />
@@ -47,7 +75,13 @@ const Game = () => {
               <SelectItem value="expert">Expert</SelectItem>
             </SelectContent>
           </Select>
-          <button className="w-full btn-secondary">Select Table</button>
+          <button 
+            onClick={handleSelectTable} 
+            className="w-full btn-secondary"
+            disabled={!difficulty}
+          >
+            Select Table
+          </button>
         </div>
       )}
 
