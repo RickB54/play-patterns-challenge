@@ -12,22 +12,23 @@ interface PoolTableImageProps {
 const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImageProps) => {
   const { toast } = useToast();
   const [hasError, setHasError] = useState(false);
-  const [imageUrl, setImageUrl] = useState(currentTable || PLACEHOLDER_IMAGE);
 
   useEffect(() => {
     if (currentTable) {
+      console.log("PoolTableImage received new currentTable:", currentTable);
       setHasError(false);
-      setImageUrl(currentTable);
-      console.log("Current table updated:", currentTable);
     }
   }, [currentTable]);
 
   const handleImageError = () => {
-    console.log("Image failed to load:", imageUrl);
+    console.log("Image failed to load, current state:", {
+      currentTable,
+      hasError,
+      placeholderImage: PLACEHOLDER_IMAGE
+    });
     
-    if (!hasError) {
+    if (!hasError && currentTable !== PLACEHOLDER_IMAGE) {
       setHasError(true);
-      setImageUrl(PLACEHOLDER_IMAGE);
       setCurrentTableLocal(PLACEHOLDER_IMAGE);
       
       toast({
@@ -38,10 +39,13 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     }
   };
 
+  const imageSource = hasError || !currentTable ? PLACEHOLDER_IMAGE : currentTable;
+  console.log("Rendering image with source:", imageSource);
+
   return (
     <Card className="p-4 glass-card">
       <img
-        src={imageUrl}
+        src={imageSource}
         alt="Pool Table Setup"
         className="w-full h-auto rounded-lg"
         onError={handleImageError}
