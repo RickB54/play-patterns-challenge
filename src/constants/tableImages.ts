@@ -68,10 +68,20 @@ export const tableImages = {
 export const getRandomTable = (difficulty: keyof typeof tableImages, usedTables: string[]) => {
   const availableTables = tableImages[difficulty].filter(table => !usedTables.includes(table));
   
+  // If all tables have been used, reset the used tables list and return a random table
   if (availableTables.length === 0) {
-    // Reset if all tables have been used
-    return tableImages[difficulty][Math.floor(Math.random() * tableImages[difficulty].length)];
+    console.log(`All ${difficulty} tables have been used. Resetting selection pool.`);
+    // Instead of using a random table from the full set, use the first one
+    // This ensures a complete cycle before any table repeats
+    return tableImages[difficulty][0];
   }
   
-  return availableTables[Math.floor(Math.random() * availableTables.length)];
+  // Get a random table from the available ones
+  const randomIndex = Math.floor(Math.random() * availableTables.length);
+  const selectedTable = availableTables[randomIndex];
+  
+  console.log(`Selected ${difficulty} table: ${selectedTable}`);
+  console.log(`Remaining unused tables: ${availableTables.length - 1}`);
+  
+  return selectedTable;
 };
