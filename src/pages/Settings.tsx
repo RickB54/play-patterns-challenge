@@ -11,7 +11,7 @@ const Settings = () => {
   const { resetGame } = useGameStore();
 
   const handleEndGame = () => {
-    resetGame(); // Reset all game state
+    resetGame();
     toast({
       title: "Game Ended",
       description: "Returning to home page",
@@ -34,7 +34,10 @@ const Settings = () => {
           <button className="w-full btn-secondary">Rules of the Game</button>
         </RulesDialog>
 
-        <button onClick={() => navigate("/setup")} className="w-full btn-secondary">
+        <button 
+          onClick={() => navigate("/setup", { state: { newRound: true } })} 
+          className="w-full btn-secondary"
+        >
           Start New Round
         </button>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Settings } from "lucide-react";
 import {
   Select,
@@ -14,6 +14,9 @@ import { useGameStore } from "@/store/gameStore";
 
 const Setup = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isNewRound = location.state?.newRound;
+  
   const { setPlayerCount, setPlayerNames, setDifficulty } = useGameStore();
   const [players, setPlayers] = useState("1");
   const [difficulty, setDifficultyLocal] = useState("");
@@ -45,37 +48,43 @@ const Setup = () => {
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-      <h1 className="text-3xl font-bold text-center mb-8">Players & Skill Level</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">
+        {isNewRound ? "Select Difficulty" : "Players & Skill Level"}
+      </h1>
 
       <Card className="p-6 glass-card space-y-6">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Number of Players</label>
-          <Select value={players} onValueChange={handlePlayerCountChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select players" />
-            </SelectTrigger>
-            <SelectContent>
-              {[...Array(8)].map((_, i) => (
-                <SelectItem key={i + 1} value={(i + 1).toString()}>
-                  {i + 1} Player{i > 0 ? "s" : ""}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {!isNewRound && (
+          <>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Number of Players</label>
+              <Select value={players} onValueChange={handlePlayerCountChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select players" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...Array(8)].map((_, i) => (
+                    <SelectItem key={i + 1} value={(i + 1).toString()}>
+                      {i + 1} Player{i > 0 ? "s" : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        {playerNames.length > 0 && (
-          <div className="space-y-4">
-            <label className="block text-sm font-medium">Player Names</label>
-            {playerNames.map((name, index) => (
-              <Input
-                key={index}
-                placeholder={`Player ${index + 1} name`}
-                value={name}
-                onChange={(e) => handleNameChange(index, e.target.value)}
-              />
-            ))}
-          </div>
+            {playerNames.length > 0 && (
+              <div className="space-y-4">
+                <label className="block text-sm font-medium">Player Names</label>
+                {playerNames.map((name, index) => (
+                  <Input
+                    key={index}
+                    placeholder={`Player ${index + 1} name`}
+                    value={name}
+                    onChange={(e) => handleNameChange(index, e.target.value)}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
 
         <div className="space-y-2">
@@ -97,9 +106,9 @@ const Setup = () => {
       <button
         onClick={handleStartRound}
         className="mt-8 w-full btn-primary"
-        disabled={!difficulty || playerNames.some(name => !name.trim())}
+        disabled={(!isNewRound && playerNames.some(name => !name.trim())) || !difficulty}
       >
-        Start Round
+        {isNewRound ? "Start New Round" : "Start Game"}
       </button>
 
       <button
