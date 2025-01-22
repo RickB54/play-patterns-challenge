@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
@@ -22,16 +22,10 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
     
-    const maxRetries = 1;
-    
-    if (retryCount < maxRetries && currentTable) {
+    if (retryCount < 1) {
       setRetryCount(prev => prev + 1);
+      // Try loading the image again
       setImageError(false);
-      
-      // Retry loading the original image after a delay
-      setTimeout(() => {
-        setImageError(false);
-      }, 2000);
     } else {
       setImageError(true);
       setCurrentPlaceholderIndex(prev => (prev + 1) % PLACEHOLDER_IMAGES.length);
@@ -43,18 +37,21 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     }
   };
 
-  const imageSrc = imageError || !currentTable 
+  // If no currentTable or error loading image, show placeholder
+  const displayImage = imageError || !currentTable 
     ? PLACEHOLDER_IMAGES[currentPlaceholderIndex]
     : currentTable;
+
+  console.log("Displaying image:", displayImage);
 
   return (
     <Card className="p-4 glass-card">
       <img
-        src={imageSrc}
+        src={displayImage}
         alt="Pool Table Setup"
         className="w-full h-auto rounded-lg"
         onError={handleImageError}
-        key={`${imageSrc}-${retryCount}`}
+        key={`${displayImage}-${retryCount}`} // Force re-render on retry
       />
     </Card>
   );
