@@ -1,23 +1,23 @@
 export const tableImages = {
   easy: [
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/easy/easy-1.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/easy/easy-2.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/easy/easy-3.png'
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/easy/easy1.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/easy/easy2.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/easy/easy3.png'
   ],
   intermediate: [
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/intermediate/intermediate-1.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/intermediate/intermediate-2.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/intermediate/intermediate-3.png'
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/intermediate/intermediate1.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/intermediate/intermediate2.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/intermediate/intermediate3.png'
   ],
   advanced: [
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/advanced/advanced-1.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/advanced/advanced-2.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/advanced/advanced-3.png'
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/advanced/advanced1.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/advanced/advanced2.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/advanced/advanced3.png'
   ],
   expert: [
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/expert/expert-1.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/expert/expert-2.png',
-    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/expert/expert-3.png'
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/expert/expert1.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/expert/expert2.png',
+    'https://raw.githubusercontent.com/lovable-games/pool-table-patterns/main/expert/expert3.png'
   ]
 };
 
