@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Settings } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
 import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
+import PracticeMode from "@/components/game/PracticeMode";
+import GameControls from "@/components/game/GameControls";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -57,19 +52,10 @@ const Game = () => {
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       {isPracticeMode ? (
-        <div className="flex-grow">
-          <Select value={difficulty} onValueChange={setDifficulty}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select difficulty" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="easy">Easy</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="advanced">Advanced</SelectItem>
-              <SelectItem value="expert">Expert</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <PracticeMode 
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+        />
       ) : (
         <>
           <PoolTableImage 
@@ -82,32 +68,12 @@ const Game = () => {
             player's turn is over.
           </p>
 
-          <button onClick={() => navigate("/score")} className="mt-6 btn-primary">
-            Enter Score
-          </button>
-
-          {allScoresEntered && (
-            <div className="mt-6 space-y-4">
-              <Select value={difficulty} onValueChange={setDifficulty}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select difficulty for next round" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="easy">Easy</SelectItem>
-                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
-                  <SelectItem value="expert">Expert</SelectItem>
-                </SelectContent>
-              </Select>
-              <button 
-                onClick={handleSelectTable} 
-                className="w-full btn-secondary"
-                disabled={!difficulty}
-              >
-                Select Table
-              </button>
-            </div>
-          )}
+          <GameControls 
+            allScoresEntered={allScoresEntered}
+            difficulty={difficulty}
+            setDifficulty={setDifficulty}
+            handleSelectTable={handleSelectTable}
+          />
         </>
       )}
 
