@@ -18,12 +18,30 @@ const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1487058792275-0ad4aaf2
 const Game = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { difficulty: storedDifficulty, usedTables, addUsedTable, setCurrentTable } = useGameStore();
+  const { 
+    difficulty: storedDifficulty, 
+    usedTables, 
+    addUsedTable, 
+    setCurrentTable,
+    playerCount,
+    scores 
+  } = useGameStore();
+  
   const [showDifficulty, setShowDifficulty] = useState(!storedDifficulty);
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTable, setCurrentTableLocal] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+
+  // New state to track if all players have entered scores
+  const [allScoresEntered, setAllScoresEntered] = useState(false);
+
+  // Check if all players have entered their scores
+  useEffect(() => {
+    const activePlayerScores = scores.slice(0, playerCount);
+    const allHaveScored = activePlayerScores.every(score => score > 0);
+    setAllScoresEntered(allHaveScored);
+  }, [scores, playerCount]);
 
   useEffect(() => {
     if (difficulty) {
@@ -54,7 +72,6 @@ const Game = () => {
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
     
-    // For Easy difficulty, we don't retry since we know there are only 3 images
     const maxRetries = difficulty === 'easy' ? 0 : 2;
     
     if (retryCount < maxRetries) {
@@ -95,11 +112,12 @@ const Game = () => {
         Enter Score
       </button>
 
-      {showDifficulty && (
+      {/* Show difficulty selector and Select Table button when all players have scored */}
+      {allScoresEntered && (
         <div className="mt-6 space-y-4">
           <Select value={difficulty} onValueChange={setDifficulty}>
             <SelectTrigger>
-              <SelectValue placeholder="Select difficulty" />
+              <SelectValue placeholder="Select difficulty for next round" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="easy">Easy</SelectItem>
