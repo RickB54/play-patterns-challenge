@@ -19,6 +19,15 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   const [imageError, setImageError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
+  const [imageSrc, setImageSrc] = useState<string>(currentTable || PLACEHOLDER_IMAGES[0]);
+
+  useEffect(() => {
+    if (currentTable) {
+      setImageSrc(currentTable);
+      setImageError(false);
+      setRetryCount(0);
+    }
+  }, [currentTable]);
 
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
@@ -30,7 +39,9 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
       setImageError(false);
       
       setTimeout(() => {
-        setCurrentTableLocal(currentTable);
+        if (currentTable) {
+          setImageSrc(currentTable);
+        }
       }, 2000);
     } else if (!imageError) {
       setImageError(true);
@@ -46,11 +57,11 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   return (
     <Card className="p-4 glass-card">
       <img
-        src={imageError ? PLACEHOLDER_IMAGES[currentPlaceholderIndex] : (currentTable || PLACEHOLDER_IMAGES[0])}
+        src={imageError ? PLACEHOLDER_IMAGES[currentPlaceholderIndex] : imageSrc}
         alt="Pool Table Setup"
         className="w-full h-auto rounded-lg"
         onError={handleImageError}
-        key={`${currentTable}-${retryCount}`}
+        key={`${imageSrc}-${retryCount}`}
       />
     </Card>
   );
