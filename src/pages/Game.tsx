@@ -5,6 +5,7 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
+import DifficultySelector from "@/components/game/DifficultySelector";
 import GameControls from "@/components/game/GameControls";
 
 const Game = () => {
