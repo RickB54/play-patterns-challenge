@@ -31,7 +31,7 @@ const Home = () => {
   return (
     <div className="container max-w-lg mx-auto px-4 py-8">
       <div className="space-y-6 text-center">
-        <h1 className="text-4xl font-bold">Pool Game</h1>
+        <h1 className="text-4xl font-bold">Pattern Play Runouts</h1>
         <p className="text-muted-foreground">Practice your pool skills!</p>
         
         <div className="space-y-4">
