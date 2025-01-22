@@ -32,7 +32,7 @@ const Game = () => {
   }, [scores, playerCount]);
 
   useEffect(() => {
-    if (difficulty) {
+    if (difficulty && !isPracticeMode) {
       const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
