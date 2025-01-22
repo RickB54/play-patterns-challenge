@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { RulesDialog } from "@/components/RulesDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { useGameStore } from "@/store/gameStore";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { resetGame } = useGameStore();
 
   const handleEndGame = () => {
+    resetGame(); // Reset all game state
     toast({
       title: "Game Ended",
       description: "Returning to home page",
