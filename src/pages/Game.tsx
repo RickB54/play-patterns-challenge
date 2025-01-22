@@ -63,12 +63,7 @@ const Game = () => {
       setTimeout(() => {
         setCurrentTableLocal(currentTable);
       }, 1000);
-      
-      toast({
-        title: "Retrying Image Load",
-        description: `Attempt ${retryCount + 1} of 3`,
-      });
-    } else {
+    } else if (!imageError) { // Only show error toast when finally falling back to placeholder
       setImageError(true);
       toast({
         title: "Image Load Error",
@@ -86,7 +81,7 @@ const Game = () => {
           alt="Pool Table Setup"
           className="w-full h-auto rounded-lg"
           onError={handleImageError}
-          key={`${currentTable}-${retryCount}`} // Force reload on retry
+          key={`${currentTable}-${retryCount}`}
         />
       </Card>
 
