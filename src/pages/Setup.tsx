@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Settings } from "lucide-react";
 import {
@@ -10,22 +10,37 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useGameStore } from "@/store/gameStore";
 
 const Setup = () => {
   const navigate = useNavigate();
+  const { setPlayerCount, setPlayerNames, setDifficulty } = useGameStore();
   const [players, setPlayers] = useState("1");
-  const [difficulty, setDifficulty] = useState("");
-  const [playerNames, setPlayerNames] = useState<string[]>([]);
+  const [difficulty, setDifficultyLocal] = useState("");
+  const [playerNames, setPlayerNamesLocal] = useState<string[]>([]);
 
   const handlePlayerCountChange = (value: string) => {
     setPlayers(value);
-    setPlayerNames(Array(parseInt(value)).fill(""));
+    const count = parseInt(value);
+    setPlayerCount(count);
+    setPlayerNamesLocal(Array(count).fill("").map((_, i) => `Player ${i + 1}`));
   };
 
   const handleNameChange = (index: number, name: string) => {
     const newNames = [...playerNames];
-    newNames[index] = name;
-    setPlayerNames(newNames);
+    newNames[index] = name || `Player ${index + 1}`; // Use default name if empty
+    setPlayerNamesLocal(newNames);
+  };
+
+  useEffect(() => {
+    if (playerNames.length > 0) {
+      setPlayerNames(playerNames);
+    }
+  }, [playerNames, setPlayerNames]);
+
+  const handleStartRound = () => {
+    setDifficulty(difficulty);
+    navigate("/game");
   };
 
   return (
@@ -65,7 +80,7 @@ const Setup = () => {
 
         <div className="space-y-2">
           <label className="block text-sm font-medium">Level of Difficulty</label>
-          <Select value={difficulty} onValueChange={setDifficulty}>
+          <Select value={difficulty} onValueChange={setDifficultyLocal}>
             <SelectTrigger>
               <SelectValue placeholder="Select difficulty" />
             </SelectTrigger>
@@ -80,7 +95,7 @@ const Setup = () => {
       </Card>
 
       <button
-        onClick={() => navigate("/game")}
+        onClick={handleStartRound}
         className="mt-8 w-full btn-primary"
         disabled={!difficulty || playerNames.some(name => !name.trim())}
       >
