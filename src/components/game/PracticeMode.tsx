@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DifficultySelector from "./DifficultySelector";
 import PoolTableImage from "@/components/PoolTableImage";
 import { useGameStore } from "@/store/gameStore";
@@ -10,8 +10,14 @@ interface PracticeModeProps {
 }
 
 const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
-  const { usedTables, addUsedTable, setCurrentTable } = useGameStore();
-  const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(null);
+  const { usedTables, addUsedTable, setCurrentTable, currentTable } = useGameStore();
+  const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
+
+  useEffect(() => {
+    if (currentTable) {
+      setCurrentTableLocal(currentTable);
+    }
+  }, [currentTable]);
 
   const handleSelectTable = () => {
     if (difficulty) {
