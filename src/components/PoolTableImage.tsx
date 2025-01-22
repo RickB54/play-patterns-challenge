@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
-// Use multiple placeholder images for better testing
 const PLACEHOLDER_IMAGES = [
   "https://images.unsplash.com/photo-1487887235947-a955ef187fcc",
   "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
@@ -19,18 +18,22 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   const [imageError, setImageError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
-  const [imageSrc, setImageSrc] = useState<string>(currentTable || PLACEHOLDER_IMAGES[0]);
+  const [imageSrc, setImageSrc] = useState<string>("");
 
   useEffect(() => {
     if (currentTable) {
+      console.log("Setting image source:", currentTable);
       setImageSrc(currentTable);
       setImageError(false);
       setRetryCount(0);
+    } else {
+      console.log("No current table, using placeholder");
+      setImageSrc(PLACEHOLDER_IMAGES[0]);
     }
   }, [currentTable]);
 
   const handleImageError = () => {
-    console.error("Failed to load image:", currentTable);
+    console.error("Failed to load image:", imageSrc);
     
     const maxRetries = 1;
     
@@ -46,6 +49,7 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     } else if (!imageError) {
       setImageError(true);
       setCurrentPlaceholderIndex(prev => (prev + 1) % PLACEHOLDER_IMAGES.length);
+      setImageSrc(PLACEHOLDER_IMAGES[currentPlaceholderIndex]);
       toast({
         title: "Image Load Error",
         description: "Using placeholder image while table loads.",
@@ -54,10 +58,14 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     }
   };
 
+  if (!imageSrc) {
+    return null;
+  }
+
   return (
     <Card className="p-4 glass-card">
       <img
-        src={imageError ? PLACEHOLDER_IMAGES[currentPlaceholderIndex] : imageSrc}
+        src={imageSrc}
         alt="Pool Table Setup"
         className="w-full h-auto rounded-lg"
         onError={handleImageError}

@@ -16,12 +16,14 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
   useEffect(() => {
     if (currentTable) {
       setCurrentTableLocal(currentTable);
+      console.log("Current table updated in PracticeMode:", currentTable);
     }
   }, [currentTable]);
 
   const handleSelectTable = () => {
     if (difficulty) {
       const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
+      console.log("Selected new table:", newTable);
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
@@ -41,12 +43,10 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
             Select Table
           </button>
 
-          {currentTableLocal && (
-            <PoolTableImage 
-              currentTable={currentTableLocal} 
-              setCurrentTableLocal={setCurrentTableLocal}
-            />
-          )}
+          <PoolTableImage 
+            currentTable={currentTableLocal} 
+            setCurrentTableLocal={setCurrentTableLocal}
+          />
         </>
       )}
     </div>

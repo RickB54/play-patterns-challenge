@@ -33,6 +33,7 @@ const Game = () => {
 
   useEffect(() => {
     if (currentTable) {
+      console.log("Setting current table local in Game:", currentTable);
       setCurrentTableLocal(currentTable);
     }
   }, [currentTable]);
@@ -40,6 +41,7 @@ const Game = () => {
   const handleSelectTable = () => {
     if (difficulty) {
       const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
+      console.log("Selected new table in Game:", newTable);
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
