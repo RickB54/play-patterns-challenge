@@ -23,20 +23,13 @@ const Game = () => {
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(null);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
 
+  const isPracticeMode = window.location.search.includes('practice=true');
+
   useEffect(() => {
     const activePlayerScores = scores.slice(0, playerCount);
     const allHaveScored = activePlayerScores.every(score => score > 0);
     setAllScoresEntered(allHaveScored);
   }, [scores, playerCount]);
-
-  useEffect(() => {
-    if (difficulty) {
-      const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
-      setCurrentTableLocal(newTable);
-      setCurrentTable(newTable);
-      addUsedTable(difficulty, newTable);
-    }
-  }, [difficulty]);
 
   const handleSelectTable = () => {
     if (difficulty) {
@@ -50,12 +43,27 @@ const Game = () => {
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4">
+        {isPracticeMode ? (
           <PracticeMode 
             difficulty={difficulty}
             setDifficulty={setDifficulty}
           />
-        </div>
+        ) : (
+          <>
+            {currentTableLocal && (
+              <PoolTableImage 
+                currentTable={currentTableLocal} 
+                setCurrentTableLocal={setCurrentTableLocal}
+              />
+            )}
+            <GameControls 
+              allScoresEntered={allScoresEntered}
+              difficulty={difficulty}
+              setDifficulty={setDifficulty}
+              handleSelectTable={handleSelectTable}
+            />
+          </>
+        )}
       </div>
 
       <button
