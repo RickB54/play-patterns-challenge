@@ -18,38 +18,23 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   const [imageError, setImageError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
-  const [imageSrc, setImageSrc] = useState<string>("");
-
-  useEffect(() => {
-    if (currentTable) {
-      console.log("Setting image source:", currentTable);
-      setImageSrc(currentTable);
-      setImageError(false);
-      setRetryCount(0);
-    } else {
-      console.log("No current table, using placeholder");
-      setImageSrc(PLACEHOLDER_IMAGES[0]);
-    }
-  }, [currentTable]);
 
   const handleImageError = () => {
-    console.error("Failed to load image:", imageSrc);
+    console.error("Failed to load image:", currentTable);
     
     const maxRetries = 1;
     
-    if (retryCount < maxRetries) {
+    if (retryCount < maxRetries && currentTable) {
       setRetryCount(prev => prev + 1);
       setImageError(false);
       
+      // Retry loading the original image after a delay
       setTimeout(() => {
-        if (currentTable) {
-          setImageSrc(currentTable);
-        }
+        setImageError(false);
       }, 2000);
-    } else if (!imageError) {
+    } else {
       setImageError(true);
       setCurrentPlaceholderIndex(prev => (prev + 1) % PLACEHOLDER_IMAGES.length);
-      setImageSrc(PLACEHOLDER_IMAGES[currentPlaceholderIndex]);
       toast({
         title: "Image Load Error",
         description: "Using placeholder image while table loads.",
@@ -58,9 +43,9 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     }
   };
 
-  if (!imageSrc) {
-    return null;
-  }
+  const imageSrc = imageError || !currentTable 
+    ? PLACEHOLDER_IMAGES[currentPlaceholderIndex]
+    : currentTable;
 
   return (
     <Card className="p-4 glass-card">
