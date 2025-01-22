@@ -1,5 +1,5 @@
 // The base URL for your Supabase Storage bucket
-const STORAGE_URL = 'https://YOUR_PROJECT_URL.supabase.co/storage/v1/object/public/pool-tables/';
+const STORAGE_URL = 'https://rlqxhxpxfbfkbgktzjnk.supabase.co/storage/v1/object/public/pool-tables/';
 
 export const tableImages = {
   easy: [
