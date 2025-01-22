@@ -13,6 +13,8 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import { useToast } from "@/hooks/use-toast";
 
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7";
+
 const Game = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -21,6 +23,7 @@ const Game = () => {
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTable, setCurrentTableLocal] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (difficulty) {
@@ -28,7 +31,8 @@ const Game = () => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
-      setImageError(false); // Reset error state when trying new image
+      setImageError(false);
+      setRetryCount(0);
     }
   }, [difficulty]);
 
@@ -38,7 +42,8 @@ const Game = () => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
-      setImageError(false); // Reset error state when trying new image
+      setImageError(false);
+      setRetryCount(0);
       toast({
         title: "New Table Selected",
         description: `Difficulty: ${difficulty}`,
@@ -47,23 +52,41 @@ const Game = () => {
   };
 
   const handleImageError = () => {
-    setImageError(true);
     console.error("Failed to load image:", currentTable);
-    toast({
-      title: "Image Load Error",
-      description: "Failed to load table image. Using placeholder.",
-      variant: "destructive",
-    });
+    
+    if (retryCount < 2) {
+      // Retry loading the image up to 2 times
+      setRetryCount(prev => prev + 1);
+      setImageError(false);
+      
+      // Add a small delay before retry
+      setTimeout(() => {
+        setCurrentTableLocal(currentTable);
+      }, 1000);
+      
+      toast({
+        title: "Retrying Image Load",
+        description: `Attempt ${retryCount + 1} of 3`,
+      });
+    } else {
+      setImageError(true);
+      toast({
+        title: "Image Load Error",
+        description: "Failed to load table image. Using placeholder.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <Card className="p-4 glass-card">
         <img
-          src={imageError ? "/placeholder.svg" : (currentTable || "/placeholder.svg")}
+          src={imageError ? FALLBACK_IMAGE : (currentTable || FALLBACK_IMAGE)}
           alt="Pool Table Setup"
           className="w-full h-auto rounded-lg"
           onError={handleImageError}
+          key={`${currentTable}-${retryCount}`} // Force reload on retry
         />
       </Card>
 
