@@ -50,3 +50,12 @@
 .btn-destructive {
   @apply px-6 py-3 bg-destructive text-destructive-foreground rounded-lg hover:opacity-90 transition-opacity;
 }
+
+/* Score keeper specific styles */
+.score-card {
+  @apply animate-fadeIn;
+}
+
+.score-button {
+  @apply transition-transform hover:scale-110 active:scale-95;
+}
