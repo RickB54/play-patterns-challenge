@@ -12,43 +12,28 @@ interface PoolTableImageProps {
 const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImageProps) => {
   const { toast } = useToast();
   const [hasError, setHasError] = useState(false);
-  const [errorToastShown, setErrorToastShown] = useState(false);
 
   useEffect(() => {
     if (currentTable && currentTable !== PLACEHOLDER_IMAGE) {
-      console.log("PoolTableImage received new currentTable:", currentTable);
       setHasError(false);
-      setErrorToastShown(false);
     }
   }, [currentTable]);
 
   const handleImageError = () => {
-    console.log("Image failed to load, current state:", {
-      currentTable,
-      hasError,
-      errorToastShown,
-      placeholderImage: PLACEHOLDER_IMAGE
-    });
-    
     if (!hasError && currentTable !== PLACEHOLDER_IMAGE) {
+      console.log("Image failed to load:", currentTable);
       setHasError(true);
+      setCurrentTableLocal(PLACEHOLDER_IMAGE);
       
-      // Only update parent state and show toast if we haven't already
-      if (!errorToastShown) {
-        setErrorToastShown(true);
-        setCurrentTableLocal(PLACEHOLDER_IMAGE);
-        
-        toast({
-          title: "Image Loading Error",
-          description: "Unable to load table image. Using default image instead.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Image Loading Error",
+        description: "Unable to load table image. Using default image instead.",
+        variant: "destructive",
+      });
     }
   };
 
   const imageSource = hasError || !currentTable ? PLACEHOLDER_IMAGE : currentTable;
-  console.log("Rendering image with source:", imageSource);
 
   return (
     <Card className="p-4 glass-card">
