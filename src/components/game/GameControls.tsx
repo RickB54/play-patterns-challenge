@@ -15,7 +15,6 @@ const GameControls = ({
   handleSelectTable 
 }: GameControlsProps) => {
   const navigate = useNavigate();
-  const isPracticeMode = window.location.search.includes('practice=true');
 
   return (
     <div className="mt-6 space-y-4">
@@ -23,7 +22,7 @@ const GameControls = ({
         Enter Score
       </button>
 
-      {isPracticeMode && allScoresEntered && (
+      {allScoresEntered && (
         <>
           <DifficultySelector 
             difficulty={difficulty} 
