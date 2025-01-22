@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
+// Using simpler, more reliable placeholder images
 const PLACEHOLDER_IMAGES = [
-  "https://images.unsplash.com/photo-1487887235947-a955ef187fcc",
-  "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
-  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"
+  "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+  "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f"
 ];
 
 interface PoolTableImageProps {
@@ -18,24 +19,23 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
 
   const handleImageError = () => {
-    console.error("Failed to load image:", currentTable);
+    console.log("Image failed to load, trying placeholder:", currentTable);
     setCurrentPlaceholderIndex(prev => (prev + 1) % PLACEHOLDER_IMAGES.length);
     
     toast({
-      title: "Image Load Error",
-      description: "Using placeholder image while table loads.",
-      variant: "destructive",
+      title: "Loading Table Image",
+      description: "Using placeholder while table image loads.",
+      variant: "default",
     });
   };
 
-  const displayImage = !currentTable ? PLACEHOLDER_IMAGES[currentPlaceholderIndex] : currentTable;
-
-  console.log("Displaying image:", displayImage);
+  // Use placeholder if no currentTable, or use currentTable
+  const imageToDisplay = currentTable || PLACEHOLDER_IMAGES[currentPlaceholderIndex];
 
   return (
     <Card className="p-4 glass-card">
       <img
-        src={displayImage}
+        src={imageToDisplay}
         alt="Pool Table Setup"
         className="w-full h-auto rounded-lg"
         onError={handleImageError}
