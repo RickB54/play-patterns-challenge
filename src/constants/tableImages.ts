@@ -1,23 +1,23 @@
 export const tableImages = {
   easy: [
-    'https://dl.dropboxusercontent.com/scl/fi/2dj5k1aqm8k9wqwpzjq3d/easy1.png',
-    'https://dl.dropboxusercontent.com/scl/fi/3dj5k1aqm8k9wqwpzjq3d/easy2.png',
-    'https://dl.dropboxusercontent.com/scl/fi/4dj5k1aqm8k9wqwpzjq3d/easy3.png'
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7',
+    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158'
   ],
   intermediate: [
-    'https://dl.dropboxusercontent.com/scl/fi/5dj5k1aqm8k9wqwpzjq3d/intermediate1.png',
-    'https://dl.dropboxusercontent.com/scl/fi/6dj5k1aqm8k9wqwpzjq3d/intermediate2.png',
-    'https://dl.dropboxusercontent.com/scl/fi/7dj5k1aqm8k9wqwpzjq3d/intermediate3.png'
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7',
+    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158'
   ],
   advanced: [
-    'https://dl.dropboxusercontent.com/scl/fi/8dj5k1aqm8k9wqwpzjq3d/advanced1.png',
-    'https://dl.dropboxusercontent.com/scl/fi/9dj5k1aqm8k9wqwpzjq3d/advanced2.png',
-    'https://dl.dropboxusercontent.com/scl/fi/0dj5k1aqm8k9wqwpzjq3d/advanced3.png'
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7',
+    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158'
   ],
   expert: [
-    'https://dl.dropboxusercontent.com/scl/fi/1dj5k1aqm8k9wqwpzjq3d/expert1.png',
-    'https://dl.dropboxusercontent.com/scl/fi/2dj5k1aqm8k9wqwpzjq3d/expert2.png',
-    'https://dl.dropboxusercontent.com/scl/fi/3dj5k1aqm8k9wqwpzjq3d/expert3.png'
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7',
+    'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158'
   ]
 };
 
