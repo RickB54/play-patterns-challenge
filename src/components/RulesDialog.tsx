@@ -22,7 +22,7 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
           <li>• Play Game: Hit the "Play Game" button to initialize the game.</li>
           <li>• Set Players: Choose the number of players participating. Input the number and press the "Set Players" button to confirm.</li>
           <li>• Select Level of Difficulty: From the dropdown menu, select your desired skill level, ranging from Easy to Expert.</li>
-          <li>• Start Round: Press "Start Round" to begin. Place the balls on your pool table matching the displayed setup.</li>
+          <li>• Start Round: Press "Start Round" to begin. Place the balls on your pool table matching the displayed setup. Place the balls on the pool table in the exact intersecting diamond locations as specified in the pool table setup picture.</li>
         </ul>
       </>
     ),
