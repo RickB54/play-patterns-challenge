@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Settings } from "lucide-react";
 import {
   Select,
@@ -14,7 +14,6 @@ import PoolTableImage from "@/components/PoolTableImage";
 
 const Game = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { 
     difficulty: storedDifficulty, 
     usedTables, 
@@ -57,34 +56,29 @@ const Game = () => {
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-      <PoolTableImage 
-        currentTable={currentTableLocal} 
-        setCurrentTableLocal={setCurrentTableLocal}
-      />
-
       {isPracticeMode ? (
-        <div className="mt-6 space-y-4">
-          <Select value={difficulty} onValueChange={setDifficulty}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select difficulty" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="easy">Easy</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="advanced">Advanced</SelectItem>
-              <SelectItem value="expert">Expert</SelectItem>
-            </SelectContent>
-          </Select>
-          <button 
-            onClick={handleSelectTable} 
-            className="w-full btn-secondary"
-            disabled={!difficulty}
-          >
-            Select Table
-          </button>
-        </div>
+        <>
+          <div className="flex-grow">
+            <Select value={difficulty} onValueChange={setDifficulty}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select difficulty" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="easy">Easy</SelectItem>
+                <SelectItem value="intermediate">Intermediate</SelectItem>
+                <SelectItem value="advanced">Advanced</SelectItem>
+                <SelectItem value="expert">Expert</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </>
       ) : (
         <>
+          <PoolTableImage 
+            currentTable={currentTableLocal} 
+            setCurrentTableLocal={setCurrentTableLocal}
+          />
+
           <p className="mt-6 text-center text-sm">
             Setup the pool table as shown in the diagram then 'Enter Score' after each
             player's turn is over.
