@@ -20,6 +20,7 @@ const Game = () => {
   const [showDifficulty, setShowDifficulty] = useState(!storedDifficulty);
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTable, setCurrentTableLocal] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (difficulty) {
@@ -27,6 +28,7 @@ const Game = () => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
+      setImageError(false); // Reset error state when trying new image
     }
   }, [difficulty]);
 
@@ -36,6 +38,7 @@ const Game = () => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
+      setImageError(false); // Reset error state when trying new image
       toast({
         title: "New Table Selected",
         description: `Difficulty: ${difficulty}`,
@@ -43,13 +46,24 @@ const Game = () => {
     }
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+    console.error("Failed to load image:", currentTable);
+    toast({
+      title: "Image Load Error",
+      description: "Failed to load table image. Using placeholder.",
+      variant: "destructive",
+    });
+  };
+
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <Card className="p-4 glass-card">
         <img
-          src={currentTable || "/placeholder.svg"}
+          src={imageError ? "/placeholder.svg" : (currentTable || "/placeholder.svg")}
           alt="Pool Table Setup"
           className="w-full h-auto rounded-lg"
+          onError={handleImageError}
         />
       </Card>
 
