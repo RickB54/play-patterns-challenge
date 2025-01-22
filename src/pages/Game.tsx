@@ -54,16 +54,17 @@ const Game = () => {
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
     
-    if (retryCount < 2) {
-      // Retry loading the image up to 2 times
+    // For Easy difficulty, we know there are only 3 images
+    const maxRetries = difficulty === 'easy' ? 0 : 2;
+    
+    if (retryCount < maxRetries) {
       setRetryCount(prev => prev + 1);
       setImageError(false);
       
-      // Add a small delay before retry
       setTimeout(() => {
         setCurrentTableLocal(currentTable);
       }, 1000);
-    } else if (!imageError) { // Only show error toast when finally falling back to placeholder
+    } else if (!imageError) {
       setImageError(true);
       toast({
         title: "Image Load Error",
