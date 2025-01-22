@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { RulesDialog } from "@/components/RulesDialog";
 import { useToast } from "@/components/ui/use-toast";
@@ -8,9 +8,9 @@ const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleEndRound = () => {
+  const handleEndGame = () => {
     toast({
-      title: "Round Ended",
+      title: "Game Ended",
       description: "Returning to home page",
     });
     navigate("/");
@@ -18,32 +18,33 @@ const Settings = () => {
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-      <div className="flex items-center mb-8">
+      <div className="flex items-center justify-between mb-6">
         <button onClick={() => navigate(-1)} className="p-2">
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-3xl font-bold text-center flex-1">Settings</h1>
+        <h1 className="text-2xl font-bold">Settings</h1>
+        <div className="w-10" />
       </div>
 
-      <Card className="p-6 glass-card space-y-4">
+      <Card className="p-4 space-y-4 glass-card">
         <RulesDialog>
           <button className="w-full btn-secondary">Rules of the Game</button>
         </RulesDialog>
-        
-        <button onClick={() => navigate("/game")} className="w-full btn-secondary">
+
+        <button onClick={() => navigate("/setup")} className="w-full btn-secondary">
           Start New Round
         </button>
-        
+
         <button onClick={() => navigate("/score")} className="w-full btn-secondary">
           See Score
         </button>
-        
+
         <button onClick={() => navigate("/game")} className="w-full btn-secondary">
           Practice a Table
         </button>
         
-        <button onClick={handleEndRound} className="w-full btn-destructive">
-          End Round
+        <button onClick={handleEndGame} className="w-full btn-destructive">
+          End Game
         </button>
       </Card>
     </div>

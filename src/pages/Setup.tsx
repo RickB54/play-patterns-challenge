@@ -9,11 +9,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const Setup = () => {
   const navigate = useNavigate();
   const [players, setPlayers] = useState("1");
   const [difficulty, setDifficulty] = useState("");
+  const [playerNames, setPlayerNames] = useState<string[]>([]);
+
+  const handlePlayerCountChange = (value: string) => {
+    setPlayers(value);
+    setPlayerNames(Array(parseInt(value)).fill(""));
+  };
+
+  const handleNameChange = (index: number, name: string) => {
+    const newNames = [...playerNames];
+    newNames[index] = name;
+    setPlayerNames(newNames);
+  };
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -22,7 +35,7 @@ const Setup = () => {
       <Card className="p-6 glass-card space-y-6">
         <div className="space-y-2">
           <label className="block text-sm font-medium">Number of Players</label>
-          <Select value={players} onValueChange={setPlayers}>
+          <Select value={players} onValueChange={handlePlayerCountChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select players" />
             </SelectTrigger>
@@ -35,6 +48,20 @@ const Setup = () => {
             </SelectContent>
           </Select>
         </div>
+
+        {playerNames.length > 0 && (
+          <div className="space-y-4">
+            <label className="block text-sm font-medium">Player Names</label>
+            {playerNames.map((name, index) => (
+              <Input
+                key={index}
+                placeholder={`Player ${index + 1} name`}
+                value={name}
+                onChange={(e) => handleNameChange(index, e.target.value)}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="space-y-2">
           <label className="block text-sm font-medium">Level of Difficulty</label>
@@ -55,7 +82,7 @@ const Setup = () => {
       <button
         onClick={() => navigate("/game")}
         className="mt-8 w-full btn-primary"
-        disabled={!difficulty}
+        disabled={!difficulty || playerNames.some(name => !name.trim())}
       >
         Start Round
       </button>
