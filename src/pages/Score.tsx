@@ -3,25 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Minus, Plus } from "lucide-react";
+import { useGameStore } from "@/store/gameStore";
 
 const Score = () => {
   const navigate = useNavigate();
-  const [scores, setScores] = useState<number[]>(Array(8).fill(0));
-  const [playerNames] = useState<string[]>(["Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"]);
-  const activePlayers = 4; // This should be passed from the setup page later
+  const { playerCount, playerNames, scores, updateScore } = useGameStore();
 
   const handleScoreChange = (index: number, increment: boolean) => {
-    const newScores = [...scores];
-    if (increment) {
-      newScores[index] += 1;
-    } else if (newScores[index] > 0) {
-      newScores[index] -= 1;
-    }
-    setScores(newScores);
+    const newScore = increment ? scores[index] + 1 : Math.max(0, scores[index] - 1);
+    updateScore(index, newScore);
   };
 
   const getLayoutClass = () => {
-    if (activePlayers <= 4) {
+    if (playerCount <= 4) {
       return "flex flex-col space-y-4";
     }
     return "grid grid-cols-2 gap-4";
@@ -37,7 +31,7 @@ const Score = () => {
       </div>
 
       <div className={getLayoutClass()}>
-        {playerNames.slice(0, activePlayers).map((name, index) => (
+        {playerNames.slice(0, playerCount).map((name, index) => (
           <Card key={index} className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
             <div className="flex flex-col items-center space-y-2">
               <span className="text-lg font-medium text-purple-200">{name}</span>

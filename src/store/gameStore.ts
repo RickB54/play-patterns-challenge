@@ -11,6 +11,7 @@ interface GameState {
     advanced: string[];
     expert: string[];
   };
+  currentTable: string | null;
   setPlayerCount: (count: number) => void;
   setPlayerNames: (names: string[]) => void;
   updateScore: (playerIndex: number, score: number) => void;
@@ -18,6 +19,7 @@ interface GameState {
   resetGame: () => void;
   addUsedTable: (difficulty: string, tableUrl: string) => void;
   resetUsedTables: (difficulty: string) => void;
+  setCurrentTable: (tableUrl: string | null) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -25,6 +27,7 @@ export const useGameStore = create<GameState>((set) => ({
   playerNames: Array(8).fill('').map((_, i) => `Player ${i + 1}`),
   scores: Array(8).fill(0),
   difficulty: '',
+  currentTable: null,
   usedTables: {
     easy: [],
     intermediate: [],
@@ -47,7 +50,8 @@ export const useGameStore = create<GameState>((set) => ({
       intermediate: [],
       advanced: [],
       expert: [],
-    }
+    },
+    currentTable: null,
   }),
   addUsedTable: (difficulty, tableUrl) =>
     set((state) => ({
@@ -63,4 +67,5 @@ export const useGameStore = create<GameState>((set) => ({
         [difficulty.toLowerCase()]: []
       }
     })),
+  setCurrentTable: (tableUrl) => set({ currentTable: tableUrl }),
 }));
