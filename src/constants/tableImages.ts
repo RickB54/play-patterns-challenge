@@ -1,25 +1,25 @@
 export const tableImages = {
   easy: [
-    'https://i.imgur.com/1a2b3c4.png',
-    'https://i.imgur.com/2b3c4d5.png',
-    'https://i.imgur.com/3c4d5e6.png'
+    'https://images.unsplash.com/photo-1487887235947-a955ef187fcc',
+    'https://images.unsplash.com/photo-1483058712412-4245e9b90334',
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05'
   ],
   intermediate: [
-    'https://i.imgur.com/4d5e6f7.png',
-    'https://i.imgur.com/5e6f7g8.png',
-    'https://i.imgur.com/6f7g8h9.png',
-    'https://i.imgur.com/7g8h9i0.png',
-    'https://i.imgur.com/8h9i0j1.png'
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7',
+    'https://images.unsplash.com/photo-1483058712412-4245e9b90334',
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05',
+    'https://images.unsplash.com/photo-1487887235947-a955ef187fcc'
   ],
   advanced: [
-    'https://i.imgur.com/9i0j1k2.png',
-    'https://i.imgur.com/0j1k2l3.png',
-    'https://i.imgur.com/1k2l3m4.png'
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7',
+    'https://images.unsplash.com/photo-1483058712412-4245e9b90334'
   ],
   expert: [
-    'https://i.imgur.com/2l3m4n5.png',
-    'https://i.imgur.com/3m4n5o6.png',
-    'https://i.imgur.com/4n5o6p7.png'
+    'https://images.unsplash.com/photo-1487887235947-a955ef187fcc',
+    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05',
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b'
   ]
 };
 
