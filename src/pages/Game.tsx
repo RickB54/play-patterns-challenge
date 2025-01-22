@@ -52,10 +52,14 @@ const Game = () => {
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       {isPracticeMode ? (
-        <PracticeMode 
-          difficulty={difficulty}
-          setDifficulty={setDifficulty}
-        />
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
+            <PracticeMode 
+              difficulty={difficulty}
+              setDifficulty={setDifficulty}
+            />
+          </div>
+        </div>
       ) : (
         <>
           <PoolTableImage 
