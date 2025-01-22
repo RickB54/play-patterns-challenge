@@ -28,6 +28,8 @@ const Game = () => {
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(null);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
 
+  const isPracticeMode = playerCount === 1;
+
   useEffect(() => {
     const activePlayerScores = scores.slice(0, playerCount);
     const allHaveScored = activePlayerScores.every(score => score > 0);
@@ -59,16 +61,20 @@ const Game = () => {
         setCurrentTableLocal={setCurrentTableLocal}
       />
 
-      <p className="mt-6 text-center text-sm">
-        Setup the pool table as shown in the diagram then 'Enter Score' after each
-        player's turn is over.
-      </p>
+      {!isPracticeMode && (
+        <>
+          <p className="mt-6 text-center text-sm">
+            Setup the pool table as shown in the diagram then 'Enter Score' after each
+            player's turn is over.
+          </p>
 
-      <button onClick={() => navigate("/score")} className="mt-6 btn-primary">
-        Enter Score
-      </button>
+          <button onClick={() => navigate("/score")} className="mt-6 btn-primary">
+            Enter Score
+          </button>
+        </>
+      )}
 
-      {allScoresEntered && (
+      {(isPracticeMode || allScoresEntered) && (
         <div className="mt-6 space-y-4">
           <Select value={difficulty} onValueChange={setDifficulty}>
             <SelectTrigger>
