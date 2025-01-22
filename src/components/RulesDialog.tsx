@@ -44,6 +44,7 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
           <li>• Start New Round: Move to a new randomly selected pool table setup.</li>
           <li>• Settings: Adjust game settings or choose other options.</li>
           <li>• Rules: Review these rules anytime through settings.</li>
+          <li>• Winner's Circle: View final scores and rankings of all players.</li>
         </ul>
       </>
     ),
