@@ -30,6 +30,7 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
       <>
         <h3 className="font-bold mb-4">Flow of the Game:</h3>
         <ul className="space-y-2 text-sm">
+          <li>• Objective: The goal is to accumulate the highest score by pocketing balls successfully. In the event of a tie, players with the highest matching scores will play a tiebreaker round.</li>
           <li>• Enter Scores: After each player's turn, input their score. Each ball legally pocketed (except 8-ball) is 1 point. The 8-Ball is 2 points.</li>
           <li>• The Player's turn ends at the first missed ball.</li>
           <li>• Next Round: After all players complete their turns, select another pool table setup.</li>
