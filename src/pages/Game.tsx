@@ -62,24 +62,11 @@ const Game = () => {
         setCurrentTableLocal={setCurrentTableLocal}
       />
 
-      {!isPracticeMode && (
-        <>
-          <p className="mt-6 text-center text-sm">
-            Setup the pool table as shown in the diagram then 'Enter Score' after each
-            player's turn is over.
-          </p>
-
-          <button onClick={() => navigate("/score")} className="mt-6 btn-primary">
-            Enter Score
-          </button>
-        </>
-      )}
-
-      {(isPracticeMode || allScoresEntered) && (
+      {isPracticeMode ? (
         <div className="mt-6 space-y-4">
           <Select value={difficulty} onValueChange={setDifficulty}>
             <SelectTrigger>
-              <SelectValue placeholder="Select difficulty for next round" />
+              <SelectValue placeholder="Select difficulty" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="easy">Easy</SelectItem>
@@ -96,6 +83,40 @@ const Game = () => {
             Select Table
           </button>
         </div>
+      ) : (
+        <>
+          <p className="mt-6 text-center text-sm">
+            Setup the pool table as shown in the diagram then 'Enter Score' after each
+            player's turn is over.
+          </p>
+
+          <button onClick={() => navigate("/score")} className="mt-6 btn-primary">
+            Enter Score
+          </button>
+
+          {allScoresEntered && (
+            <div className="mt-6 space-y-4">
+              <Select value={difficulty} onValueChange={setDifficulty}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select difficulty for next round" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="easy">Easy</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                  <SelectItem value="expert">Expert</SelectItem>
+                </SelectContent>
+              </Select>
+              <button 
+                onClick={handleSelectTable} 
+                className="w-full btn-secondary"
+                disabled={!difficulty}
+              >
+                Select Table
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
