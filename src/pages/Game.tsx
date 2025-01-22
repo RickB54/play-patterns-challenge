@@ -5,7 +5,6 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
-import DifficultySelector from "@/components/game/DifficultySelector";
 import GameControls from "@/components/game/GameControls";
 
 const Game = () => {
@@ -80,19 +79,6 @@ const Game = () => {
         <div className="space-y-4">
           <button onClick={() => navigate("/score")} className="w-full btn-primary">
             Enter Score
-          </button>
-
-          <DifficultySelector 
-            difficulty={difficulty} 
-            setDifficulty={setDifficulty} 
-          />
-          
-          <button 
-            onClick={handleSelectTable} 
-            className="w-full btn-secondary"
-            disabled={!difficulty}
-          >
-            Select Table
           </button>
         </div>
       </div>
