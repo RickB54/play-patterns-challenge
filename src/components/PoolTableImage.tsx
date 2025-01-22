@@ -13,13 +13,17 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
 
   const handleImageError = () => {
     console.log("Image failed to load:", currentTable);
-    setCurrentTableLocal(PLACEHOLDER_IMAGE);
     
-    toast({
-      title: "Image Loading",
-      description: "Using default image while table image loads.",
-      variant: "default",
-    });
+    // Only show toast and update if we're not already showing the placeholder
+    if (currentTable !== PLACEHOLDER_IMAGE) {
+      setCurrentTableLocal(PLACEHOLDER_IMAGE);
+      
+      toast({
+        title: "Image Loading",
+        description: "Using default image while table image loads.",
+        variant: "default",
+      });
+    }
   };
 
   return (
