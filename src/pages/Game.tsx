@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Settings } from "lucide-react";
 import {
   Select,
@@ -14,6 +14,7 @@ import PoolTableImage from "@/components/PoolTableImage";
 
 const Game = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { 
     difficulty: storedDifficulty, 
     usedTables, 
