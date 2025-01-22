@@ -2,9 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { RulesDialog } from "@/components/RulesDialog";
+import { useToast } from "@/components/ui/use-toast";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleEndRound = () => {
+    toast({
+      title: "Round Ended",
+      description: "Returning to home page",
+    });
+    navigate("/");
+  };
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -32,7 +42,7 @@ const Settings = () => {
           Practice a Table
         </button>
         
-        <button className="w-full btn-destructive">
+        <button onClick={handleEndRound} className="w-full btn-destructive">
           End Round
         </button>
       </Card>
