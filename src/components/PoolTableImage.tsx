@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const PLACEHOLDER_IMAGES = [
   "https://images.unsplash.com/photo-1487887235947-a955ef187fcc",
@@ -16,19 +15,10 @@ interface PoolTableImageProps {
 
 const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImageProps) => {
   const { toast } = useToast();
-  const [imageError, setImageError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
-
-  useEffect(() => {
-    setIsLoading(true);
-    setImageError(false);
-  }, [currentTable]);
 
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
-    setImageError(true);
-    setIsLoading(false);
     setCurrentPlaceholderIndex(prev => (prev + 1) % PLACEHOLDER_IMAGES.length);
     
     toast({
@@ -38,29 +28,17 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
     });
   };
 
-  const handleImageLoad = () => {
-    setIsLoading(false);
-    setImageError(false);
-  };
+  const displayImage = !currentTable ? PLACEHOLDER_IMAGES[currentPlaceholderIndex] : currentTable;
 
-  // If no currentTable or error loading image, show placeholder
-  const displayImage = imageError || !currentTable 
-    ? PLACEHOLDER_IMAGES[currentPlaceholderIndex]
-    : currentTable;
-
-  console.log("Displaying image:", displayImage, "Loading:", isLoading, "Error:", imageError);
+  console.log("Displaying image:", displayImage);
 
   return (
-    <Card className="p-4 glass-card relative">
-      {isLoading && (
-        <Skeleton className="w-full h-64 rounded-lg absolute top-4 left-4" />
-      )}
+    <Card className="p-4 glass-card">
       <img
         src={displayImage}
         alt="Pool Table Setup"
-        className={`w-full h-auto rounded-lg ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        className="w-full h-auto rounded-lg"
         onError={handleImageError}
-        onLoad={handleImageLoad}
       />
     </Card>
   );
