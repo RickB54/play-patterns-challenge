@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 
-const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b";
+const PLACEHOLDER_IMAGE = "/placeholder.svg";
 
 interface PoolTableImageProps {
   currentTable: string | null;
@@ -12,17 +12,22 @@ interface PoolTableImageProps {
 const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImageProps) => {
   const { toast } = useToast();
   const [hasError, setHasError] = useState(false);
+  const [imageUrl, setImageUrl] = useState(currentTable || PLACEHOLDER_IMAGE);
 
   useEffect(() => {
-    // Reset error state when currentTable changes
-    setHasError(false);
+    if (currentTable) {
+      setHasError(false);
+      setImageUrl(currentTable);
+      console.log("Current table updated:", currentTable);
+    }
   }, [currentTable]);
 
   const handleImageError = () => {
-    console.log("Image failed to load:", currentTable);
+    console.log("Image failed to load:", imageUrl);
     
-    if (!hasError && currentTable !== PLACEHOLDER_IMAGE) {
+    if (!hasError) {
       setHasError(true);
+      setImageUrl(PLACEHOLDER_IMAGE);
       setCurrentTableLocal(PLACEHOLDER_IMAGE);
       
       toast({
@@ -36,7 +41,7 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   return (
     <Card className="p-4 glass-card">
       <img
-        src={hasError ? PLACEHOLDER_IMAGE : (currentTable || PLACEHOLDER_IMAGE)}
+        src={imageUrl}
         alt="Pool Table Setup"
         className="w-full h-auto rounded-lg"
         onError={handleImageError}
