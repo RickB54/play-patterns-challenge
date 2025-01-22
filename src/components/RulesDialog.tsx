@@ -43,7 +43,7 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
         <ul className="space-y-2 text-sm">
           <li>• Start New Round: Move to a new randomly selected pool table setup.</li>
           <li>• Settings: Adjust game settings or choose other options.</li>
-          <li>• Reset Game: Start over (clears all points and registries).</li>
+          <li>• End Game: This ends the game and sends you to the Winner's Circle. Press Leave Game or go back into the game by pressing Continue Playing.</li>
           <li>• Rules: Review these rules anytime through settings.</li>
         </ul>
       </>
