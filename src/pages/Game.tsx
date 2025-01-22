@@ -13,8 +13,12 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import { useToast } from "@/hooks/use-toast";
 
-// Use a more reliable fallback image
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1461749280684-dccba630e2f6";
+// Use multiple placeholder images for better testing
+const PLACEHOLDER_IMAGES = [
+  "https://images.unsplash.com/photo-1487887235947-a955ef187fcc",
+  "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
+  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"
+];
 
 const Game = () => {
   const navigate = useNavigate();
@@ -34,6 +38,7 @@ const Game = () => {
   const [imageError, setImageError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
+  const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
 
   useEffect(() => {
     const activePlayerScores = scores.slice(0, playerCount);
@@ -70,19 +75,19 @@ const Game = () => {
   const handleImageError = () => {
     console.error("Failed to load image:", currentTable);
     
-    // Reduced retry attempts to minimize glitchy appearance
     const maxRetries = 1;
     
     if (retryCount < maxRetries) {
       setRetryCount(prev => prev + 1);
       setImageError(false);
       
-      // Add a longer delay between retries
       setTimeout(() => {
         setCurrentTableLocal(currentTable);
       }, 2000);
     } else if (!imageError) {
       setImageError(true);
+      // Cycle through placeholder images
+      setCurrentPlaceholderIndex(prev => (prev + 1) % PLACEHOLDER_IMAGES.length);
       toast({
         title: "Image Load Error",
         description: "Using placeholder image while table loads.",
@@ -95,7 +100,7 @@ const Game = () => {
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <Card className="p-4 glass-card">
         <img
-          src={imageError ? FALLBACK_IMAGE : (currentTable || FALLBACK_IMAGE)}
+          src={imageError ? PLACEHOLDER_IMAGES[currentPlaceholderIndex] : (currentTable || PLACEHOLDER_IMAGES[0])}
           alt="Pool Table Setup"
           className="w-full h-auto rounded-lg"
           onError={handleImageError}
