@@ -76,11 +76,12 @@ const Game = () => {
             setCurrentTableLocal={setCurrentTableLocal}
           />
         )}
-        <div className="space-y-4">
-          <button onClick={() => navigate("/score")} className="w-full btn-primary">
-            Enter Score
-          </button>
-        </div>
+        <GameControls
+          allScoresEntered={allScoresEntered}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          handleSelectTable={handleSelectTable}
+        />
       </div>
 
       <button
