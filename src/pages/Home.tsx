@@ -6,7 +6,6 @@ import { useToast } from '@/hooks/use-toast';
 const Home = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isCreating, setIsCreating] = useState(false);
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 text-center">
