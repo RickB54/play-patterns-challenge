@@ -1,26 +1,26 @@
 // Define static URLs for table images
 export const tableImages = {
   easy: [
-    'https://images.unsplash.com/photo-1461010083959-8a5727311252',
-    'https://images.unsplash.com/photo-1473976345543-9ffc928e648d',
-    'https://images.unsplash.com/photo-1580657018950-c7f7d6a6d990'
+    'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1518770660439-4636190af475'
   ],
   intermediate: [
-    'https://images.unsplash.com/photo-1505662695181-d4b60363d2a3',
-    'https://images.unsplash.com/photo-1518169888978-77a43af0f792',
-    'https://images.unsplash.com/photo-1505662695181-d4b60363d2a3',
-    'https://images.unsplash.com/photo-1518169888978-77a43af0f792',
-    'https://images.unsplash.com/photo-1505662695181-d4b60363d2a3'
+    'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1518770660439-4636190af475',
+    'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b'
   ],
   advanced: [
-    'https://images.unsplash.com/photo-1518169888978-77a43af0f792',
-    'https://images.unsplash.com/photo-1505662695181-d4b60363d2a3',
-    'https://images.unsplash.com/photo-1518169888978-77a43af0f792'
+    'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1518770660439-4636190af475'
   ],
   expert: [
-    'https://images.unsplash.com/photo-1505662695181-d4b60363d2a3',
-    'https://images.unsplash.com/photo-1518169888978-77a43af0f792',
-    'https://images.unsplash.com/photo-1505662695181-d4b60363d2a3'
+    'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+    'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+    'https://images.unsplash.com/photo-1518770660439-4636190af475'
   ]
 };
 
