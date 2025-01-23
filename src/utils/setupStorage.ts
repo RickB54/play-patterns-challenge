@@ -4,22 +4,23 @@ export const createPoolTablesBucket = async () => {
   try {
     console.log('Checking bucket status...');
     
-    // Check if bucket exists and is accessible
-    const { data: bucket, error: getBucketError } = await supabase
+    const { data: buckets, error: listError } = await supabase
       .storage
-      .getBucket('pool-tables');
+      .listBuckets();
 
-    if (getBucketError) {
-      console.error('Error accessing bucket:', getBucketError);
+    if (listError) {
+      console.error('Error listing buckets:', listError);
       return false;
     }
 
-    if (bucket) {
-      console.log('Bucket exists and is accessible:', bucket);
+    const bucketExists = buckets?.some(bucket => bucket.name === 'pool-tables');
+
+    if (bucketExists) {
+      console.log('Bucket exists:', bucketExists);
       return true;
     }
 
-    console.log('Bucket not found or not accessible');
+    console.log('Bucket not found');
     return false;
   } catch (error) {
     console.error('Detailed error:', error);
