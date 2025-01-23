@@ -2,43 +2,50 @@ import { supabase } from '@/lib/supabase';
 
 export const createPoolTablesBucket = async () => {
   try {
-    // First, list all buckets
-    const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+    console.log('Starting bucket creation process...');
     
-    if (listError) {
-      console.error('Error listing buckets:', listError);
-      return false;
+    // First check if we can connect to Supabase
+    const { data: testConnection, error: connectionError } = await supabase
+      .from('_dummy_query_for_connection_test')
+      .select('*')
+      .limit(1);
+      
+    if (connectionError && connectionError.message.includes('authentication')) {
+      console.error('Supabase authentication error:', connectionError);
+      throw new Error('Failed to authenticate with Supabase');
     }
 
-    // Delete all existing buckets
-    if (buckets && buckets.length > 0) {
-      console.log('Found existing buckets:', buckets.map(b => b.name));
-      
-      for (const bucket of buckets) {
-        const { error: deleteError } = await supabase.storage.deleteBucket(bucket.name);
-        if (deleteError) {
-          console.error(`Error deleting bucket ${bucket.name}:`, deleteError);
-        } else {
-          console.log(`Successfully deleted bucket: ${bucket.name}`);
-        }
-      }
+    // Check if bucket already exists
+    const { data: existingBucket, error: getBucketError } = await supabase
+      .storage
+      .getBucket('pool-tables');
+
+    if (existingBucket) {
+      console.log('Bucket already exists:', existingBucket);
+      return true;
+    }
+
+    if (getBucketError && !getBucketError.message.includes('not found')) {
+      console.error('Error checking bucket:', getBucketError);
+      throw getBucketError;
     }
 
     // Create new bucket
     const { data, error } = await supabase.storage.createBucket('pool-tables', {
       public: true,
       fileSizeLimit: 5242880, // 5MB limit per file
+      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg']
     });
 
     if (error) {
-      console.error('Error creating bucket:', error.message);
-      return false;
+      console.error('Error creating bucket:', error);
+      throw error;
     }
 
     console.log('Bucket created successfully:', data);
     return true;
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Detailed error:', error);
     return false;
   }
 };
