@@ -51,27 +51,53 @@ const Home = () => {
       try {
         // Add timestamp to filename to prevent conflicts
         const timestamp = new Date().getTime();
-        const fileName = `${timestamp}-${file.name}`;
+        const sanitizedFileName = file.name.replace(/[^\x00-\x7F]/g, ''); // Remove non-ASCII characters
+        const fileName = `${timestamp}-${sanitizedFileName}`;
         
         console.log(`Uploading to Supabase: ${fileName}`);
         
+        // First, check if we can connect to Supabase
+        const { data: bucketExists } = await supabase
+          .storage
+          .getBucket('pool-tables');
+
+        if (!bucketExists) {
+          console.error('Bucket does not exist or is not accessible');
+          throw new Error('Storage bucket not accessible');
+        }
+
         const { data, error } = await supabase.storage
           .from('pool-tables')
           .upload(fileName, file, {
             cacheControl: '3600',
-            upsert: true // Changed to true to allow overwriting
+            upsert: true,
+            contentType: file.type
           });
 
         if (error) {
           console.error('Supabase upload error:', error);
           failedFiles.push(`${file.name} (${error.message})`);
+          
+          // Check if it's an authentication error
+          if (error.message.includes('Authentication')) {
+            toast({
+              title: "Authentication Error",
+              description: "Please make sure you're logged in to upload files.",
+              variant: "destructive",
+            });
+            break;
+          }
         } else {
           console.log('Upload successful:', data);
+          const { data: publicUrl } = supabase.storage
+            .from('pool-tables')
+            .getPublicUrl(fileName);
+          console.log('Public URL:', publicUrl);
           uploadedFiles.push(file.name);
         }
       } catch (error) {
         console.error('Upload error:', error);
-        failedFiles.push(`${file.name} (network error)`);
+        failedFiles.push(`${file.name} (${error.message || 'network error'})`);
       }
 
       // Add a small delay between uploads
