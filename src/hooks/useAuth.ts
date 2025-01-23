@@ -8,9 +8,13 @@ export function useAuth() {
 
   useEffect(() => {
     // Get initial session
-    const { data: { session } } = supabase.auth.getSession();
-    setUser(session?.user ?? null);
-    setLoading(false);
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoading(false);
+    };
+
+    getInitialSession();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
