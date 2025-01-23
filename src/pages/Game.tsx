@@ -6,7 +6,6 @@ import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
 import DifficultySelector from "@/components/game/DifficultySelector";
-import GameControls from "@/components/game/GameControls";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -16,12 +15,13 @@ const Game = () => {
     addUsedTable, 
     setCurrentTable,
     playerCount,
-    scores 
+    scores,
+    currentTable 
   } = useGameStore();
   
   const [showDifficulty, setShowDifficulty] = useState(!storedDifficulty);
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
-  const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(null);
+  const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
@@ -31,6 +31,13 @@ const Game = () => {
     const allHaveScored = activePlayerScores.every(score => score > 0);
     setAllScoresEntered(allHaveScored);
   }, [scores, playerCount]);
+
+  useEffect(() => {
+    // If there's a currentTable in the store but not locally, set it
+    if (currentTable && !currentTableLocal) {
+      setCurrentTableLocal(currentTable);
+    }
+  }, [currentTable]);
 
   const handleSelectTable = () => {
     if (difficulty) {
@@ -70,23 +77,28 @@ const Game = () => {
             setCurrentTableLocal={setCurrentTableLocal}
           />
         )}
+        
         <div className="space-y-4">
           <button onClick={() => navigate("/score")} className="w-full btn-primary">
             Enter Score
           </button>
 
-          <DifficultySelector 
-            difficulty={difficulty} 
-            setDifficulty={setDifficulty} 
-          />
-          
-          <button 
-            onClick={handleSelectTable} 
-            className="w-full btn-secondary"
-            disabled={!difficulty}
-          >
-            Select Table
-          </button>
+          {!currentTableLocal && (
+            <>
+              <DifficultySelector 
+                difficulty={difficulty} 
+                setDifficulty={setDifficulty} 
+              />
+              
+              <button 
+                onClick={handleSelectTable} 
+                className="w-full btn-secondary"
+                disabled={!difficulty}
+              >
+                Select Table
+              </button>
+            </>
+          )}
         </div>
       </div>
 
