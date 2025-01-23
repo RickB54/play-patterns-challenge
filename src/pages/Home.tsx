@@ -35,14 +35,28 @@ const Home = () => {
     if (!files || files.length === 0) return;
 
     setIsUploading(true);
-    const uploadedFiles = [];
-    const failedFiles = [];
+    const uploadedFiles: string[] = [];
+    const failedFiles: string[] = [];
+    const maxFileSize = 5 * 1024 * 1024; // 5MB
 
-    for (const file of files) {
+    for (const file of Array.from(files)) {
+      // Check file size
+      if (file.size > maxFileSize) {
+        failedFiles.push(`${file.name} (exceeds 5MB limit)`);
+        continue;
+      }
+
       try {
+        // Add timestamp to filename to prevent conflicts
+        const timestamp = new Date().getTime();
+        const fileName = `${timestamp}-${file.name}`;
+        
         const { error } = await supabase.storage
           .from('pool-tables')
-          .upload(file.name, file);
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
         if (error) {
           console.error('Error uploading file:', error);
@@ -54,14 +68,25 @@ const Home = () => {
         console.error('Error:', error);
         failedFiles.push(file.name);
       }
+
+      // Add a small delay between uploads
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     setIsUploading(false);
 
-    if (uploadedFiles.length > 0) {
+    if (uploadedFiles.length > 0 || failedFiles.length > 0) {
+      let description = '';
+      if (uploadedFiles.length > 0) {
+        description += `Successfully uploaded ${uploadedFiles.length} files. `;
+      }
+      if (failedFiles.length > 0) {
+        description += `Failed to upload: ${failedFiles.join(', ')}`;
+      }
+
       toast({
-        title: "Upload Complete",
-        description: `Successfully uploaded ${uploadedFiles.length} files.${failedFiles.length > 0 ? ` Failed to upload ${failedFiles.length} files.` : ''}`,
+        title: uploadedFiles.length > 0 ? "Upload Complete" : "Upload Failed",
+        description,
         variant: uploadedFiles.length > 0 ? "default" : "destructive",
       });
     }
