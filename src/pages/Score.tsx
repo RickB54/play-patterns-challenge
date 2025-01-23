@@ -30,10 +30,10 @@ const Score = () => {
       </div>
 
       <div className={getLayoutClass()}>
-        {playerNames.slice(0, playerCount).map((name, index) => (
+        {Array.from({ length: playerCount }).map((_, index) => (
           <Card key={index} className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
             <div className="flex flex-col items-center space-y-2">
-              <span className="text-lg font-medium text-purple-200">{name}</span>
+              <span className="text-lg font-medium text-purple-200">{playerNames[index]}</span>
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => handleScoreChange(index, false)}
