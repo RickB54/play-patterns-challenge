@@ -40,11 +40,17 @@ const Home = () => {
     const maxFileSize = 5 * 1024 * 1024; // 5MB
 
     for (const file of Array.from(files)) {
-      console.log(`Attempting to upload file: ${file.name}, size: ${file.size} bytes`);
+      console.log(`Attempting to upload file: ${file.name}, size: ${file.size} bytes, type: ${file.type}`);
       
-      // Check file size
+      // Check file size and type
       if (file.size > maxFileSize) {
         failedFiles.push(`${file.name} (exceeds 5MB limit)`);
+        continue;
+      }
+
+      // Verify it's an image file
+      if (!file.type.startsWith('image/')) {
+        failedFiles.push(`${file.name} (not an image file)`);
         continue;
       }
 
@@ -71,7 +77,7 @@ const Home = () => {
           .upload(fileName, file, {
             cacheControl: '3600',
             upsert: true,
-            contentType: file.type
+            contentType: 'image/png'  // Explicitly set content type for PNG
           });
 
         if (error) {
