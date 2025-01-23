@@ -4,17 +4,6 @@ export const createPoolTablesBucket = async () => {
   try {
     console.log('Starting bucket creation process...');
     
-    // First check if we can connect to Supabase
-    const { data: testConnection, error: connectionError } = await supabase
-      .from('_dummy_query_for_connection_test')
-      .select('*')
-      .limit(1);
-      
-    if (connectionError && connectionError.message.includes('authentication')) {
-      console.error('Supabase authentication error:', connectionError);
-      throw new Error('Failed to authenticate with Supabase');
-    }
-
     // Check if bucket already exists
     const { data: existingBucket, error: getBucketError } = await supabase
       .storage
