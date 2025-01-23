@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { createPoolTablesBucket } from '@/utils/setupStorage';
+import { supabase } from '@/lib/supabase';
 
 const Home = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isCreating, setIsCreating] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleCreateBucket = async () => {
     setIsCreating(true);
@@ -24,6 +26,43 @@ const Home = () => {
         title: "Error",
         description: "Failed to create bucket. Please check console for details.",
         variant: "destructive",
+      });
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    const uploadedFiles = [];
+    const failedFiles = [];
+
+    for (const file of files) {
+      try {
+        const { error } = await supabase.storage
+          .from('pool-tables')
+          .upload(file.name, file);
+
+        if (error) {
+          console.error('Error uploading file:', error);
+          failedFiles.push(file.name);
+        } else {
+          uploadedFiles.push(file.name);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        failedFiles.push(file.name);
+      }
+    }
+
+    setIsUploading(false);
+
+    if (uploadedFiles.length > 0) {
+      toast({
+        title: "Upload Complete",
+        description: `Successfully uploaded ${uploadedFiles.length} files.${failedFiles.length > 0 ? ` Failed to upload ${failedFiles.length} files.` : ''}`,
+        variant: uploadedFiles.length > 0 ? "default" : "destructive",
       });
     }
   };
@@ -68,6 +107,26 @@ const Home = () => {
         >
           {isCreating ? 'Creating Bucket...' : 'Create Pool Tables Bucket'}
         </Button>
+
+        <div className="mt-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Upload Pool Table Images
+          </label>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileUpload}
+            disabled={isUploading}
+            className="block w-full text-sm text-gray-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100"
+          />
+          {isUploading && <p className="mt-2 text-sm text-gray-500">Uploading...</p>}
+        </div>
       </div>
     </div>
   );
