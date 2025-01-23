@@ -2,21 +2,15 @@ import { supabase } from '@/lib/supabase';
 
 export const createPoolTablesBucket = async () => {
   try {
-    // First check if bucket exists
-    const { data: existingBucket, error: checkError } = await supabase
-      .storage
-      .getBucket('pool-tables');
-
-    if (existingBucket) {
-      console.log('Bucket already exists:', existingBucket);
-      return true;
+    // First try to delete any existing bucket
+    const { error: deleteError } = await supabase.storage.deleteBucket('pool-tables');
+    if (deleteError) {
+      console.log('Error deleting bucket or bucket does not exist:', deleteError);
+    } else {
+      console.log('Successfully deleted existing bucket');
     }
 
-    if (checkError) {
-      console.log('Error checking bucket:', checkError);
-    }
-
-    // Create bucket if it doesn't exist
+    // Create new bucket
     const { data, error } = await supabase.storage.createBucket('pool-tables', {
       public: true,
       fileSizeLimit: 5242880, // 5MB limit per file
