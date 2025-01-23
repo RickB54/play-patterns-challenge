@@ -40,6 +40,8 @@ const Home = () => {
     const maxFileSize = 5 * 1024 * 1024; // 5MB
 
     for (const file of Array.from(files)) {
+      console.log(`Attempting to upload file: ${file.name}, size: ${file.size} bytes`);
+      
       // Check file size
       if (file.size > maxFileSize) {
         failedFiles.push(`${file.name} (exceeds 5MB limit)`);
@@ -51,22 +53,25 @@ const Home = () => {
         const timestamp = new Date().getTime();
         const fileName = `${timestamp}-${file.name}`;
         
-        const { error } = await supabase.storage
+        console.log(`Uploading to Supabase: ${fileName}`);
+        
+        const { data, error } = await supabase.storage
           .from('pool-tables')
           .upload(fileName, file, {
             cacheControl: '3600',
-            upsert: false
+            upsert: true // Changed to true to allow overwriting
           });
 
         if (error) {
-          console.error('Error uploading file:', error);
-          failedFiles.push(file.name);
+          console.error('Supabase upload error:', error);
+          failedFiles.push(`${file.name} (${error.message})`);
         } else {
+          console.log('Upload successful:', data);
           uploadedFiles.push(file.name);
         }
       } catch (error) {
-        console.error('Error:', error);
-        failedFiles.push(file.name);
+        console.error('Upload error:', error);
+        failedFiles.push(`${file.name} (network error)`);
       }
 
       // Add a small delay between uploads
