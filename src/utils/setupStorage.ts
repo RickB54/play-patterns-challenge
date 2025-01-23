@@ -2,12 +2,26 @@ import { supabase } from '@/lib/supabase';
 
 export const createPoolTablesBucket = async () => {
   try {
-    // First try to delete any existing bucket
-    const { error: deleteError } = await supabase.storage.deleteBucket('pool-tables');
-    if (deleteError) {
-      console.log('Error deleting bucket or bucket does not exist:', deleteError);
-    } else {
-      console.log('Successfully deleted existing bucket');
+    // First, list all buckets
+    const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+    
+    if (listError) {
+      console.error('Error listing buckets:', listError);
+      return false;
+    }
+
+    // Delete all existing buckets
+    if (buckets && buckets.length > 0) {
+      console.log('Found existing buckets:', buckets.map(b => b.name));
+      
+      for (const bucket of buckets) {
+        const { error: deleteError } = await supabase.storage.deleteBucket(bucket.name);
+        if (deleteError) {
+          console.error(`Error deleting bucket ${bucket.name}:`, deleteError);
+        } else {
+          console.log(`Successfully deleted bucket: ${bucket.name}`);
+        }
+      }
     }
 
     // Create new bucket
