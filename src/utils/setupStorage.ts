@@ -2,37 +2,25 @@ import { supabase } from '@/lib/supabase';
 
 export const createPoolTablesBucket = async () => {
   try {
-    console.log('Starting bucket creation process...');
+    console.log('Checking bucket status...');
     
-    // Check if bucket already exists
-    const { data: existingBucket, error: getBucketError } = await supabase
+    // Check if bucket exists and is accessible
+    const { data: bucket, error: getBucketError } = await supabase
       .storage
       .getBucket('pool-tables');
 
-    if (existingBucket) {
-      console.log('Bucket already exists:', existingBucket);
+    if (getBucketError) {
+      console.error('Error accessing bucket:', getBucketError);
+      return false;
+    }
+
+    if (bucket) {
+      console.log('Bucket exists and is accessible:', bucket);
       return true;
     }
 
-    if (getBucketError && !getBucketError.message.includes('not found')) {
-      console.error('Error checking bucket:', getBucketError);
-      throw getBucketError;
-    }
-
-    // Create new bucket
-    const { data, error } = await supabase.storage.createBucket('pool-tables', {
-      public: true,
-      fileSizeLimit: 5242880, // 5MB limit per file
-      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg']
-    });
-
-    if (error) {
-      console.error('Error creating bucket:', error);
-      throw error;
-    }
-
-    console.log('Bucket created successfully:', data);
-    return true;
+    console.log('Bucket not found or not accessible');
+    return false;
   } catch (error) {
     console.error('Detailed error:', error);
     return false;
