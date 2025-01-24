@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DifficultySelector from "./DifficultySelector";
 
@@ -22,7 +23,7 @@ const GameControls = ({
         Enter Score
       </button>
 
-      {allScoresEntered && (
+      {allScoresEntered && !difficulty && (
         <>
           <DifficultySelector 
             difficulty={difficulty} 
