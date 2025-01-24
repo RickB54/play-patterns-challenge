@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DifficultySelector from "./DifficultySelector";
 
@@ -29,14 +28,13 @@ const GameControls = ({
             difficulty={difficulty} 
             setDifficulty={setDifficulty} 
           />
-          {difficulty && (
-            <button 
-              onClick={handleSelectTable} 
-              className="w-full btn-secondary"
-            >
-              Select Table
-            </button>
-          )}
+          <button 
+            onClick={handleSelectTable} 
+            className="w-full btn-secondary"
+            disabled={!difficulty}
+          >
+            Select Table
+          </button>
         </>
       )}
     </div>

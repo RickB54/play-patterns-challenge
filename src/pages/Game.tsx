@@ -5,21 +5,10 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
-import GameControls from "@/components/game/GameControls";
-import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import DifficultySelector from "@/components/game/DifficultySelector";
 
 const Game = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { 
     difficulty: storedDifficulty, 
     usedTables, 
@@ -27,17 +16,13 @@ const Game = () => {
     setCurrentTable,
     playerCount,
     scores,
-    currentTable,
-    totalRounds,
-    currentRound,
-    incrementCurrentRound 
+    currentTable 
   } = useGameStore();
   
   const [showDifficulty, setShowDifficulty] = useState(!storedDifficulty);
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
-  const [showRoundEndDialog, setShowRoundEndDialog] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
 
@@ -45,13 +30,10 @@ const Game = () => {
     const activePlayerScores = scores.slice(0, playerCount);
     const allHaveScored = activePlayerScores.every(score => score > 0);
     setAllScoresEntered(allHaveScored);
-
-    if (allHaveScored && currentRound > totalRounds && playerCount > 1) {
-      setShowRoundEndDialog(true);
-    }
-  }, [scores, playerCount, currentRound, totalRounds]);
+  }, [scores, playerCount]);
 
   useEffect(() => {
+    // If there's a currentTable in the store but not locally, set it
     if (currentTable && !currentTableLocal) {
       setCurrentTableLocal(currentTable);
     }
@@ -63,14 +45,6 @@ const Game = () => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
-      
-      if (playerCount > 1) {
-        incrementCurrentRound();
-        toast({
-          title: `Round ${currentRound} of ${totalRounds}`,
-          description: `Starting new round...`,
-        });
-      }
     }
   };
 
@@ -104,29 +78,29 @@ const Game = () => {
           />
         )}
         
-        <GameControls 
-          allScoresEntered={allScoresEntered}
-          difficulty={difficulty}
-          setDifficulty={setDifficulty}
-          handleSelectTable={handleSelectTable}
-        />
-      </div>
+        <div className="space-y-4">
+          <button onClick={() => navigate("/score")} className="w-full btn-primary">
+            Enter Score
+          </button>
 
-      <AlertDialog open={showRoundEndDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Game Complete!</AlertDialogTitle>
-            <AlertDialogDescription>
-              You have completed all {totalRounds} rounds. Would you like to see the final scores?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => navigate("/winners")}>
-              View Final Scores
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+          {!currentTableLocal && (
+            <>
+              <DifficultySelector 
+                difficulty={difficulty} 
+                setDifficulty={setDifficulty} 
+              />
+              
+              <button 
+                onClick={handleSelectTable} 
+                className="w-full btn-secondary"
+                disabled={!difficulty}
+              >
+                Select Table
+              </button>
+            </>
+          )}
+        </div>
+      </div>
 
       <button
         onClick={() => navigate("/settings")}
