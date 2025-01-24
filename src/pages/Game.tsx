@@ -6,9 +6,20 @@ import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
 import DifficultySelector from "@/components/game/DifficultySelector";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Game = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { 
     difficulty: storedDifficulty, 
     usedTables, 
@@ -16,13 +27,17 @@ const Game = () => {
     setCurrentTable,
     playerCount,
     scores,
-    currentTable 
+    currentTable,
+    totalRounds,
+    currentRound,
+    incrementCurrentRound 
   } = useGameStore();
   
   const [showDifficulty, setShowDifficulty] = useState(!storedDifficulty);
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
+  const [showRoundEndDialog, setShowRoundEndDialog] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
 
@@ -30,10 +45,14 @@ const Game = () => {
     const activePlayerScores = scores.slice(0, playerCount);
     const allHaveScored = activePlayerScores.every(score => score > 0);
     setAllScoresEntered(allHaveScored);
-  }, [scores, playerCount]);
+
+    // Check if we've reached the round limit after all players have scored
+    if (allHaveScored && currentRound >= totalRounds && playerCount > 1) {
+      setShowRoundEndDialog(true);
+    }
+  }, [scores, playerCount, currentRound, totalRounds]);
 
   useEffect(() => {
-    // If there's a currentTable in the store but not locally, set it
     if (currentTable && !currentTableLocal) {
       setCurrentTableLocal(currentTable);
     }
@@ -45,6 +64,14 @@ const Game = () => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
+      
+      if (playerCount > 1) {
+        incrementCurrentRound();
+        toast({
+          title: `Round ${currentRound} of ${totalRounds}`,
+          description: `Starting new round...`,
+        });
+      }
     }
   };
 
@@ -101,6 +128,22 @@ const Game = () => {
           )}
         </div>
       </div>
+
+      <AlertDialog open={showRoundEndDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Game Complete!</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have completed all {totalRounds} rounds. Would you like to see the final scores?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => navigate("/winners")}>
+              View Final Scores
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <button
         onClick={() => navigate("/settings")}

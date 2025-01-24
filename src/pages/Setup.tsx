@@ -17,9 +17,10 @@ const Setup = () => {
   const location = useLocation();
   const isNewRound = location.state?.newRound;
   
-  const { setPlayerCount, setPlayerNames, setDifficulty } = useGameStore();
+  const { setPlayerCount, setPlayerNames, setDifficulty, setTotalRounds } = useGameStore();
   const [players, setPlayers] = useState("1");
   const [difficulty, setDifficultyLocal] = useState("");
+  const [rounds, setRounds] = useState("1");
   const [playerNames, setPlayerNamesLocal] = useState<string[]>([]);
 
   const handlePlayerCountChange = (value: string) => {
@@ -43,6 +44,7 @@ const Setup = () => {
 
   const handleStartRound = () => {
     setDifficulty(difficulty);
+    setTotalRounds(parseInt(rounds));
     navigate("/game");
   };
 
@@ -101,6 +103,24 @@ const Setup = () => {
             </SelectContent>
           </Select>
         </div>
+
+        {parseInt(players) > 1 && (
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Number of Rounds</label>
+            <Select value={rounds} onValueChange={setRounds}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select rounds" />
+              </SelectTrigger>
+              <SelectContent>
+                {[...Array(10)].map((_, i) => (
+                  <SelectItem key={i + 1} value={(i + 1).toString()}>
+                    {i + 1} Round{i > 0 ? "s" : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </Card>
 
       <button
