@@ -5,7 +5,7 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
-import DifficultySelector from "@/components/game/DifficultySelector";
+import GameControls from "@/components/game/GameControls";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -46,8 +46,8 @@ const Game = () => {
     const allHaveScored = activePlayerScores.every(score => score > 0);
     setAllScoresEntered(allHaveScored);
 
-    // Check if we've reached the round limit after all players have scored
-    if (allHaveScored && currentRound >= totalRounds && playerCount > 1) {
+    // Only show round end dialog when all players have scored AND we've completed all rounds
+    if (allHaveScored && currentRound > totalRounds && playerCount > 1) {
       setShowRoundEndDialog(true);
     }
   }, [scores, playerCount, currentRound, totalRounds]);
@@ -105,28 +105,12 @@ const Game = () => {
           />
         )}
         
-        <div className="space-y-4">
-          <button onClick={() => navigate("/score")} className="w-full btn-primary">
-            Enter Score
-          </button>
-
-          {!currentTableLocal && (
-            <>
-              <DifficultySelector 
-                difficulty={difficulty} 
-                setDifficulty={setDifficulty} 
-              />
-              
-              <button 
-                onClick={handleSelectTable} 
-                className="w-full btn-secondary"
-                disabled={!difficulty}
-              >
-                Select Table
-              </button>
-            </>
-          )}
-        </div>
+        <GameControls 
+          allScoresEntered={allScoresEntered}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          handleSelectTable={handleSelectTable}
+        />
       </div>
 
       <AlertDialog open={showRoundEndDialog}>
