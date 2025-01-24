@@ -23,19 +23,20 @@ const GameControls = ({
         Enter Score
       </button>
 
-      {allScoresEntered && !difficulty && (
+      {allScoresEntered && (
         <>
           <DifficultySelector 
             difficulty={difficulty} 
             setDifficulty={setDifficulty} 
           />
-          <button 
-            onClick={handleSelectTable} 
-            className="w-full btn-secondary"
-            disabled={!difficulty}
-          >
-            Select Table
-          </button>
+          {difficulty && (
+            <button 
+              onClick={handleSelectTable} 
+              className="w-full btn-secondary"
+            >
+              Select Table
+            </button>
+          )}
         </>
       )}
     </div>

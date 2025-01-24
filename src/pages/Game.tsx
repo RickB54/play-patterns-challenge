@@ -46,7 +46,6 @@ const Game = () => {
     const allHaveScored = activePlayerScores.every(score => score > 0);
     setAllScoresEntered(allHaveScored);
 
-    // Only show round end dialog when all players have scored AND we've completed all rounds
     if (allHaveScored && currentRound > totalRounds && playerCount > 1) {
       setShowRoundEndDialog(true);
     }
