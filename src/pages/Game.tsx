@@ -19,7 +19,6 @@ const Game = () => {
     currentTable 
   } = useGameStore();
   
-  const [showDifficulty, setShowDifficulty] = useState(!storedDifficulty);
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
@@ -33,7 +32,6 @@ const Game = () => {
   }, [scores, playerCount]);
 
   useEffect(() => {
-    // If there's a currentTable in the store but not locally, set it
     if (currentTable && !currentTableLocal) {
       setCurrentTableLocal(currentTable);
     }
@@ -41,7 +39,9 @@ const Game = () => {
 
   const handleSelectTable = () => {
     if (difficulty) {
+      console.log("Selecting new table with difficulty:", difficulty);
       const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
+      console.log("New table selected:", newTable);
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
@@ -83,22 +83,18 @@ const Game = () => {
             Enter Score
           </button>
 
-          {!currentTableLocal && (
-            <>
-              <DifficultySelector 
-                difficulty={difficulty} 
-                setDifficulty={setDifficulty} 
-              />
-              
-              <button 
-                onClick={handleSelectTable} 
-                className="w-full btn-secondary"
-                disabled={!difficulty}
-              >
-                Select Table
-              </button>
-            </>
-          )}
+          <DifficultySelector 
+            difficulty={difficulty} 
+            setDifficulty={setDifficulty} 
+          />
+          
+          <button 
+            onClick={handleSelectTable} 
+            className="w-full btn-secondary"
+            disabled={!difficulty}
+          >
+            Select Table
+          </button>
         </div>
       </div>
 
