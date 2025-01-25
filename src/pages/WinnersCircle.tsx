@@ -2,10 +2,21 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useGameStore } from "@/store/gameStore";
+import { useToast } from "@/components/ui/use-toast";
 
 const WinnersCircle = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { playerCount, playerNames, scores, resetGame } = useGameStore();
+
+  if (!playerCount || playerCount === 0) {
+    toast({
+      title: "No game in progress",
+      description: "Please start a new game first",
+    });
+    navigate("/");
+    return null;
+  }
 
   // Create array of player indices and sort by score
   const playerRankings = Array.from({ length: playerCount }, (_, i) => i)
@@ -46,7 +57,7 @@ const WinnersCircle = () => {
         <div className="w-10" />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 flex-1">
         {rankings.map(({ position, playerIndices }) => (
           <div key={position} className="space-y-2">
             {playerIndices.map((playerIndex) => (
@@ -80,7 +91,7 @@ const WinnersCircle = () => {
           Continue Playing
         </button>
         <button onClick={handleLeaveGame} className="w-full btn-destructive">
-          Leave The Game
+          Leave Game
         </button>
       </div>
     </div>
