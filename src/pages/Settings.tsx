@@ -46,10 +46,6 @@ const Settings = () => {
           See Score
         </button>
 
-        <button onClick={() => navigate("/game")} className="w-full btn-secondary">
-          Practice a Table
-        </button>
-
         {hasScores && (
           <button 
             onClick={() => navigate("/winners-circle")} 
