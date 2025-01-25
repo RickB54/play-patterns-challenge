@@ -24,7 +24,7 @@ const Home = () => {
 
       <div className="space-y-4">
         <Button 
-          onClick={() => navigate('/setup')} 
+          onClick={() => navigate('/skill-levels')} 
           className="w-full bg-blue-500 hover:bg-blue-600 h-12 text-lg"
         >
           Play Game
