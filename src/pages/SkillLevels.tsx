@@ -20,40 +20,19 @@ const SkillLevels = () => {
   const { toast } = useToast();
   const [players, setPlayers] = useState("1");
   const [playerNames, setPlayerNamesLocal] = useState<string[]>([]);
+  const [randomImages, setRandomImages] = useState<Record<string, string>>({});
 
-  // Get random table for each difficulty level
-  const getRandomTableForDifficulty = (difficulty: keyof typeof tableImages) => {
-    const tables = tableImages[difficulty];
-    const randomIndex = Math.floor(Math.random() * tables.length);
-    return tables[randomIndex];
-  };
-
-  const difficultyLevels = [
-    {
-      name: "Easy",
-      value: "easy",
-      description: "Perfect for beginners learning the basics of pool",
-      image: getRandomTableForDifficulty("easy"),
-    },
-    {
-      name: "Intermediate",
-      value: "intermediate",
-      description: "For players familiar with basic techniques",
-      image: getRandomTableForDifficulty("intermediate"),
-    },
-    {
-      name: "Advanced",
-      value: "advanced",
-      description: "Challenging setups for experienced players",
-      image: getRandomTableForDifficulty("advanced"),
-    },
-    {
-      name: "Expert",
-      value: "expert",
-      description: "Master-level configurations for professional players",
-      image: getRandomTableForDifficulty("expert"),
-    },
-  ];
+  useEffect(() => {
+    // Select random images for each difficulty level
+    const images: Record<string, string> = {};
+    Object.entries(tableImages).forEach(([difficulty, tables]) => {
+      const randomIndex = Math.floor(Math.random() * tables.length);
+      // Convert Dropbox links to direct download links
+      const directLink = tables[randomIndex].replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+      images[difficulty] = directLink;
+    });
+    setRandomImages(images);
+  }, []);
 
   const handlePlayerCountChange = (value: string) => {
     setPlayers(value);
@@ -92,6 +71,29 @@ const SkillLevels = () => {
     });
     navigate("/game");
   };
+
+  const difficultyLevels = [
+    {
+      name: "Easy",
+      value: "easy",
+      description: "Perfect for beginners learning the basics of pool",
+    },
+    {
+      name: "Intermediate",
+      value: "intermediate",
+      description: "For players familiar with basic techniques",
+    },
+    {
+      name: "Advanced",
+      value: "advanced",
+      description: "Challenging setups for experienced players",
+    },
+    {
+      name: "Expert",
+      value: "expert",
+      description: "Master-level configurations for professional players",
+    },
+  ];
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -142,14 +144,16 @@ const SkillLevels = () => {
           <Card
             key={level.value}
             className="overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer animate-fadeIn"
-            onClick={() => handleSelectDifficulty(level.value, level.image)}
+            onClick={() => handleSelectDifficulty(level.value, randomImages[level.value])}
           >
             <div className="relative h-48">
-              <img
-                src={level.image}
-                alt={level.name}
-                className="w-full h-full object-cover"
-              />
+              {randomImages[level.value] && (
+                <img
+                  src={randomImages[level.value]}
+                  alt={level.name}
+                  className="w-full h-full object-cover"
+                />
+              )}
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <h3 className="text-white text-2xl font-bold">{level.name}</h3>
               </div>
