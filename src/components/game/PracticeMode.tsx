@@ -10,8 +10,8 @@ interface PracticeModeProps {
 }
 
 const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
-  const { usedTables, addUsedTable, setCurrentTable } = useGameStore();
-  const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(null);
+  const { usedTables, addUsedTable, setCurrentTable, currentTable } = useGameStore();
+  const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
 
   const handleSelectTable = useCallback(() => {
     if (difficulty) {
