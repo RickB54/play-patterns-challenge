@@ -16,7 +16,9 @@ const Game = () => {
     setCurrentTable,
     playerCount,
     scores,
-    currentTable 
+    currentTable,
+    currentRound,
+    incrementRound
   } = useGameStore();
   
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
@@ -45,6 +47,7 @@ const Game = () => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
+      incrementRound();
     }
   };
 
@@ -68,6 +71,10 @@ const Game = () => {
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex flex-col gap-6">
+        <div className="text-center text-xl font-semibold">
+          Round {currentRound}
+        </div>
+        
         {currentTableLocal && (
           <PoolTableImage 
             currentTable={currentTableLocal} 
