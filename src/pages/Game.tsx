@@ -5,7 +5,7 @@ import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
-import DifficultySelector from "@/components/game/DifficultySelector";
+import GameControls from "@/components/game/GameControls";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -51,13 +51,10 @@ const Game = () => {
   if (isPracticeMode) {
     return (
       <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-        <div className="flex flex-col gap-6">
-          <PracticeMode 
-            difficulty={difficulty}
-            setDifficulty={setDifficulty}
-          />
-        </div>
-
+        <PracticeMode 
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+        />
         <button
           onClick={() => navigate("/settings")}
           className="mt-auto mx-auto p-4"
@@ -78,24 +75,12 @@ const Game = () => {
           />
         )}
         
-        <div className="space-y-4">
-          <button onClick={() => navigate("/score")} className="w-full btn-primary">
-            Enter Score
-          </button>
-
-          <DifficultySelector 
-            difficulty={difficulty} 
-            setDifficulty={setDifficulty} 
-          />
-          
-          <button 
-            onClick={handleSelectTable} 
-            className="w-full btn-secondary"
-            disabled={!difficulty}
-          >
-            Select Table
-          </button>
-        </div>
+        <GameControls 
+          allScoresEntered={allScoresEntered}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          handleSelectTable={handleSelectTable}
+        />
       </div>
 
       <button
