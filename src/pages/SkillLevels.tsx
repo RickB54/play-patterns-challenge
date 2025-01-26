@@ -146,12 +146,12 @@ const SkillLevels = () => {
             className="overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer animate-fadeIn"
             onClick={() => handleSelectDifficulty(level.value, randomImages[level.value])}
           >
-            <div className="relative h-48">
+            <div className="relative h-64">
               {randomImages[level.value] && (
                 <img
                   src={randomImages[level.value]}
                   alt={level.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain bg-black"
                 />
               )}
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
