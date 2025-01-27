@@ -53,15 +53,19 @@ const Game = () => {
 
   const handleSelectTable = () => {
     if (difficulty) {
-      console.log("Selecting new table with difficulty:", difficulty);
+      console.log("Current round:", currentRound, "Max rounds:", maxRounds);
       const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
       console.log("New table selected:", newTable);
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
+      
+      // First increment the round
       incrementRound();
-
-      if (currentRound + 1 >= maxRounds) {
+      
+      // Then check if we've reached max rounds
+      if (currentRound >= maxRounds - 1) {
+        console.log("Max rounds reached, showing dialog");
         setShowRoundsDialog(true);
       }
     }
