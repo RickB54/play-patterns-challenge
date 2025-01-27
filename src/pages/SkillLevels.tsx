@@ -16,18 +16,17 @@ import { tableImages } from "@/constants/tableImages";
 
 const SkillLevels = () => {
   const navigate = useNavigate();
-  const { setDifficulty, setPlayerCount, setPlayerNames, setCurrentTable } = useGameStore();
+  const { setDifficulty, setPlayerCount, setPlayerNames, setCurrentTable, setMaxRounds } = useGameStore();
   const { toast } = useToast();
   const [players, setPlayers] = useState("1");
+  const [rounds, setRounds] = useState("5");
   const [playerNames, setPlayerNamesLocal] = useState<string[]>([]);
   const [randomImages, setRandomImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    // Select random images for each difficulty level
     const images: Record<string, string> = {};
     Object.entries(tableImages).forEach(([difficulty, tables]) => {
       const randomIndex = Math.floor(Math.random() * tables.length);
-      // Convert Dropbox links to direct download links
       const directLink = tables[randomIndex].replace('www.dropbox.com', 'dl.dropboxusercontent.com');
       images[difficulty] = directLink;
     });
@@ -39,6 +38,11 @@ const SkillLevels = () => {
     const count = parseInt(value);
     setPlayerCount(count);
     setPlayerNamesLocal(Array(count).fill("").map((_, i) => `Player ${i + 1}`));
+  };
+
+  const handleRoundsChange = (value: string) => {
+    setRounds(value);
+    setMaxRounds(parseInt(value));
   };
 
   const handleNameChange = (index: number, name: string) => {
@@ -108,6 +112,22 @@ const SkillLevels = () => {
       </div>
 
       <div className="mb-8 space-y-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Number of Rounds</label>
+          <Select value={rounds} onValueChange={handleRoundsChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select rounds" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...Array(10)].map((_, i) => (
+                <SelectItem key={i + 1} value={(i + 1).toString()}>
+                  {i + 1} Round{i > 0 ? "s" : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="space-y-2">
           <label className="block text-sm font-medium">Number of Players</label>
           <Select value={players} onValueChange={handlePlayerCountChange}>

@@ -6,6 +6,16 @@ import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
 import GameControls from "@/components/game/GameControls";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -18,12 +28,14 @@ const Game = () => {
     scores,
     currentTable,
     currentRound,
+    maxRounds,
     incrementRound
   } = useGameStore();
   
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [allScoresEntered, setAllScoresEntered] = useState(false);
+  const [showRoundsDialog, setShowRoundsDialog] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
 
@@ -48,6 +60,10 @@ const Game = () => {
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
       incrementRound();
+
+      if (currentRound + 1 > maxRounds) {
+        setShowRoundsDialog(true);
+      }
     }
   };
 
@@ -72,7 +88,7 @@ const Game = () => {
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex flex-col gap-6">
         <div className="text-center text-xl font-semibold">
-          Round {currentRound}
+          Round {currentRound} of {maxRounds}
         </div>
         
         {currentTableLocal && (
@@ -96,6 +112,21 @@ const Game = () => {
       >
         <Settings className="w-8 h-8" />
       </button>
+
+      <AlertDialog open={showRoundsDialog} onOpenChange={setShowRoundsDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Maximum Rounds Reached</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have reached the required number of rounds. Do you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => navigate("/winners")}>No, go to Winner's Circle</AlertDialogCancel>
+            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>Yes, continue playing</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 const WinnersCircle = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { playerCount, playerNames, scores, resetGame } = useGameStore();
+  const { playerCount, playerNames, scores, resetGame, currentRound } = useGameStore();
 
   if (!playerCount || playerCount === 0) {
     toast({
@@ -62,12 +62,16 @@ const WinnersCircle = () => {
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-      <div className="flex items-center mb-8">
+      <div className="flex items-center mb-4">
         <button onClick={() => navigate(-1)} className="p-2">
           <ArrowLeft className="w-6 h-6" />
         </button>
         <h1 className="text-3xl font-bold text-center flex-1">Winner's Circle</h1>
         <div className="w-10" />
+      </div>
+
+      <div className="text-center text-xl font-semibold mb-8">
+        Rounds ({currentRound})
       </div>
 
       <div className="space-y-4 flex-1">
