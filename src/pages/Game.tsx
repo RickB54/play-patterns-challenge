@@ -122,7 +122,7 @@ const Game = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => navigate("/winners")}>No, go to Winner's Circle</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => navigate("/winners-circle")}>No, go to Winner's Circle</AlertDialogCancel>
             <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>Yes, continue playing</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
