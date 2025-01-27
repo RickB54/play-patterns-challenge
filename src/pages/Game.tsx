@@ -53,28 +53,18 @@ const Game = () => {
 
   const handleSelectTable = () => {
     if (difficulty) {
-      console.log("Current round:", currentRound, "Max rounds:", maxRounds);
+      console.log("Selecting new table with difficulty:", difficulty);
       const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
       console.log("New table selected:", newTable);
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
-      
-      // First increment the round
       incrementRound();
-      
-      // Then check if we've reached max rounds
-      if (currentRound >= maxRounds - 1) {
-        console.log("Max rounds reached, showing dialog");
+
+      if (currentRound + 1 > maxRounds) {
         setShowRoundsDialog(true);
       }
     }
-  };
-
-  const handleNavigateToWinnersCircle = () => {
-    console.log("Navigating to winners circle");
-    setShowRoundsDialog(false);
-    navigate("/winners-circle");
   };
 
   if (isPracticeMode) {
@@ -132,12 +122,8 @@ const Game = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>
-              No, go to Winner's Circle
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>
-              Yes, continue playing
-            </AlertDialogAction>
+            <AlertDialogCancel onClick={() => navigate("/winners-circle")}>No, go to Winner's Circle</AlertDialogCancel>
+            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>Yes, continue playing</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
