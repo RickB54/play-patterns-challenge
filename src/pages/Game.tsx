@@ -61,10 +61,16 @@ const Game = () => {
       addUsedTable(difficulty, newTable);
       incrementRound();
 
-      if (currentRound + 1 > maxRounds) {
+      if (currentRound + 1 >= maxRounds) {
         setShowRoundsDialog(true);
       }
     }
+  };
+
+  const handleNavigateToWinnersCircle = () => {
+    console.log("Navigating to winners circle");
+    setShowRoundsDialog(false);
+    navigate("/winners-circle");
   };
 
   if (isPracticeMode) {
@@ -122,8 +128,12 @@ const Game = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => navigate("/winners-circle")}>No, go to Winner's Circle</AlertDialogCancel>
-            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>Yes, continue playing</AlertDialogAction>
+            <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>
+              No, go to Winner's Circle
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>
+              Yes, continue playing
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
