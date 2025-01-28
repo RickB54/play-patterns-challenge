@@ -51,6 +51,11 @@ const Game = () => {
     }
   }, [currentTable]);
 
+  const handleNavigateToWinnersCircle = () => {
+    setShowRoundsDialog(false);
+    navigate("/winners-circle");
+  };
+
   const handleSelectTable = () => {
     if (difficulty) {
       console.log("Selecting new table with difficulty:", difficulty);
@@ -61,7 +66,7 @@ const Game = () => {
       addUsedTable(difficulty, newTable);
       incrementRound();
 
-      if (currentRound + 1 > maxRounds) {
+      if (currentRound >= maxRounds) {
         setShowRoundsDialog(true);
       }
     }
@@ -76,7 +81,7 @@ const Game = () => {
         />
         <button
           onClick={() => navigate("/settings")}
-          className="mt-auto mx-auto p-4"
+          className="mt-4 mx-auto p-4"
         >
           <Settings className="w-8 h-8" />
         </button>
@@ -108,7 +113,7 @@ const Game = () => {
 
       <button
         onClick={() => navigate("/settings")}
-        className="mt-auto mx-auto p-4"
+        className="mt-4 mx-auto p-4"
       >
         <Settings className="w-8 h-8" />
       </button>
@@ -122,7 +127,7 @@ const Game = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => navigate("/winners")}>No, go to Winner's Circle</AlertDialogCancel>
+            <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>No, go to Winner's Circle</AlertDialogCancel>
             <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>Yes, continue playing</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

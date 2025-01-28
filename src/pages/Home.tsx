@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { RulesDialog } from '@/components/RulesDialog';
+import { Info } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -37,6 +39,16 @@ const Home = () => {
         >
           Practice a Table
         </Button>
+
+        <RulesDialog>
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2 h-12 text-lg"
+          >
+            <Info className="w-5 h-5" />
+            Rules
+          </Button>
+        </RulesDialog>
       </div>
     </div>
   );
