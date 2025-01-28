@@ -18,8 +18,8 @@ const SkillLevels = () => {
   const navigate = useNavigate();
   const { setDifficulty, setPlayerCount, setPlayerNames, setCurrentTable, setMaxRounds } = useGameStore();
   const { toast } = useToast();
-  const [players, setPlayers] = useState("1");
-  const [rounds, setRounds] = useState("5");
+  const [players, setPlayers] = useState("2");  // Changed from "1" to "2"
+  const [rounds, setRounds] = useState("3");    // Changed from "5" to "3"
   const [playerNames, setPlayerNamesLocal] = useState<string[]>([]);
   const [randomImages, setRandomImages] = useState<Record<string, string>>({});
 
