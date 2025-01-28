@@ -2,18 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trophy, Medal, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useGameStore } from "@/store/gameStore";
-import { useToast } from "@/components/ui/use-toast";
 
 const WinnersCircle = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { playerCount, playerNames, scores, resetGame, currentRound } = useGameStore();
 
   if (!playerCount || playerCount === 0) {
-    toast({
-      title: "No game in progress",
-      description: "Please start a new game first",
-    });
     navigate("/");
     return null;
   }
