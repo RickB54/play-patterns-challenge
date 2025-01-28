@@ -28,13 +28,13 @@ interface GameState {
 }
 
 export const useGameStore = create<GameState>((set) => ({
-  playerCount: 2, // Changed from 1 to 2
+  playerCount: 2,
   playerNames: Array(8).fill('').map((_, i) => `Player ${i + 1}`),
   scores: Array(8).fill(0),
   difficulty: '',
   currentTable: null,
   currentRound: 1,
-  maxRounds: 3, // Changed from 5 to 3
+  maxRounds: 3,
   usedTables: {
     easy: [],
     intermediate: [],
@@ -51,7 +51,7 @@ export const useGameStore = create<GameState>((set) => ({
     }),
   setDifficulty: (difficulty) => set({ difficulty }),
   resetGame: () => set({ 
-    playerCount: 2, // Changed from 1 to 2
+    playerCount: 2,
     playerNames: Array(8).fill('').map((_, i) => `Player ${i + 1}`),
     scores: Array(8).fill(0),
     difficulty: '',
@@ -63,7 +63,7 @@ export const useGameStore = create<GameState>((set) => ({
     },
     currentTable: null,
     currentRound: 1,
-    maxRounds: 3, // Changed from 5 to 3
+    maxRounds: 3,
   }),
   addUsedTable: (difficulty, tableUrl) =>
     set((state) => ({
