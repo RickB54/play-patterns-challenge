@@ -29,7 +29,8 @@ const Game = () => {
     currentRound,
     maxRounds,
     incrementRound,
-    isPracticeMode
+    isPracticeMode,
+    resetGame
   } = useGameStore();
   
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
@@ -50,9 +51,20 @@ const Game = () => {
     }
   }, [currentTable]);
 
+  const handleEndGame = () => {
+    setShowRoundsDialog(false);
+    resetGame();
+    navigate("/");
+  };
+
   const handleNavigateToWinnersCircle = () => {
     setShowRoundsDialog(false);
-    navigate("/winners-circle");
+    if (isPracticeMode) {
+      resetGame();
+      navigate("/");
+    } else {
+      navigate("/winners-circle");
+    }
   };
 
   const handleSelectTable = () => {
@@ -109,8 +121,12 @@ const Game = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>No, go to Winner's Circle</AlertDialogCancel>
-            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>Yes, continue playing</AlertDialogAction>
+            <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>
+              {isPracticeMode ? "End Practice" : "Go to Winner's Circle"}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>
+              Continue playing
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
