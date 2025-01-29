@@ -6,7 +6,7 @@ import { useGameStore } from "@/store/gameStore";
 
 const Score = () => {
   const navigate = useNavigate();
-  const { playerCount, playerNames, scores, updateScore } = useGameStore();
+  const { playerCount, playerNames, scores, updateScore, isPracticeMode } = useGameStore();
 
   const handleScoreChange = (index: number, increment: boolean) => {
     const newScore = increment ? scores[index] + 1 : Math.max(0, scores[index] - 1);
@@ -20,6 +20,8 @@ const Score = () => {
     return "grid grid-cols-2 gap-4";
   };
 
+  const displayCount = isPracticeMode ? 1 : playerCount;
+
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex items-center mb-8">
@@ -30,7 +32,7 @@ const Score = () => {
       </div>
 
       <div className={getLayoutClass()}>
-        {Array.from({ length: playerCount }).map((_, index) => (
+        {Array.from({ length: displayCount }).map((_, index) => (
           <Card key={index} className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
             <div className="flex flex-col items-center space-y-2">
               <span className="text-lg font-medium text-purple-200">{playerNames[index]}</span>

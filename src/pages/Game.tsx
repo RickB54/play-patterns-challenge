@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
-import PracticeMode from "@/components/game/PracticeMode";
 import GameControls from "@/components/game/GameControls";
 import {
   AlertDialog,
@@ -29,7 +28,8 @@ const Game = () => {
     currentTable,
     currentRound,
     maxRounds,
-    incrementRound
+    incrementRound,
+    isPracticeMode
   } = useGameStore();
   
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
@@ -37,13 +37,12 @@ const Game = () => {
   const [allScoresEntered, setAllScoresEntered] = useState(false);
   const [showRoundsDialog, setShowRoundsDialog] = useState(false);
 
-  const isPracticeMode = window.location.search.includes('practice=true');
-
   useEffect(() => {
-    const activePlayerScores = scores.slice(0, playerCount);
+    const displayCount = isPracticeMode ? 1 : playerCount;
+    const activePlayerScores = scores.slice(0, displayCount);
     const allHaveScored = activePlayerScores.every(score => score > 0);
     setAllScoresEntered(allHaveScored);
-  }, [scores, playerCount]);
+  }, [scores, playerCount, isPracticeMode]);
 
   useEffect(() => {
     if (currentTable && !currentTableLocal) {
@@ -71,23 +70,6 @@ const Game = () => {
       }
     }
   };
-
-  if (isPracticeMode) {
-    return (
-      <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-        <PracticeMode 
-          difficulty={difficulty}
-          setDifficulty={setDifficulty}
-        />
-        <button
-          onClick={() => navigate("/settings")}
-          className="mt-4 mx-auto p-4"
-        >
-          <Settings className="w-8 h-8" />
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">

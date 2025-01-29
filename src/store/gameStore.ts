@@ -14,6 +14,7 @@ interface GameState {
   currentTable: string | null;
   currentRound: number;
   maxRounds: number;
+  isPracticeMode: boolean;
   setPlayerCount: (count: number) => void;
   setPlayerNames: (names: string[]) => void;
   updateScore: (playerIndex: number, score: number) => void;
@@ -25,6 +26,7 @@ interface GameState {
   incrementRound: () => void;
   resetRounds: () => void;
   setMaxRounds: (rounds: number) => void;
+  setPracticeMode: (isPractice: boolean) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -35,6 +37,7 @@ export const useGameStore = create<GameState>((set) => ({
   currentTable: null,
   currentRound: 1,
   maxRounds: 3,
+  isPracticeMode: false,
   usedTables: {
     easy: [],
     intermediate: [],
@@ -64,6 +67,7 @@ export const useGameStore = create<GameState>((set) => ({
     currentTable: null,
     currentRound: 1,
     maxRounds: 3,
+    isPracticeMode: false,
   }),
   addUsedTable: (difficulty, tableUrl) =>
     set((state) => ({
@@ -83,4 +87,9 @@ export const useGameStore = create<GameState>((set) => ({
   incrementRound: () => set((state) => ({ currentRound: state.currentRound + 1 })),
   resetRounds: () => set({ currentRound: 1 }),
   setMaxRounds: (rounds) => set({ maxRounds: rounds }),
+  setPracticeMode: (isPractice) => set({ 
+    isPracticeMode: isPractice,
+    playerCount: isPractice ? 1 : 2,
+    playerNames: isPractice ? ['Practice Player'] : Array(8).fill('').map((_, i) => `Player ${i + 1}`),
+  }),
 }));
