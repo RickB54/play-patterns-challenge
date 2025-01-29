@@ -1,44 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import { useGameStore } from "@/store/gameStore";
-import { Button } from "@/components/ui/button";
+// Update this page (the content is just a fallback if you fail to update the page)
 
 const Index = () => {
-  const navigate = useNavigate();
-  const { resetGame, setPracticeMode } = useGameStore();
-
-  const handleStartGame = () => {
-    resetGame();
-    setPracticeMode(false);
-    navigate("/skill-levels");
-  };
-
-  const handlePracticeMode = () => {
-    resetGame();
-    setPracticeMode(true);
-    navigate("/skill-levels");
-  };
-
   return (
-    <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-      <div className="flex-1 flex flex-col items-center justify-center gap-6">
-        <div className="w-full space-y-4">
-          <Button
-            onClick={handleStartGame}
-            className="w-full"
-            size="lg"
-          >
-            Play Game
-          </Button>
-          
-          <Button
-            onClick={handlePracticeMode}
-            className="w-full"
-            variant="secondary"
-            size="lg"
-          >
-            Practice a Table
-          </Button>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
+        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
       </div>
     </div>
   );

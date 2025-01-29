@@ -8,17 +8,16 @@ import { useGameStore } from "@/store/gameStore";
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { resetGame, playerCount, scores } = useGameStore();
+  const { resetGame } = useGameStore();
 
   const handleEndGame = () => {
+    resetGame();
     toast({
       title: "Game Ended",
-      description: "Redirecting to Winner's Circle",
+      description: "Returning to home page",
     });
-    navigate("/winners-circle");
+    navigate("/");
   };
-
-  const hasScores = scores.slice(0, playerCount).some(score => score > 0);
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -46,14 +45,9 @@ const Settings = () => {
           See Score
         </button>
 
-        {hasScores && (
-          <button 
-            onClick={() => navigate("/winners-circle")} 
-            className="w-full btn-secondary"
-          >
-            View Winner's Circle
-          </button>
-        )}
+        <button onClick={() => navigate("/game")} className="w-full btn-secondary">
+          Practice a Table
+        </button>
         
         <button onClick={handleEndGame} className="w-full btn-destructive">
           End Game
