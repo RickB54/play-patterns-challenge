@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useGameStore } from "@/store/gameStore";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,19 +22,22 @@ const Index = () => {
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center gap-6">
         <div className="w-full space-y-4">
-          <button
+          <Button
             onClick={handleStartGame}
-            className="w-full btn-primary"
+            className="w-full"
+            size="lg"
           >
             Play Game
-          </button>
+          </Button>
           
-          <button
+          <Button
             onClick={handlePracticeMode}
-            className="w-full btn-secondary"
+            className="w-full"
+            variant="secondary"
+            size="lg"
           >
             Practice a Table
-          </button>
+          </Button>
         </div>
       </div>
     </div>
