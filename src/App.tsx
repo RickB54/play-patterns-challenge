@@ -9,6 +9,7 @@ import Game from "./pages/Game";
 import Settings from "./pages/Settings";
 import Score from "./pages/Score";
 import WinnersCircle from "./pages/WinnersCircle";
+import SkillLevels from "./pages/SkillLevels";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/skill-levels" element={<SkillLevels />} />
             <Route path="/setup" element={<Setup />} />
             <Route path="/game" element={<Game />} />
             <Route path="/settings" element={<Settings />} />

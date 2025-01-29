@@ -1,64 +1,112 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGameStore } from "@/store/gameStore";
+import { ArrowLeft, Trophy, Medal, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useGameStore } from "@/store/gameStore";
 
 const WinnersCircle = () => {
   const navigate = useNavigate();
-  const { playerNames, scores, playerCount } = useGameStore();
-  const [rankings, setRankings] = useState<{ name: string; score: number; rank: number }[]>([]);
+  const { playerCount, playerNames, scores, resetGame, currentRound } = useGameStore();
 
-  useEffect(() => {
-    const activeScores = scores.slice(0, playerCount).map((score, index) => ({
-      name: playerNames[index],
-      score,
-      rank: 0
-    }));
+  if (!playerCount || playerCount === 0) {
+    navigate("/");
+    return null;
+  }
 
-    const sortedScores = [...activeScores].sort((a, b) => b.score - a.score);
-    let currentRank = 1;
-    let previousScore = -1;
+  // Create array of player indices and sort by score
+  const playerRankings = Array.from({ length: playerCount }, (_, i) => i)
+    .sort((a, b) => scores[b] - scores[a]);
 
-    sortedScores.forEach((player, index) => {
-      if (player.score !== previousScore) {
-        currentRank = index + 1;
-      }
-      player.rank = currentRank;
-      previousScore = player.score;
+  // Group players by score to handle ties
+  const scoreGroups: { [key: number]: number[] } = {};
+  playerRankings.forEach((playerIndex) => {
+    const score = scores[playerIndex];
+    if (!scoreGroups[score]) {
+      scoreGroups[score] = [];
+    }
+    scoreGroups[score].push(playerIndex);
+  });
+
+  // Convert score groups to sorted rankings with tied positions
+  const rankings: { position: number; playerIndices: number[] }[] = [];
+  let currentPosition = 1;
+  Object.entries(scoreGroups)
+    .sort(([scoreA], [scoreB]) => Number(scoreB) - Number(scoreA))
+    .forEach(([_, playerIndices]) => {
+      rankings.push({ position: currentPosition, playerIndices });
+      currentPosition += playerIndices.length;
     });
 
-    setRankings(sortedScores);
-  }, [scores, playerNames, playerCount]);
+  const handleLeaveGame = () => {
+    resetGame();
+    navigate("/");
+  };
+
+  const getRankIcon = (position: number) => {
+    switch (position) {
+      case 1:
+        return <Trophy className="w-8 h-8 text-yellow-500 animate-bounce" />;
+      case 2:
+        return <Medal className="w-7 h-7 text-gray-400" />;
+      case 3:
+        return <Medal className="w-6 h-6 text-amber-700" />;
+      default:
+        return <Star className="w-5 h-5 text-blue-400" />;
+    }
+  };
 
   return (
-    <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen">
-      <h1 className="text-4xl font-bold text-center mb-8 text-purple-300">Winner's Circle</h1>
-      
-      <div className="space-y-4">
-        {rankings.map((player, index) => (
-          <Card 
-            key={index}
-            className={`p-6 glass-card ${index === 0 ? 'animate-pulse bg-[#1A1F2C] border-[#8B5CF6]' : 'bg-[#1A1F2C] border-[#6E59A5]'}`}
-          >
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <span className="text-2xl font-bold text-[#D6BCFA]">#{player.rank}</span>
-                <span className={`text-xl ${index === 0 ? 'text-[#8B5CF6] font-bold' : 'text-[#D6BCFA]'}`}>
-                  {player.name}
-                </span>
-              </div>
-              <span className="text-2xl font-bold text-[#D6BCFA]">{player.score}</span>
-            </div>
-          </Card>
+    <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
+      <div className="flex items-center mb-4">
+        <button onClick={() => navigate(-1)} className="p-2">
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+        <h1 className="text-3xl font-bold text-center flex-1">Winner's Circle</h1>
+        <div className="w-10" />
+      </div>
+
+      <div className="text-center text-xl font-semibold mb-8">
+        Rounds ({currentRound})
+      </div>
+
+      <div className="space-y-4 flex-1">
+        {rankings.map(({ position, playerIndices }) => (
+          <div key={position} className="space-y-2">
+            {playerIndices.map((playerIndex) => (
+              <Card
+                key={playerIndex}
+                className={`score-card p-4 glass-card transform hover:scale-105 transition-transform duration-200 ${
+                  position === 1
+                    ? "bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border-yellow-500 animate-fadeIn"
+                    : position === 2
+                    ? "bg-gradient-to-r from-gray-400/20 to-gray-500/20 border-gray-400"
+                    : position === 3
+                    ? "bg-gradient-to-r from-amber-700/20 to-amber-800/20 border-amber-700"
+                    : "bg-[#1A1F2C] border-[#6E59A5]"
+                } border-2`}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center justify-center w-12">
+                      {getRankIcon(position)}
+                    </div>
+                    <span className="text-xl font-semibold">{playerNames[playerIndex]}</span>
+                  </div>
+                  <span className="text-2xl font-bold">{scores[playerIndex]}</span>
+                </div>
+              </Card>
+            ))}
+          </div>
         ))}
       </div>
 
-      <button
-        onClick={() => navigate("/")}
-        className="mt-8 w-full btn-primary"
-      >
-        Back to Home
-      </button>
+      <div className="mt-8 space-y-4">
+        <button onClick={() => navigate("/game")} className="w-full btn-primary hover:scale-105 transition-transform">
+          Continue Playing
+        </button>
+        <button onClick={handleLeaveGame} className="w-full btn-destructive hover:scale-105 transition-transform">
+          Leave Game
+        </button>
+      </div>
     </div>
   );
 };
