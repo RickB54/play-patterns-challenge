@@ -112,12 +112,14 @@ const Game = () => {
         />
       </div>
 
-      <button
-        onClick={() => navigate("/settings")}
-        className="mt-4 mx-auto p-4"
-      >
-        <Settings className="w-8 h-8" />
-      </button>
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => navigate("/settings")}
+          className="p-4"
+        >
+          <Settings className="w-8 h-8" />
+        </button>
+      </div>
 
       <ShotClock />
 
