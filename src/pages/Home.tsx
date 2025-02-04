@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RulesDialog } from '@/components/RulesDialog';
-import { Info } from 'lucide-react';
+import { Info, ChartLineUp } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -38,6 +38,15 @@ const Home = () => {
           className="w-full bg-gray-700 hover:bg-gray-600 h-12 text-lg"
         >
           Practice a Table
+        </Button>
+
+        <Button 
+          onClick={() => navigate('/progression')} 
+          variant="outline"
+          className="w-full flex items-center justify-center gap-2 h-12 text-lg"
+        >
+          <ChartLineUp className="w-5 h-5" />
+          Progression Tracker
         </Button>
 
         <RulesDialog>

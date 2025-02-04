@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import Score from "./pages/Score";
 import WinnersCircle from "./pages/WinnersCircle";
 import SkillLevels from "./pages/SkillLevels";
+import ProgressionTracker from "./components/progression/ProgressionTracker";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/score" element={<Score />} />
             <Route path="/winners-circle" element={<WinnersCircle />} />
+            <Route path="/progression" element={<ProgressionTracker />} />
           </Routes>
         </BrowserRouter>
       </div>

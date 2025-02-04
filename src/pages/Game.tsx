@@ -6,6 +6,7 @@ import { getRandomTable } from "@/constants/tableImages";
 import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
 import GameControls from "@/components/game/GameControls";
+import ShotClock from "@/components/game/ShotClock";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -117,6 +118,8 @@ const Game = () => {
       >
         <Settings className="w-8 h-8" />
       </button>
+
+      <ShotClock />
 
       <AlertDialog open={showRoundsDialog} onOpenChange={setShowRoundsDialog}>
         <AlertDialogContent>
