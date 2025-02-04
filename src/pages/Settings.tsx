@@ -7,12 +7,16 @@ import { useGameStore } from "@/store/gameStore";
 import { useShotClockStore } from "@/store/shotClockStore";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { resetGame, playerCount, scores } = useGameStore();
-  const { enabled, setEnabled } = useShotClockStore();
+  const { enabled, setEnabled, duration, setDuration } = useShotClockStore();
+  const [customTime, setCustomTime] = useState(duration.toString());
 
   const handleEndGame = () => {
     toast({
@@ -20,6 +24,19 @@ const Settings = () => {
       description: "Redirecting to Winner's Circle",
     });
     navigate("/winners-circle");
+  };
+
+  const handleDurationChange = (value: string) => {
+    if (value === "custom") return;
+    setDuration(parseInt(value));
+  };
+
+  const handleCustomTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCustomTime(value);
+    if (value && !isNaN(parseInt(value))) {
+      setDuration(parseInt(value));
+    }
   };
 
   const hasScores = scores.slice(0, playerCount).some(score => score > 0);
@@ -35,16 +52,47 @@ const Settings = () => {
       </div>
 
       <Card className="p-4 space-y-4 glass-card">
-        <div className="flex items-center justify-between space-x-2">
-          <div className="flex items-center space-x-2">
-            <Timer className="w-5 h-5" />
-            <Label htmlFor="shot-clock">Shot Clock</Label>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between space-x-2">
+            <div className="flex items-center space-x-2">
+              <Timer className="w-5 h-5" />
+              <Label htmlFor="shot-clock">Shot Clock</Label>
+            </div>
+            <Switch
+              id="shot-clock"
+              checked={enabled}
+              onCheckedChange={setEnabled}
+            />
           </div>
-          <Switch
-            id="shot-clock"
-            checked={enabled}
-            onCheckedChange={setEnabled}
-          />
+
+          {enabled && (
+            <div className="pl-7 space-y-4 animate-fadeIn">
+              <RadioGroup
+                value={duration.toString()}
+                onValueChange={handleDurationChange}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="30" id="30" />
+                  <Label htmlFor="30">30 seconds</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="60" id="60" />
+                  <Label htmlFor="60">60 seconds</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="custom" id="custom" />
+                  <Label htmlFor="custom">Custom</Label>
+                  <Input
+                    type="number"
+                    value={customTime}
+                    onChange={handleCustomTimeChange}
+                    className="w-20"
+                    min="1"
+                  />
+                </div>
+              </RadioGroup>
+            </div>
+          )}
         </div>
 
         <button 
