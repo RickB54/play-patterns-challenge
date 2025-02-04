@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RulesDialog } from '@/components/RulesDialog';
-import { Info, ChartLineUp } from 'lucide-react';
+import { Info, ChartLine } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const Home = () => {
           variant="outline"
           className="w-full flex items-center justify-center gap-2 h-12 text-lg"
         >
-          <ChartLineUp className="w-5 h-5" />
+          <ChartLine className="w-5 h-5" />
           Progression Tracker
         </Button>
 
