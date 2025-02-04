@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Settings } from "lucide-react";
+import { Settings, Minus, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
@@ -7,6 +7,7 @@ import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
 import GameControls from "@/components/game/GameControls";
 import ShotClock from "@/components/game/ShotClock";
+import { Card } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +27,9 @@ const Game = () => {
     addUsedTable, 
     setCurrentTable,
     playerCount,
+    playerNames,
     scores,
+    updateScore,
     currentTable,
     currentRound,
     maxRounds,
@@ -73,6 +76,18 @@ const Game = () => {
     }
   };
 
+  const handleScoreChange = (index: number, increment: boolean) => {
+    const newScore = increment ? scores[index] + 1 : Math.max(0, scores[index] - 1);
+    updateScore(index, newScore);
+  };
+
+  const getLayoutClass = () => {
+    if (playerCount <= 4) {
+      return "flex flex-col space-y-4";
+    }
+    return "grid grid-cols-2 gap-4";
+  };
+
   if (isPracticeMode) {
     return (
       <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -103,6 +118,33 @@ const Game = () => {
             setCurrentTableLocal={setCurrentTableLocal}
           />
         )}
+
+        <div className={getLayoutClass()}>
+          {Array.from({ length: playerCount }).map((_, index) => (
+            <Card key={index} className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+              <div className="flex flex-col items-center space-y-2">
+                <span className="text-lg font-medium text-purple-200">{playerNames[index]}</span>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => handleScoreChange(index, false)}
+                    className="p-2 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                  >
+                    <Minus className="w-6 h-6 text-[#D6BCFA]" />
+                  </button>
+                  <span className="text-2xl font-bold min-w-[3ch] text-center text-white">
+                    {scores[index]}
+                  </span>
+                  <button
+                    onClick={() => handleScoreChange(index, true)}
+                    className="p-2 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                  >
+                    <Plus className="w-6 h-6 text-[#D6BCFA]" />
+                  </button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
         
         <GameControls 
           allScoresEntered={allScoresEntered}
