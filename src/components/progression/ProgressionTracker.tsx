@@ -1,13 +1,22 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgressionStore } from "@/store/progressionStore";
 import { format } from "date-fns";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ProgressionTracker = () => {
+  const navigate = useNavigate();
   const { entries, getAveragePoints } = useProgressionStore();
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">Progression Tracker</h2>
+      <div className="flex items-center justify-between mb-6">
+        <button onClick={() => navigate(-1)} className="p-2">
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+        <h2 className="text-2xl font-bold">Progression Tracker</h2>
+        <div className="w-10" />
+      </div>
       
       <div className="mb-6 space-y-2">
         <p className="text-sm">Average Points:</p>
