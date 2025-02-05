@@ -7,6 +7,7 @@ import PoolTableImage from "@/components/PoolTableImage";
 import PracticeMode from "@/components/game/PracticeMode";
 import GameControls from "@/components/game/GameControls";
 import ShotClock from "@/components/game/ShotClock";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -42,6 +43,7 @@ const Game = () => {
   const [showRoundsDialog, setShowRoundsDialog] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
+  const isGameComplete = currentRound > maxRounds;
 
   useEffect(() => {
     const activePlayerScores = scores.slice(0, playerCount);
@@ -102,9 +104,25 @@ const Game = () => {
     <div className="container max-w-6xl mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex flex-col gap-6">
         <div className="text-center text-xl font-semibold">
-          Round {currentRound} of {maxRounds}
+          Round {Math.min(currentRound, maxRounds)} of {maxRounds}
         </div>
         
+        {isGameComplete && (
+          <div className="text-center">
+            <Button 
+              variant="destructive"
+              size="lg"
+              onClick={handleNavigateToWinnersCircle}
+              className="w-full max-w-md mx-auto"
+            >
+              End Game
+            </Button>
+            <p className="mt-2 text-muted-foreground">
+              All rounds completed! Enter your final scores below and click "End Game" when ready.
+            </p>
+          </div>
+        )}
+
         {currentTableLocal && (
           <PoolTableImage 
             currentTable={currentTableLocal} 
@@ -139,12 +157,14 @@ const Game = () => {
           ))}
         </div>
         
-        <GameControls 
-          allScoresEntered={allScoresEntered}
-          difficulty={difficulty}
-          setDifficulty={setDifficulty}
-          handleSelectTable={handleSelectTable}
-        />
+        {!isGameComplete && (
+          <GameControls 
+            allScoresEntered={allScoresEntered}
+            difficulty={difficulty}
+            setDifficulty={setDifficulty}
+            handleSelectTable={handleSelectTable}
+          />
+        )}
       </div>
 
       <div className="flex justify-between items-center mt-4">
