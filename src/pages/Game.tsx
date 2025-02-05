@@ -81,13 +81,6 @@ const Game = () => {
     updateScore(index, newScore);
   };
 
-  const getLayoutClass = () => {
-    if (playerCount <= 4) {
-      return "flex flex-col space-y-4";
-    }
-    return "grid grid-cols-2 gap-4";
-  };
-
   if (isPracticeMode) {
     return (
       <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -106,7 +99,7 @@ const Game = () => {
   }
 
   return (
-    <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
+    <div className="container max-w-6xl mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex flex-col gap-6">
         <div className="text-center text-xl font-semibold">
           Round {currentRound} of {maxRounds}
@@ -119,7 +112,7 @@ const Game = () => {
           />
         )}
 
-        <div className={getLayoutClass()}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {Array.from({ length: playerCount }).map((_, index) => (
             <Card key={index} className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
               <div className="flex flex-col items-center space-y-2">
