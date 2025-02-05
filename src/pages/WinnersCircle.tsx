@@ -2,10 +2,36 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trophy, Medal, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useGameStore } from "@/store/gameStore";
+import { useProgressionStore } from "@/store/progressionStore";
+import { useEffect } from "react";
 
 const WinnersCircle = () => {
   const navigate = useNavigate();
-  const { playerCount, playerNames, scores, resetGame, currentRound } = useGameStore();
+  const { 
+    playerCount, 
+    playerNames, 
+    scores, 
+    resetGame, 
+    currentRound,
+    difficulty 
+  } = useGameStore();
+  const { addEntry } = useProgressionStore();
+
+  useEffect(() => {
+    // Calculate progression data when component mounts
+    const totalPoints = scores.slice(0, playerCount).reduce((sum, score) => sum + score, 0);
+    const averagePoints = totalPoints / playerCount;
+
+    const progressionEntry = {
+      date: new Date().toISOString(),
+      points: totalPoints,
+      skillLevels: [difficulty],
+      roundsPlayed: currentRound,
+      averagePoints: averagePoints
+    };
+
+    addEntry(progressionEntry);
+  }, []); // Empty dependency array ensures this runs once when component mounts
 
   if (!playerCount || playerCount === 0) {
     navigate("/");
