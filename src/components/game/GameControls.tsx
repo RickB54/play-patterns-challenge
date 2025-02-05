@@ -18,10 +18,6 @@ const GameControls = ({
 
   return (
     <div className="mt-6 space-y-4">
-      <button onClick={() => navigate("/score")} className="w-full btn-primary">
-        Enter Score
-      </button>
-
       {allScoresEntered && (
         <>
           <DifficultySelector 
