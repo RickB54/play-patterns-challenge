@@ -6,10 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 const ProgressionTracker = () => {
   const navigate = useNavigate();
-  const { entries, getAveragePoints } = useProgressionStore();
+  const { entries } = useProgressionStore();
 
   return (
-    <div className="container max-w-lg mx-auto px-4 py-8">
+    <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => navigate(-1)} className="p-2">
           <ArrowLeft className="w-6 h-6" />
@@ -17,44 +17,38 @@ const ProgressionTracker = () => {
         <h2 className="text-2xl font-bold">Progression Tracker</h2>
         <div className="w-10" />
       </div>
-      
-      <div className="mb-6 space-y-2">
-        <p className="text-sm">Average Points:</p>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-3 rounded bg-accent">
-            <p className="text-sm">Today</p>
-            <p className="text-lg font-bold">{getAveragePoints('daily').toFixed(2)}</p>
-          </div>
-          <div className="p-3 rounded bg-accent">
-            <p className="text-sm">This Week</p>
-            <p className="text-lg font-bold">{getAveragePoints('weekly').toFixed(2)}</p>
-          </div>
-          <div className="p-3 rounded bg-accent">
-            <p className="text-sm">This Month</p>
-            <p className="text-lg font-bold">{getAveragePoints('monthly').toFixed(2)}</p>
-          </div>
-          <div className="p-3 rounded bg-accent">
-            <p className="text-sm">All Time</p>
-            <p className="text-lg font-bold">{getAveragePoints('all').toFixed(2)}</p>
-          </div>
-        </div>
-      </div>
 
-      <ScrollArea className="h-[400px] rounded-md border p-4">
-        <div className="space-y-4">
-          {entries.map((entry, index) => (
-            <div key={index} className="p-4 rounded bg-card">
-              <div className="text-sm text-muted-foreground">
-                {format(new Date(entry.date), "M/dd/yy h:mma")}
-              </div>
-              <div className="mt-2 space-y-1 text-sm">
-                <p>Points: <span className="font-semibold">{entry.points}</span></p>
-                <p>Skill Levels: <span className="font-semibold">{entry.skillLevels.join(", ")}</span></p>
-                <p>Rounds: <span className="font-semibold">{entry.roundsPlayed}</span></p>
-                <p>Average: <span className="font-semibold">{entry.averagePoints.toFixed(2)}</span></p>
-              </div>
-            </div>
-          ))}
+      <ScrollArea className="h-[600px] w-full rounded-md border">
+        <div className="relative w-full">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-muted/50">
+                <th className="p-4 text-left font-semibold">Date</th>
+                <th className="p-4 text-left font-semibold">Points</th>
+                <th className="p-4 text-left font-semibold"># of Rounds</th>
+                <th className="p-4 text-left font-semibold">Level of Difficulty</th>
+                <th className="p-4 text-left font-semibold">Rounds Played</th>
+                <th className="p-4 text-left font-semibold">Average Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((entry, index) => (
+                <tr 
+                  key={index} 
+                  className="border-t hover:bg-muted/50 transition-colors"
+                >
+                  <td className="p-4">
+                    {format(new Date(entry.date), "MM/dd/yy")}
+                  </td>
+                  <td className="p-4">{entry.points}</td>
+                  <td className="p-4">{entry.skillLevels.length}</td>
+                  <td className="p-4">{entry.skillLevels.join(", ")}</td>
+                  <td className="p-4">{entry.roundsPlayed}</td>
+                  <td className="p-4">{entry.averagePoints.toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </ScrollArea>
     </div>
