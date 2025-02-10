@@ -6,6 +6,8 @@ import ShotClock from "@/components/game/ShotClock";
 import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
 import { useShotClockStore } from "@/store/shotClockStore";
+import { Card } from "@/components/ui/card";
+import { Plus, Minus } from "lucide-react";
 
 interface PracticeModeProps {
   difficulty: string;
@@ -16,6 +18,7 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
   const { usedTables, addUsedTable, setCurrentTable, currentTable } = useGameStore();
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const { setEnabled } = useShotClockStore();
+  const [practiceScore, setPracticeScore] = useState(0);
 
   // Enable shot clock when practice mode mounts
   useEffect(() => {
@@ -31,8 +34,14 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
       setCurrentTableLocal(newTable);
       setCurrentTable(newTable);
       addUsedTable(difficulty, newTable);
+      // Reset score when selecting a new table
+      setPracticeScore(0);
     }
   }, [difficulty, usedTables, addUsedTable, setCurrentTable]);
+
+  const handleScoreChange = (increment: boolean) => {
+    setPracticeScore(prev => increment ? prev + 1 : Math.max(0, prev - 1));
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -48,10 +57,35 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
           </button>
 
           {currentTableLocal && (
-            <PoolTableImage 
-              currentTable={currentTableLocal} 
-              setCurrentTableLocal={setCurrentTableLocal}
-            />
+            <>
+              <PoolTableImage 
+                currentTable={currentTableLocal} 
+                setCurrentTableLocal={setCurrentTableLocal}
+              />
+              
+              <Card className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+                <div className="flex flex-col items-center space-y-2">
+                  <span className="text-lg font-medium text-purple-200">Practice Score</span>
+                  <div className="flex items-center space-x-4">
+                    <button
+                      onClick={() => handleScoreChange(false)}
+                      className="p-2 rounded-full hover:bg-[#6E59A5]/30 transition-colors"
+                    >
+                      <Minus className="w-6 h-6 text-[#D6BCFA]" />
+                    </button>
+                    <span className="text-2xl font-bold min-w-[3ch] text-center text-white">
+                      {practiceScore}
+                    </span>
+                    <button
+                      onClick={() => handleScoreChange(true)}
+                      className="p-2 rounded-full hover:bg-[#6E59A5]/30 transition-colors"
+                    >
+                      <Plus className="w-6 h-6 text-[#D6BCFA]" />
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            </>
           )}
         </>
       )}
