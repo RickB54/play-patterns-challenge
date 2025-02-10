@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import DifficultySelector from "./DifficultySelector";
 import PoolTableImage from "@/components/PoolTableImage";
 import ShotClock from "@/components/game/ShotClock";
@@ -18,7 +18,7 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
   const { setEnabled } = useShotClockStore();
 
   // Enable shot clock when practice mode mounts
-  useState(() => {
+  useEffect(() => {
     setEnabled(true);
     return () => setEnabled(false); // Disable when unmounting
   }, [setEnabled]);
