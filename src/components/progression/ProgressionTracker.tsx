@@ -2,13 +2,19 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgressionStore } from "@/store/progressionStore";
 import { format } from "date-fns";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CalendarIcon, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const ProgressionTracker = () => {
   const navigate = useNavigate();
@@ -33,26 +39,54 @@ const ProgressionTracker = () => {
       </div>
 
       <Card className="p-4 mb-6">
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Filter by Date Range</h3>
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-            className="rounded-md border"
-          />
-          {date?.from && date?.to && (
-            <Button 
-              variant="outline"
-              onClick={() => setDate(undefined)}
-              className="w-full max-w-xs"
-            >
-              Clear Filter
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-[280px] justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "MM/dd/yy")} -{" "}
+                        {format(date.to, "MM/dd/yy")}
+                      </>
+                    ) : (
+                      format(date.from, "MM/dd/yy")
+                    )
+                  ) : (
+                    <span>Pick a date range</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={setDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+            {date?.from && date?.to && (
+              <Button 
+                variant="outline"
+                onClick={() => setDate(undefined)}
+                className="px-3"
+              >
+                Clear
+              </Button>
+            )}
+          </div>
         </div>
       </Card>
 
@@ -94,3 +128,4 @@ const ProgressionTracker = () => {
 };
 
 export default ProgressionTracker;
+
