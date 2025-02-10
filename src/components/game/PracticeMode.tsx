@@ -1,8 +1,11 @@
+
 import { useState, useCallback } from "react";
 import DifficultySelector from "./DifficultySelector";
 import PoolTableImage from "@/components/PoolTableImage";
+import ShotClock from "@/components/game/ShotClock";
 import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
+import { useShotClockStore } from "@/store/shotClockStore";
 
 interface PracticeModeProps {
   difficulty: string;
@@ -12,6 +15,13 @@ interface PracticeModeProps {
 const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
   const { usedTables, addUsedTable, setCurrentTable, currentTable } = useGameStore();
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
+  const { setEnabled } = useShotClockStore();
+
+  // Enable shot clock when practice mode mounts
+  useState(() => {
+    setEnabled(true);
+    return () => setEnabled(false); // Disable when unmounting
+  }, [setEnabled]);
 
   const handleSelectTable = useCallback(() => {
     if (difficulty) {
@@ -45,6 +55,8 @@ const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
           )}
         </>
       )}
+
+      <ShotClock />
     </div>
   );
 };
