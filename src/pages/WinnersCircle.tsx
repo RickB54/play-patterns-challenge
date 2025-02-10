@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trophy, Medal, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -21,17 +22,18 @@ const WinnersCircle = () => {
     // Calculate progression data when component mounts
     const totalPoints = scores.slice(0, playerCount).reduce((sum, score) => sum + score, 0);
     const averagePoints = totalPoints / playerCount;
+    const actualRoundsPlayed = Math.max(0, currentRound - 1); // Subtract 1 to get actual rounds played
 
     const progressionEntry = {
       date: new Date().toISOString(),
       points: totalPoints,
       skillLevels: [difficulty],
-      roundsPlayed: currentRound,
+      roundsPlayed: actualRoundsPlayed,
       averagePoints: averagePoints
     };
 
     addEntry(progressionEntry);
-  }, []); // Empty dependency array ensures this runs once when component mounts
+  }, []); 
 
   if (!playerCount || playerCount === 0) {
     navigate("/");
@@ -80,6 +82,9 @@ const WinnersCircle = () => {
     }
   };
 
+  // Calculate actual rounds played for display
+  const actualRoundsPlayed = Math.max(0, currentRound - 1);
+
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex items-center mb-4">
@@ -91,7 +96,7 @@ const WinnersCircle = () => {
       </div>
 
       <div className="text-center text-xl font-semibold mb-8">
-        Rounds ({currentRound})
+        Rounds ({actualRoundsPlayed})
       </div>
 
       <div className="space-y-4 flex-1">
@@ -138,3 +143,4 @@ const WinnersCircle = () => {
 };
 
 export default WinnersCircle;
+
