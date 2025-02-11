@@ -16,11 +16,13 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
+const ALL_OPTION = "all";
+
 const ProgressionTracker = () => {
   const navigate = useNavigate();
   const { entries } = useProgressionStore();
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedPlayer, setSelectedPlayer] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(ALL_OPTION);
+  const [selectedPlayer, setSelectedPlayer] = useState<string>(ALL_OPTION);
 
   // Get unique dates and players for dropdowns
   const uniqueDates = useMemo(() => {
@@ -35,10 +37,10 @@ const ProgressionTracker = () => {
   }, [entries]);
 
   const filteredEntries = entries.filter((entry) => {
-    const matchesDate = !selectedDate || 
+    const matchesDate = selectedDate === ALL_OPTION || 
       format(new Date(entry.date), "MM/dd/yy") === selectedDate;
     
-    const matchesPlayer = !selectedPlayer || 
+    const matchesPlayer = selectedPlayer === ALL_OPTION || 
       entry.playerName === selectedPlayer;
 
     return matchesDate && matchesPlayer;
@@ -64,7 +66,7 @@ const ProgressionTracker = () => {
                   <SelectValue placeholder="Select a date" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Dates</SelectItem>
+                  <SelectItem value={ALL_OPTION}>All Dates</SelectItem>
                   {uniqueDates.map((date) => (
                     <SelectItem key={date} value={date}>
                       {date}
@@ -81,7 +83,7 @@ const ProgressionTracker = () => {
                   <SelectValue placeholder="Select a player" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Players</SelectItem>
+                  <SelectItem value={ALL_OPTION}>All Players</SelectItem>
                   {uniquePlayers.map((player) => (
                     <SelectItem key={player} value={player}>
                       {player}
@@ -92,12 +94,12 @@ const ProgressionTracker = () => {
             </div>
           </div>
 
-          {(selectedDate || selectedPlayer) && (
+          {(selectedDate !== ALL_OPTION || selectedPlayer !== ALL_OPTION) && (
             <Button 
               variant="outline" 
               onClick={() => {
-                setSelectedDate("");
-                setSelectedPlayer("");
+                setSelectedDate(ALL_OPTION);
+                setSelectedPlayer(ALL_OPTION);
               }}
               className="w-full md:w-auto"
             >
