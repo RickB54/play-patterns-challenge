@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Settings, Minus, Plus } from "lucide-react";
+import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGameStore } from "@/store/gameStore";
 import { getRandomTable } from "@/constants/tableImages";
@@ -10,6 +10,7 @@ import GameControls from "@/components/game/GameControls";
 import ShotClock from "@/components/game/ShotClock";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +24,7 @@ import {
 
 const Game = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { 
     difficulty: storedDifficulty, 
     usedTables, 
@@ -42,6 +44,7 @@ const Game = () => {
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [atLeastOneScore, setAtLeastOneScore] = useState(false);
   const [showRoundsDialog, setShowRoundsDialog] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
   const isGameComplete = currentRound > maxRounds;
@@ -57,6 +60,46 @@ const Game = () => {
       setCurrentTableLocal(currentTable);
     }
   }, [currentTable]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    const handleOrientationChange = () => {
+      if (isMobile && screen.orientation) {
+        screen.orientation.lock('portrait').catch(console.error);
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    window.addEventListener('orientationchange', handleOrientationChange);
+
+    // Initial orientation lock
+    if (isMobile && screen.orientation) {
+      screen.orientation.lock('portrait').catch(console.error);
+    }
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+    };
+  }, [isMobile]);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!isFullscreen) {
+        await document.documentElement.requestFullscreen();
+        if (screen.orientation) {
+          await screen.orientation.lock('portrait');
+        }
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.error('Fullscreen error:', error);
+    }
+  };
 
   const handleNavigateToWinnersCircle = () => {
     setShowRoundsDialog(false);
@@ -86,113 +129,138 @@ const Game = () => {
 
   if (isPracticeMode) {
     return (
-      <div className="container max-w-lg mx-auto px-4 py-8 min-h-screen flex flex-col">
-        <PracticeMode 
-          difficulty={difficulty}
-          setDifficulty={setDifficulty}
-        />
-        <button
-          onClick={() => navigate("/settings")}
-          className="mt-4 mx-auto p-4"
-        >
-          <Settings className="w-8 h-8" />
-        </button>
+      <div className="h-screen w-screen overflow-hidden bg-background flex flex-col">
+        <div className="container max-w-lg mx-auto px-4 py-4 flex-1 flex flex-col">
+          <PracticeMode 
+            difficulty={difficulty}
+            setDifficulty={setDifficulty}
+          />
+          <div className="flex justify-between items-center mt-auto pb-4">
+            <button onClick={() => navigate("/settings")} className="p-2">
+              <Settings className="w-6 h-6" />
+            </button>
+            {isMobile && (
+              <button onClick={toggleFullscreen} className="p-2">
+                {isFullscreen ? (
+                  <Minimize2 className="w-6 h-6" />
+                ) : (
+                  <Maximize2 className="w-6 h-6" />
+                )}
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-8 min-h-screen flex flex-col">
-      <div className="flex flex-col gap-6">
-        <div className="text-center text-xl font-semibold">
-          Round {Math.min(currentRound, maxRounds)} of {maxRounds}
-        </div>
-        
-        {isGameComplete && (
-          <div className="text-center">
-            <Button 
-              variant="destructive"
-              size="lg"
-              onClick={handleNavigateToWinnersCircle}
-              className="w-full max-w-md mx-auto"
-            >
-              End Game
-            </Button>
-            <p className="mt-2 text-muted-foreground">
-              All rounds completed! Enter your final scores below and click "End Game" when ready.
-            </p>
+    <div className="h-screen w-screen overflow-hidden bg-background">
+      <div className="container max-w-6xl mx-auto px-4 py-4 h-full flex flex-col">
+        <div className="flex flex-col gap-4 flex-1">
+          <div className="flex justify-between items-center">
+            <button onClick={() => navigate("/settings")} className="p-2">
+              <Settings className="w-6 h-6" />
+            </button>
+            <div className="text-center text-xl font-semibold">
+              Round {Math.min(currentRound, maxRounds)} of {maxRounds}
+            </div>
+            {isMobile && (
+              <button onClick={toggleFullscreen} className="p-2">
+                {isFullscreen ? (
+                  <Minimize2 className="w-6 h-6" />
+                ) : (
+                  <Maximize2 className="w-6 h-6" />
+                )}
+              </button>
+            )}
           </div>
-        )}
+          
+          {isGameComplete && (
+            <div className="text-center">
+              <Button 
+                variant="destructive"
+                size="lg"
+                onClick={handleNavigateToWinnersCircle}
+                className="w-full max-w-md mx-auto"
+              >
+                End Game
+              </Button>
+              <p className="mt-2 text-muted-foreground">
+                All rounds completed! Enter your final scores below and click "End Game" when ready.
+              </p>
+            </div>
+          )}
 
-        {currentTableLocal && (
-          <PoolTableImage 
-            currentTable={currentTableLocal} 
-            setCurrentTableLocal={setCurrentTableLocal}
-          />
-        )}
+          {currentTableLocal && (
+            <div className="flex-1 min-h-0">
+              <PoolTableImage 
+                currentTable={currentTableLocal} 
+                setCurrentTableLocal={setCurrentTableLocal}
+              />
+            </div>
+          )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {Array.from({ length: playerCount }).map((_, index) => (
-            <Card key={index} className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
-              <div className="flex flex-col items-center space-y-2">
-                <span className="text-lg font-medium text-purple-200">{playerNames[index]}</span>
-                <div className="flex items-center space-x-4">
-                  <button
-                    onClick={() => handleScoreChange(index, false)}
-                    className="p-2 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                  >
-                    <Minus className="w-6 h-6 text-[#D6BCFA]" />
-                  </button>
-                  <span className="text-2xl font-bold min-w-[3ch] text-center text-white">
-                    {scores[index]}
-                  </span>
-                  <button
-                    onClick={() => handleScoreChange(index, true)}
-                    className="p-2 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                  >
-                    <Plus className="w-6 h-6 text-[#D6BCFA]" />
-                  </button>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {Array.from({ length: playerCount }).map((_, index) => (
+              <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+                <div className="flex flex-col items-center space-y-2">
+                  <span className="text-base font-medium text-purple-200">{playerNames[index]}</span>
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => handleScoreChange(index, false)}
+                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                    >
+                      <Minus className="w-5 h-5 text-[#D6BCFA]" />
+                    </button>
+                    <span className="text-xl font-bold min-w-[2ch] text-center text-white">
+                      {scores[index]}
+                    </span>
+                    <button
+                      onClick={() => handleScoreChange(index, true)}
+                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                    >
+                      <Plus className="w-5 h-5 text-[#D6BCFA]" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))}
+          </div>
+          
+          {!isGameComplete && (
+            <GameControls 
+              allScoresEntered={atLeastOneScore}
+              difficulty={difficulty}
+              setDifficulty={setDifficulty}
+              handleSelectTable={handleSelectTable}
+            />
+          )}
+
+          <div className="mt-auto">
+            <ShotClock />
+          </div>
         </div>
-        
-        {!isGameComplete && (
-          <GameControls 
-            allScoresEntered={atLeastOneScore}
-            difficulty={difficulty}
-            setDifficulty={setDifficulty}
-            handleSelectTable={handleSelectTable}
-          />
-        )}
+
+        <AlertDialog open={showRoundsDialog} onOpenChange={setShowRoundsDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Maximum Rounds Reached</AlertDialogTitle>
+              <AlertDialogDescription>
+                You have reached the required number of rounds. Do you want to continue?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>
+                No, go to Winner's Circle
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>
+                Yes, continue playing
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
-
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={() => navigate("/settings")}
-          className="p-4"
-        >
-          <Settings className="w-8 h-8" />
-        </button>
-      </div>
-
-      <ShotClock />
-
-      <AlertDialog open={showRoundsDialog} onOpenChange={setShowRoundsDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Maximum Rounds Reached</AlertDialogTitle>
-            <AlertDialogDescription>
-              You have reached the required number of rounds. Do you want to continue?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>No, go to Winner's Circle</AlertDialogCancel>
-            <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>Yes, continue playing</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
