@@ -2,36 +2,44 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgressionStore } from "@/store/progressionStore";
 import { format } from "date-fns";
-import { ArrowLeft, CalendarIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { DateRange } from "react-day-picker";
-import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 
 const ProgressionTracker = () => {
   const navigate = useNavigate();
   const { entries } = useProgressionStore();
-  const [date, setDate] = useState<DateRange | undefined>();
-  const [playerFilter, setPlayerFilter] = useState("");
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedPlayer, setSelectedPlayer] = useState<string>("");
+
+  // Get unique dates and players for dropdowns
+  const uniqueDates = useMemo(() => {
+    const dates = [...new Set(entries.map(entry => 
+      format(new Date(entry.date), "MM/dd/yy")
+    ))];
+    return dates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  }, [entries]);
+
+  const uniquePlayers = useMemo(() => {
+    return [...new Set(entries.map(entry => entry.playerName || 'Anonymous'))];
+  }, [entries]);
 
   const filteredEntries = entries.filter((entry) => {
-    const matchesDate = !date?.from || !date?.to 
-      ? true 
-      : new Date(entry.date) >= date.from && new Date(entry.date) <= date.to;
+    const matchesDate = !selectedDate || 
+      format(new Date(entry.date), "MM/dd/yy") === selectedDate;
     
-    const matchesPlayer = !playerFilter 
-      ? true 
-      : entry.playerName?.toLowerCase().includes(playerFilter.toLowerCase());
+    const matchesPlayer = !selectedPlayer || 
+      entry.playerName === selectedPlayer;
 
     return matchesDate && matchesPlayer;
   });
@@ -47,65 +55,55 @@ const ProgressionTracker = () => {
       </div>
 
       <Card className="p-4 mb-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Filter Results</h3>
-          <div className="flex items-center gap-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-[280px] justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "MM/dd/yy")} -{" "}
-                        {format(date.to, "MM/dd/yy")}
-                      </>
-                    ) : (
-                      format(date.from, "MM/dd/yy")
-                    )
-                  ) : (
-                    <span>Pick a date range</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
-            {date?.from && date?.to && (
-              <Button 
-                variant="outline"
-                onClick={() => setDate(undefined)}
-                className="px-3"
-              >
-                Clear
-              </Button>
-            )}
-          </div>
-        </div>
+        <div className="flex flex-col space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Select Date</Label>
+              <Select value={selectedDate} onValueChange={setSelectedDate}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a date" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Dates</SelectItem>
+                  {uniqueDates.map((date) => (
+                    <SelectItem key={date} value={date}>
+                      {date}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="playerFilter">Filter by Player Name</Label>
-          <Input
-            id="playerFilter"
-            value={playerFilter}
-            onChange={(e) => setPlayerFilter(e.target.value)}
-            placeholder="Enter player name..."
-            className="max-w-xs"
-          />
+            <div className="space-y-2">
+              <Label>Select Player</Label>
+              <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a player" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Players</SelectItem>
+                  {uniquePlayers.map((player) => (
+                    <SelectItem key={player} value={player}>
+                      {player}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {(selectedDate || selectedPlayer) && (
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setSelectedDate("");
+                setSelectedPlayer("");
+              }}
+              className="w-full md:w-auto"
+            >
+              Clear Filters
+            </Button>
+          )}
         </div>
       </Card>
 
