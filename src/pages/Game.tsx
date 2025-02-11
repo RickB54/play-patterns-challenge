@@ -68,11 +68,7 @@ const Game = () => {
 
     const handleOrientationChange = () => {
       if (isMobile && screen.orientation) {
-        try {
-          screen.orientation.lock?.('portrait');
-        } catch (error) {
-          console.error('Failed to lock orientation:', error);
-        }
+        screen.orientation.lock('portrait').catch(console.error);
       }
     };
 
@@ -80,7 +76,7 @@ const Game = () => {
     window.addEventListener('orientationchange', handleOrientationChange);
 
     // Initial orientation lock
-    if (isMobile && screen.orientation && screen.orientation.lock) {
+    if (isMobile && screen.orientation) {
       screen.orientation.lock('portrait').catch(console.error);
     }
 
@@ -94,7 +90,7 @@ const Game = () => {
     try {
       if (!isFullscreen) {
         await document.documentElement.requestFullscreen();
-        if (screen.orientation?.lock) {
+        if (screen.orientation) {
           await screen.orientation.lock('portrait');
         }
       } else {
@@ -134,12 +130,12 @@ const Game = () => {
   if (isPracticeMode) {
     return (
       <div className="h-screen w-screen overflow-hidden bg-background flex flex-col">
-        <div className="container max-w-lg mx-auto px-4 py-2 flex-1 flex flex-col">
+        <div className="container max-w-lg mx-auto px-4 py-4 flex-1 flex flex-col">
           <PracticeMode 
             difficulty={difficulty}
             setDifficulty={setDifficulty}
           />
-          <div className="flex justify-between items-center mt-2 pb-2">
+          <div className="flex justify-between items-center mt-auto pb-4">
             <button onClick={() => navigate("/settings")} className="p-2">
               <Settings className="w-6 h-6" />
             </button>
@@ -160,44 +156,44 @@ const Game = () => {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">
-      <div className="container max-w-6xl mx-auto px-4 py-2 h-full flex flex-col">
-        <div className="flex flex-col gap-2 flex-1">
-          <div className="flex justify-between items-center mb-1">
-            <button onClick={() => navigate("/settings")} className="p-1">
-              <Settings className="w-5 h-5" />
+      <div className="container max-w-6xl mx-auto px-4 py-4 h-full flex flex-col">
+        <div className="flex flex-col gap-4 flex-1">
+          <div className="flex justify-between items-center">
+            <button onClick={() => navigate("/settings")} className="p-2">
+              <Settings className="w-6 h-6" />
             </button>
-            <div className="text-center text-lg font-semibold">
+            <div className="text-center text-xl font-semibold">
               Round {Math.min(currentRound, maxRounds)} of {maxRounds}
             </div>
             {isMobile && (
-              <button onClick={toggleFullscreen} className="p-1">
+              <button onClick={toggleFullscreen} className="p-2">
                 {isFullscreen ? (
-                  <Minimize2 className="w-5 h-5" />
+                  <Minimize2 className="w-6 h-6" />
                 ) : (
-                  <Maximize2 className="w-5 h-5" />
+                  <Maximize2 className="w-6 h-6" />
                 )}
               </button>
             )}
           </div>
           
           {isGameComplete && (
-            <div className="text-center mb-2">
+            <div className="text-center">
               <Button 
                 variant="destructive"
-                size="sm"
+                size="lg"
                 onClick={handleNavigateToWinnersCircle}
                 className="w-full max-w-md mx-auto"
               >
                 End Game
               </Button>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-2 text-muted-foreground">
                 All rounds completed! Enter your final scores below and click "End Game" when ready.
               </p>
             </div>
           )}
 
           {currentTableLocal && (
-            <div className="flex-1 min-h-0 mb-2">
+            <div className="flex-1 min-h-0">
               <PoolTableImage 
                 currentTable={currentTableLocal} 
                 setCurrentTableLocal={setCurrentTableLocal}
@@ -205,26 +201,26 @@ const Game = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {Array.from({ length: playerCount }).map((_, index) => (
-              <Card key={index} className="p-2 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
-                <div className="flex flex-col items-center space-y-1">
-                  <span className="text-sm font-medium text-purple-200">{playerNames[index]}</span>
-                  <div className="flex items-center space-x-2">
+              <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+                <div className="flex flex-col items-center space-y-2">
+                  <span className="text-base font-medium text-purple-200">{playerNames[index]}</span>
+                  <div className="flex items-center space-x-3">
                     <button
                       onClick={() => handleScoreChange(index, false)}
-                      className="p-1 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
                     >
-                      <Minus className="w-4 h-4 text-[#D6BCFA]" />
+                      <Minus className="w-5 h-5 text-[#D6BCFA]" />
                     </button>
-                    <span className="text-lg font-bold min-w-[2ch] text-center text-white">
+                    <span className="text-xl font-bold min-w-[2ch] text-center text-white">
                       {scores[index]}
                     </span>
                     <button
                       onClick={() => handleScoreChange(index, true)}
-                      className="p-1 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
                     >
-                      <Plus className="w-4 h-4 text-[#D6BCFA]" />
+                      <Plus className="w-5 h-5 text-[#D6BCFA]" />
                     </button>
                   </div>
                 </div>
@@ -233,17 +229,15 @@ const Game = () => {
           </div>
           
           {!isGameComplete && (
-            <div className="mb-2">
-              <GameControls 
-                allScoresEntered={atLeastOneScore}
-                difficulty={difficulty}
-                setDifficulty={setDifficulty}
-                handleSelectTable={handleSelectTable}
-              />
-            </div>
+            <GameControls 
+              allScoresEntered={atLeastOneScore}
+              difficulty={difficulty}
+              setDifficulty={setDifficulty}
+              handleSelectTable={handleSelectTable}
+            />
           )}
 
-          <div className="mb-2">
+          <div className="mt-auto">
             <ShotClock />
           </div>
         </div>
