@@ -24,15 +24,19 @@ const WinnersCircle = () => {
     const averagePoints = totalPoints / playerCount;
     const actualRoundsPlayed = Math.max(0, currentRound - 1); // Subtract 1 to get actual rounds played
 
-    const progressionEntry = {
-      date: new Date().toISOString(),
-      points: totalPoints,
-      skillLevels: [difficulty],
-      roundsPlayed: actualRoundsPlayed,
-      averagePoints: averagePoints
-    };
+    // Create an entry for each player
+    playerNames.slice(0, playerCount).forEach((playerName, index) => {
+      const progressionEntry = {
+        date: new Date().toISOString(),
+        points: scores[index],
+        skillLevels: [difficulty],
+        roundsPlayed: actualRoundsPlayed,
+        averagePoints: averagePoints,
+        playerName: playerName // Include the player name
+      };
 
-    addEntry(progressionEntry);
+      addEntry(progressionEntry);
+    });
   }, []); 
 
   if (!playerCount || playerCount === 0) {
@@ -143,4 +147,3 @@ const WinnersCircle = () => {
 };
 
 export default WinnersCircle;
-
