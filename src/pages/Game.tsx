@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +40,7 @@ const Game = () => {
   
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
-  const [allScoresEntered, setAllScoresEntered] = useState(false);
+  const [atLeastOneScore, setAtLeastOneScore] = useState(false);
   const [showRoundsDialog, setShowRoundsDialog] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
@@ -47,8 +48,8 @@ const Game = () => {
 
   useEffect(() => {
     const activePlayerScores = scores.slice(0, playerCount);
-    const allHaveScored = activePlayerScores.every(score => score > 0);
-    setAllScoresEntered(allHaveScored);
+    const hasOneScore = activePlayerScores.some(score => score > 0);
+    setAtLeastOneScore(hasOneScore);
   }, [scores, playerCount]);
 
   useEffect(() => {
@@ -159,7 +160,7 @@ const Game = () => {
         
         {!isGameComplete && (
           <GameControls 
-            allScoresEntered={allScoresEntered}
+            allScoresEntered={atLeastOneScore}
             difficulty={difficulty}
             setDifficulty={setDifficulty}
             handleSelectTable={handleSelectTable}
