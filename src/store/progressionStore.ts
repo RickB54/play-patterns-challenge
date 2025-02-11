@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -7,6 +8,7 @@ export interface ProgressionEntry {
   skillLevels: string[];
   roundsPlayed: number;
   averagePoints: number;
+  playerName: string; // Added player name field
 }
 
 interface ProgressionState {

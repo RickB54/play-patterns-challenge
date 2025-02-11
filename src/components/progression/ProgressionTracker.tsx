@@ -2,7 +2,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgressionStore } from "@/store/progressionStore";
 import { format } from "date-fns";
-import { ArrowLeft, CalendarIcon, Check } from "lucide-react";
+import { ArrowLeft, CalendarIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
@@ -14,18 +14,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const ProgressionTracker = () => {
   const navigate = useNavigate();
   const { entries } = useProgressionStore();
   const [date, setDate] = useState<DateRange | undefined>();
+  const [playerFilter, setPlayerFilter] = useState("");
 
   const filteredEntries = entries.filter((entry) => {
-    if (!date?.from || !date?.to) return true;
+    const matchesDate = !date?.from || !date?.to 
+      ? true 
+      : new Date(entry.date) >= date.from && new Date(entry.date) <= date.to;
     
-    const entryDate = new Date(entry.date);
-    return entryDate >= date.from && entryDate <= date.to;
+    const matchesPlayer = !playerFilter 
+      ? true 
+      : entry.playerName?.toLowerCase().includes(playerFilter.toLowerCase());
+
+    return matchesDate && matchesPlayer;
   });
 
   return (
@@ -38,9 +46,9 @@ const ProgressionTracker = () => {
         <div className="w-10" />
       </div>
 
-      <Card className="p-4 mb-6">
+      <Card className="p-4 mb-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Filter by Date Range</h3>
+          <h3 className="text-lg font-semibold">Filter Results</h3>
           <div className="flex items-center gap-2">
             <Popover>
               <PopoverTrigger asChild>
@@ -88,6 +96,17 @@ const ProgressionTracker = () => {
             )}
           </div>
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="playerFilter">Filter by Player Name</Label>
+          <Input
+            id="playerFilter"
+            value={playerFilter}
+            onChange={(e) => setPlayerFilter(e.target.value)}
+            placeholder="Enter player name..."
+            className="max-w-xs"
+          />
+        </div>
       </Card>
 
       <ScrollArea className="h-[600px] w-full rounded-md border">
@@ -96,8 +115,8 @@ const ProgressionTracker = () => {
             <thead>
               <tr className="bg-muted/50">
                 <th className="p-4 text-left font-semibold">Date</th>
+                <th className="p-4 text-left font-semibold">Player</th>
                 <th className="p-4 text-left font-semibold">Points</th>
-                <th className="p-4 text-left font-semibold"># of Rounds</th>
                 <th className="p-4 text-left font-semibold">Level of Difficulty</th>
                 <th className="p-4 text-left font-semibold">Rounds Played</th>
                 <th className="p-4 text-left font-semibold">Average Score</th>
@@ -112,8 +131,8 @@ const ProgressionTracker = () => {
                   <td className="p-4">
                     {format(new Date(entry.date), "MM/dd/yy")}
                   </td>
+                  <td className="p-4">{entry.playerName || 'Anonymous'}</td>
                   <td className="p-4">{entry.points}</td>
-                  <td className="p-4">{entry.skillLevels.length}</td>
                   <td className="p-4">{entry.skillLevels.join(", ")}</td>
                   <td className="p-4">{entry.roundsPlayed}</td>
                   <td className="p-4">{entry.averagePoints.toFixed(2)}</td>
@@ -128,4 +147,3 @@ const ProgressionTracker = () => {
 };
 
 export default ProgressionTracker;
-
