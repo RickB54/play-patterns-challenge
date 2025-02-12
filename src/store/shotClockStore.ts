@@ -1,6 +1,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { audioManager } from '@/utils/audio';
 
 interface ShotClockState {
   enabled: boolean;
@@ -19,7 +20,10 @@ export const useShotClockStore = create<ShotClockState>()(
       soundEnabled: false,
       setEnabled: (enabled) => set({ enabled }),
       setDuration: (duration) => set({ duration }),
-      setSoundEnabled: (enabled) => set({ soundEnabled }),
+      setSoundEnabled: (enabled) => {
+        audioManager.setSoundEnabled(enabled);
+        set({ soundEnabled: enabled });
+      },
     }),
     {
       name: 'shot-clock-storage'
