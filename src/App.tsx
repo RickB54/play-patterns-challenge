@@ -1,3 +1,4 @@
+
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -9,6 +10,7 @@ import Score from "./pages/Score";
 import WinnersCircle from "./pages/WinnersCircle";
 import SkillLevels from "./pages/SkillLevels";
 import ProgressionTracker from "./components/progression/ProgressionTracker";
+import Awards from "./pages/Awards";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,7 @@ const App = () => (
             <Route path="/score" element={<Score />} />
             <Route path="/winners-circle" element={<WinnersCircle />} />
             <Route path="/progression" element={<ProgressionTracker />} />
+            <Route path="/awards" element={<Awards />} />
           </Routes>
         </BrowserRouter>
       </div>
