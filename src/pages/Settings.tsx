@@ -1,4 +1,5 @@
-import { ArrowLeft, Timer, ChartLine, Volume2, VolumeX } from "lucide-react";
+
+import { ArrowLeft, Timer, ChartLine, Volume2, VolumeX, Maximize } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { RulesDialog } from "@/components/RulesDialog";
@@ -9,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -17,6 +18,28 @@ const Settings = () => {
   const { resetGame, playerCount, scores } = useGameStore();
   const { enabled, setEnabled, duration, setDuration, soundEnabled, setSoundEnabled } = useShotClockStore();
   const [customTime, setCustomTime] = useState(duration.toString());
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const updateFullscreenState = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', updateFullscreenState);
+    return () => document.removeEventListener('fullscreenchange', updateFullscreenState);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error("Error toggling fullscreen:", err);
+    }
+  };
 
   const handleEndGame = () => {
     toast({
@@ -53,6 +76,18 @@ const Settings = () => {
 
       <Card className="p-4 space-y-4 glass-card">
         <div className="space-y-4">
+          <div className="flex items-center justify-between space-x-2">
+            <div className="flex items-center space-x-2">
+              <Maximize className="w-5 h-5" />
+              <Label htmlFor="fullscreen">Fullscreen Mode</Label>
+            </div>
+            <Switch
+              id="fullscreen"
+              checked={isFullscreen}
+              onCheckedChange={toggleFullscreen}
+            />
+          </div>
+
           <div className="flex items-center justify-between space-x-2">
             <div className="flex items-center space-x-2">
               <Timer className="w-5 h-5" />
@@ -128,10 +163,6 @@ const Settings = () => {
           className="w-full btn-secondary"
         >
           Start New Round
-        </button>
-
-        <button onClick={() => navigate("/score")} className="w-full btn-secondary">
-          See Score
         </button>
 
         {hasScores && (
