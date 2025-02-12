@@ -15,14 +15,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const ALL_OPTION = "all";
 
 const ProgressionTracker = () => {
   const navigate = useNavigate();
-  const { entries } = useProgressionStore();
+  const { entries, clearAllData } = useProgressionStore();
   const [selectedDate, setSelectedDate] = useState<string>(ALL_OPTION);
   const [selectedPlayer, setSelectedPlayer] = useState<string>(ALL_OPTION);
+  const [showClearDialog, setShowClearDialog] = useState(false);
 
   // Get unique dates and players for dropdowns
   const uniqueDates = useMemo(() => {
@@ -45,6 +56,11 @@ const ProgressionTracker = () => {
 
     return matchesDate && matchesPlayer;
   });
+
+  const handleClearAll = () => {
+    clearAllData();
+    setShowClearDialog(false);
+  };
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -94,18 +110,27 @@ const ProgressionTracker = () => {
             </div>
           </div>
 
-          {(selectedDate !== ALL_OPTION || selectedPlayer !== ALL_OPTION) && (
+          <div className="flex justify-between">
+            {(selectedDate !== ALL_OPTION || selectedPlayer !== ALL_OPTION) && (
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSelectedDate(ALL_OPTION);
+                  setSelectedPlayer(ALL_OPTION);
+                }}
+                className="w-full md:w-auto"
+              >
+                Clear Filters
+              </Button>
+            )}
             <Button 
-              variant="outline" 
-              onClick={() => {
-                setSelectedDate(ALL_OPTION);
-                setSelectedPlayer(ALL_OPTION);
-              }}
+              variant="destructive"
+              onClick={() => setShowClearDialog(true)}
               className="w-full md:w-auto"
             >
-              Clear Filters
+              Clear All Data
             </Button>
-          )}
+          </div>
         </div>
       </Card>
 
@@ -142,6 +167,23 @@ const ProgressionTracker = () => {
           </table>
         </div>
       </ScrollArea>
+
+      <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              All data will be erased! This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearAll}>
+              Yes, clear all data
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
