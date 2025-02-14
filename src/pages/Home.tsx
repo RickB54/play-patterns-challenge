@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -98,11 +97,11 @@ const Home = () => {
           Journal
         </Button>
 
-        <div className="flex gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <InstructionsDialog>
             <Button
               variant="outline"
-              className="flex-1 flex items-center justify-center gap-2 h-12 text-lg"
+              className="w-full flex items-center justify-center gap-2 h-12 text-lg"
             >
               <HelpCircle className="w-5 h-5" />
               Instructions
@@ -112,7 +111,7 @@ const Home = () => {
           <RulesDialog>
             <Button
               variant="outline"
-              className="flex-1 flex items-center justify-center gap-2 h-12 text-lg"
+              className="w-full flex items-center justify-center gap-2 h-12 text-lg"
             >
               <Info className="w-5 h-5" />
               Rules

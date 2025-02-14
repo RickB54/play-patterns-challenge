@@ -2,7 +2,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgressionStore } from "@/store/progressionStore";
 import { format } from "date-fns";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { useState, useMemo } from "react";
@@ -25,11 +25,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 const ALL_OPTION = "all";
 
 const ProgressionTracker = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { entries, clearAllData } = useProgressionStore();
   const [selectedDate, setSelectedDate] = useState<string>(ALL_OPTION);
   const [selectedPlayer, setSelectedPlayer] = useState<string>(ALL_OPTION);
@@ -60,6 +62,37 @@ const ProgressionTracker = () => {
   const handleClearAll = () => {
     clearAllData();
     setShowClearDialog(false);
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Date', 'Player', 'Points', 'Skill Levels', 'Rounds Played', 'Average Points'];
+    const rows = filteredEntries.map(entry => [
+      format(new Date(entry.date), "MM/dd/yy"),
+      entry.playerName || 'Anonymous',
+      entry.points,
+      entry.skillLevels.join(', '),
+      entry.roundsPlayed,
+      entry.averagePoints.toFixed(2)
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'progression_data.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Export Complete",
+      description: "Your progression data has been exported to CSV",
+    });
   };
 
   return (
@@ -110,23 +143,33 @@ const ProgressionTracker = () => {
             </div>
           </div>
 
-          <div className="flex justify-between">
-            {(selectedDate !== ALL_OPTION || selectedPlayer !== ALL_OPTION) && (
+          <div className="flex flex-col md:flex-row gap-2 justify-between">
+            <div className="flex gap-2 w-full md:w-auto">
+              {(selectedDate !== ALL_OPTION || selectedPlayer !== ALL_OPTION) && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSelectedDate(ALL_OPTION);
+                    setSelectedPlayer(ALL_OPTION);
+                  }}
+                  className="flex-1 md:flex-none"
+                >
+                  Clear Filters
+                </Button>
+              )}
               <Button 
-                variant="outline" 
-                onClick={() => {
-                  setSelectedDate(ALL_OPTION);
-                  setSelectedPlayer(ALL_OPTION);
-                }}
-                className="w-full md:w-auto"
+                variant="outline"
+                onClick={exportToCSV}
+                className="flex-1 md:flex-none"
               >
-                Clear Filters
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
               </Button>
-            )}
+            </div>
             <Button 
               variant="destructive"
               onClick={() => setShowClearDialog(true)}
-              className="w-full md:w-auto"
+              className="flex-1 md:flex-none"
             >
               Clear All Data
             </Button>
