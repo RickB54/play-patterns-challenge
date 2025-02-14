@@ -5,9 +5,11 @@ import { Card } from "@/components/ui/card";
 import { useGameStore } from "@/store/gameStore";
 import { useProgressionStore } from "@/store/progressionStore";
 import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const WinnersCircle = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { 
     playerCount, 
     playerNames, 
@@ -16,7 +18,7 @@ const WinnersCircle = () => {
     currentRound,
     difficulty 
   } = useGameStore();
-  const { addEntry } = useProgressionStore();
+  const { addEntry, addAward } = useProgressionStore();
 
   useEffect(() => {
     // Calculate progression data when component mounts
@@ -24,7 +26,7 @@ const WinnersCircle = () => {
     const averagePoints = totalPoints / playerCount;
     const actualRoundsPlayed = Math.max(0, currentRound - 1); // Subtract 1 to get actual rounds played
 
-    // Create an entry for each player
+    // Create an entry for each player and check for awards
     playerNames.slice(0, playerCount).forEach((playerName, index) => {
       const progressionEntry = {
         date: new Date().toISOString(),
@@ -32,10 +34,79 @@ const WinnersCircle = () => {
         skillLevels: [difficulty],
         roundsPlayed: actualRoundsPlayed,
         averagePoints: averagePoints,
-        playerName: playerName // Include the player name
+        playerName: playerName
       };
 
       addEntry(progressionEntry);
+
+      // Check for awards
+      const playerScore = scores[index];
+      const otherScores = scores.slice(0, playerCount).filter((_, i) => i !== index);
+      const maxOtherScore = Math.max(...otherScores);
+
+      // Perfect Game Award (10+ points)
+      if (playerScore >= 10) {
+        const award = {
+          id: crypto.randomUUID(),
+          name: "Perfect Game",
+          description: "Scored 10 or more points in a single game",
+          date: new Date().toISOString(),
+          playerId: playerName,
+        };
+        addAward(playerName, award);
+        toast({
+          title: "🏆 Achievement Unlocked!",
+          description: `${playerName} earned the Perfect Game award!`,
+        });
+      }
+
+      // Sharpshooter Award (8+ points in advanced/expert)
+      if (playerScore >= 8 && (difficulty === "advanced" || difficulty === "expert")) {
+        const award = {
+          id: crypto.randomUUID(),
+          name: "Sharpshooter",
+          description: "Scored 8+ points in advanced or expert difficulty",
+          date: new Date().toISOString(),
+          playerId: playerName,
+        };
+        addAward(playerName, award);
+        toast({
+          title: "🎯 Achievement Unlocked!",
+          description: `${playerName} earned the Sharpshooter award!`,
+        });
+      }
+
+      // Comeback King Award (win after trailing)
+      if (playerScore > maxOtherScore && maxOtherScore - playerScore >= 3) {
+        const award = {
+          id: crypto.randomUUID(),
+          name: "Comeback King",
+          description: "Won after being behind by 3 or more points",
+          date: new Date().toISOString(),
+          playerId: playerName,
+        };
+        addAward(playerName, award);
+        toast({
+          title: "👑 Achievement Unlocked!",
+          description: `${playerName} earned the Comeback King award!`,
+        });
+      }
+
+      // Consistency Master (7+ points with 3+ rounds)
+      if (playerScore >= 7 && actualRoundsPlayed >= 3) {
+        const award = {
+          id: crypto.randomUUID(),
+          name: "Consistency Master",
+          description: "Maintained 7+ points over 3 or more rounds",
+          date: new Date().toISOString(),
+          playerId: playerName,
+        };
+        addAward(playerName, award);
+        toast({
+          title: "⭐ Achievement Unlocked!",
+          description: `${playerName} earned the Consistency Master award!`,
+        });
+      }
     });
   }, []); 
 
