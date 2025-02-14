@@ -1,9 +1,10 @@
+
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RulesDialog } from '@/components/RulesDialog';
 import { InstructionsDialog } from '@/components/InstructionsDialog';
-import { Info, ChartLine, HelpCircle, Maximize, Trophy } from 'lucide-react';
+import { Info, ChartLine, HelpCircle, Maximize, Trophy, BookText } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const Home = () => {
@@ -86,6 +87,15 @@ const Home = () => {
         >
           <Trophy className="w-5 h-5" />
           Awards
+        </Button>
+
+        <Button 
+          onClick={() => navigate('/journal')} 
+          variant="outline"
+          className="w-full flex items-center justify-center gap-2 h-12 text-lg"
+        >
+          <BookText className="w-5 h-5" />
+          Journal
         </Button>
 
         <div className="flex gap-3">

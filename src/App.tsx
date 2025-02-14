@@ -11,6 +11,7 @@ import WinnersCircle from "./pages/WinnersCircle";
 import SkillLevels from "./pages/SkillLevels";
 import ProgressionTracker from "./components/progression/ProgressionTracker";
 import Awards from "./pages/Awards";
+import Journal from "./pages/Journal";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/winners-circle" element={<WinnersCircle />} />
             <Route path="/progression" element={<ProgressionTracker />} />
             <Route path="/awards" element={<Awards />} />
+            <Route path="/journal" element={<Journal />} />
           </Routes>
         </BrowserRouter>
       </div>

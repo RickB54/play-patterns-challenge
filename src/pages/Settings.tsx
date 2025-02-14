@@ -1,4 +1,4 @@
-import { ArrowLeft, Timer, ChartLine, Volume2, VolumeX, Maximize, Trophy } from "lucide-react";
+import { ArrowLeft, Timer, ChartLine, Volume2, VolumeX, Maximize, Trophy, BookText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { RulesDialog } from "@/components/RulesDialog";
@@ -159,6 +159,14 @@ const Settings = () => {
         >
           <Trophy className="w-5 h-5" />
           View Awards
+        </button>
+
+        <button 
+          onClick={() => navigate("/journal")} 
+          className="w-full btn-secondary flex items-center justify-center gap-2"
+        >
+          <BookText className="w-5 h-5" />
+          Journal
         </button>
 
         <RulesDialog>
