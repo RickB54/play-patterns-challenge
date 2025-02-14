@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Settings } from "lucide-react";
@@ -31,8 +32,12 @@ const Setup = () => {
 
   const handleNameChange = (index: number, name: string) => {
     const newNames = [...playerNames];
-    newNames[index] = name || `Player ${index + 1}`; // Use default name if empty
+    newNames[index] = name;
     setPlayerNamesLocal(newNames);
+  };
+
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    event.target.select();
   };
 
   useEffect(() => {
@@ -42,6 +47,11 @@ const Setup = () => {
   }, [playerNames, setPlayerNames]);
 
   const handleStartRound = () => {
+    // Ensure empty names are replaced with default values
+    const finalNames = playerNames.map((name, index) => 
+      name.trim() === "" ? `Player ${index + 1}` : name
+    );
+    setPlayerNames(finalNames);
     setDifficulty(difficulty);
     navigate("/game");
   };
@@ -77,9 +87,11 @@ const Setup = () => {
                 {playerNames.map((name, index) => (
                   <Input
                     key={index}
-                    placeholder={`Player ${index + 1} name`}
+                    placeholder={`Player ${index + 1}`}
                     value={name}
                     onChange={(e) => handleNameChange(index, e.target.value)}
+                    onFocus={handleFocus}
+                    className="w-full"
                   />
                 ))}
               </div>

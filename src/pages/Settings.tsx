@@ -1,5 +1,4 @@
-
-import { ArrowLeft, Timer, ChartLine, Volume2, VolumeX, Maximize } from "lucide-react";
+import { ArrowLeft, Timer, ChartLine, Volume2, VolumeX, Maximize, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { RulesDialog } from "@/components/RulesDialog";
@@ -152,6 +151,14 @@ const Settings = () => {
         >
           <ChartLine className="w-5 h-5" />
           Progression Tracker
+        </button>
+
+        <button 
+          onClick={() => navigate("/awards")} 
+          className="w-full btn-secondary flex items-center justify-center gap-2"
+        >
+          <Trophy className="w-5 h-5" />
+          View Awards
         </button>
 
         <RulesDialog>

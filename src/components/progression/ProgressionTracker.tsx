@@ -136,35 +136,38 @@ const ProgressionTracker = () => {
 
       <ScrollArea className="h-[600px] w-full rounded-md border">
         <div className="relative w-full">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-muted/50">
-                <th className="p-4 text-left font-semibold">Date</th>
-                <th className="p-4 text-left font-semibold">Player</th>
-                <th className="p-4 text-left font-semibold">Points</th>
-                <th className="p-4 text-left font-semibold">Level of Difficulty</th>
-                <th className="p-4 text-left font-semibold">Rounds Played</th>
-                <th className="p-4 text-left font-semibold">Average Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEntries.map((entry, index) => (
-                <tr 
-                  key={index} 
-                  className="border-t hover:bg-muted/50 transition-colors"
-                >
-                  <td className="p-4">
+          <div className="grid grid-cols-1 gap-4 p-4">
+            {filteredEntries.map((entry, index) => (
+              <Card key={index} className="p-4 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">
                     {format(new Date(entry.date), "MM/dd/yy")}
-                  </td>
-                  <td className="p-4">{entry.playerName || 'Anonymous'}</td>
-                  <td className="p-4">{entry.points}</td>
-                  <td className="p-4">{entry.skillLevels.join(", ")}</td>
-                  <td className="p-4">{entry.roundsPlayed}</td>
-                  <td className="p-4">{entry.averagePoints.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </span>
+                  <span className="text-muted-foreground">
+                    {entry.playerName || 'Anonymous'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Points: </span>
+                    {entry.points}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Difficulty: </span>
+                    {entry.skillLevels.join(", ")}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Rounds: </span>
+                    {entry.roundsPlayed}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Average: </span>
+                    {entry.averagePoints.toFixed(2)}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
         </div>
       </ScrollArea>
 

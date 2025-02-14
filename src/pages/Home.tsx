@@ -1,10 +1,9 @@
-
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RulesDialog } from '@/components/RulesDialog';
 import { InstructionsDialog } from '@/components/InstructionsDialog';
-import { Info, ChartLine, HelpCircle, Maximize } from 'lucide-react';
+import { Info, ChartLine, HelpCircle, Maximize, Trophy } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const Home = () => {
@@ -78,6 +77,15 @@ const Home = () => {
         >
           <ChartLine className="w-5 h-5" />
           Progression Tracker
+        </Button>
+
+        <Button 
+          onClick={() => navigate('/awards')} 
+          variant="outline"
+          className="w-full flex items-center justify-center gap-2 h-12 text-lg"
+        >
+          <Trophy className="w-5 h-5" />
+          Awards
         </Button>
 
         <div className="flex gap-3">
