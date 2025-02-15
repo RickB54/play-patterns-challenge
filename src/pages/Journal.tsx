@@ -41,6 +41,7 @@ const Journal = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [mood, setMood] = useState<string>("neutral");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = () => {
     if (!newTitle.trim() || !newContent.trim()) {
@@ -78,6 +79,7 @@ const Journal = () => {
     setNewContent("");
     setMood("neutral");
     setEditingEntry(null);
+    setDialogOpen(false);
   };
 
   const handleDelete = (id: string) => {
@@ -95,6 +97,17 @@ const Journal = () => {
     setNewTitle(entry.title);
     setNewContent(entry.content);
     setMood(entry.mood || "neutral");
+    setDialogOpen(true);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      setNewTitle("");
+      setNewContent("");
+      setMood("neutral");
+      setEditingEntry(null);
+    }
   };
 
   const filteredEntries = entries.filter((entry) => {
@@ -116,7 +129,7 @@ const Journal = () => {
           <ArrowLeft className="w-6 h-6" />
         </button>
         <h2 className="text-2xl font-bold">Journal</h2>
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
             <Button variant="outline" size="icon">
               <Plus className="w-5 h-5" />
