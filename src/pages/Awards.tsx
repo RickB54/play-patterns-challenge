@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -8,7 +9,8 @@ import {
   Plus,
   Crown,
   Timer,
-  Target
+  Target,
+  Calendar as CalendarIcon
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 
 const predefinedAwards = [
@@ -70,6 +78,8 @@ const Awards = () => {
   
   const [selectedPlayer, setSelectedPlayer] = useState("");
   const [selectedAward, setSelectedAward] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const players = [...new Set(entries.map(entry => entry.playerName))];
   
@@ -103,6 +113,7 @@ const Awards = () => {
 
     setSelectedPlayer("");
     setSelectedAward("");
+    setDialogOpen(false);
   };
 
   const allAwards = entries.reduce((acc: any[], entry) => {
@@ -115,6 +126,25 @@ const Awards = () => {
     return acc;
   }, []);
 
+  const filteredAwards = allAwards.filter(award => {
+    const awardDate = new Date(award.date);
+    const matchesPlayer = !selectedPlayer || award.playerName === selectedPlayer;
+    const matchesDate = !selectedDate || (
+      awardDate.getDate() === selectedDate.getDate() &&
+      awardDate.getMonth() === selectedDate.getMonth() &&
+      awardDate.getFullYear() === selectedDate.getFullYear()
+    );
+    return matchesPlayer && matchesDate;
+  });
+
+  const handleOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      setSelectedPlayer("");
+      setSelectedAward("");
+    }
+  };
+
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
@@ -122,7 +152,7 @@ const Awards = () => {
           <ArrowLeft className="w-6 h-6" />
         </button>
         <h2 className="text-2xl font-bold">Player Awards</h2>
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
             <Button variant="outline" size="icon">
               <Plus className="w-5 h-5" />
@@ -176,8 +206,53 @@ const Awards = () => {
         </Dialog>
       </div>
 
+      <div className="flex flex-wrap gap-4 mb-6">
+        <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by player" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Players</SelectItem>
+            {players.map((player) => (
+              <SelectItem key={player} value={player}>
+                {player}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-[200px]">
+              <CalendarIcon className="w-4 h-4 mr-2" />
+              {selectedDate ? format(selectedDate, "PPP") : "Filter by date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {(selectedPlayer || selectedDate) && (
+          <Button 
+            variant="ghost" 
+            onClick={() => {
+              setSelectedPlayer("");
+              setSelectedDate(undefined);
+            }}
+          >
+            Clear Filters
+          </Button>
+        )}
+      </div>
+
       <div className="grid gap-4">
-        {allAwards.map((award, index) => (
+        {filteredAwards.map((award, index) => (
           <Card key={index} className="p-4">
             <div className="flex justify-between items-center">
               <div>
@@ -202,10 +277,10 @@ const Awards = () => {
           </Card>
         ))}
 
-        {allAwards.length === 0 && (
+        {filteredAwards.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <Trophy className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>No awards yet. Start by adding achievements for players!</p>
+            <p>No awards found for the selected filters.</p>
           </div>
         )}
       </div>
