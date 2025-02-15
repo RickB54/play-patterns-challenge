@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Pencil, Trash2, Calendar as CalendarIcon } from "lucide-react";
@@ -42,6 +41,7 @@ const Journal = () => {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [mood, setMood] = useState<string>("neutral");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const handleSubmit = () => {
     if (!newTitle.trim() || !newContent.trim()) {
@@ -108,6 +108,11 @@ const Journal = () => {
       setMood("neutral");
       setEditingEntry(null);
     }
+  };
+
+  const handleCalendarSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+    setCalendarOpen(false);
   };
 
   const filteredEntries = entries.filter((entry) => {
@@ -187,18 +192,18 @@ const Journal = () => {
             Calendar View
           </Button>
         </div>
-        <Popover>
+        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
             <Button variant="outline">
               <CalendarIcon className="w-4 h-4 mr-2" />
               {selectedDate ? format(selectedDate, "PPP") : "Filter by date"}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
+          <PopoverContent className="w-auto p-0" align="end">
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={setSelectedDate}
+              onSelect={handleCalendarSelect}
               initialFocus
               disabled={(date) =>
                 !calendarDates.some(
