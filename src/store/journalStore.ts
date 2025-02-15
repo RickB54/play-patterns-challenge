@@ -7,6 +7,7 @@ export interface JournalEntry {
   content: string;
   date: string;
   title: string;
+  mood?: string;
 }
 
 interface JournalState {

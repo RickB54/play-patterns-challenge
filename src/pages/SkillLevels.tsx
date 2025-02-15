@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -18,9 +19,9 @@ const SkillLevels = () => {
   const navigate = useNavigate();
   const { setDifficulty, setPlayerCount, setPlayerNames, setCurrentTable, setMaxRounds } = useGameStore();
   const { toast } = useToast();
-  const [players, setPlayers] = useState("2");  // Changed from "1" to "2"
-  const [rounds, setRounds] = useState("3");    // Changed from "5" to "3"
-  const [playerNames, setPlayerNamesLocal] = useState<string[]>([]);
+  const [players, setPlayers] = useState("2");
+  const [rounds, setRounds] = useState("3");
+  const [localPlayerNames, setLocalPlayerNames] = useState<string[]>(["Player 1", "Player 2"]);
   const [randomImages, setRandomImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const SkillLevels = () => {
     setPlayers(value);
     const count = parseInt(value);
     setPlayerCount(count);
-    setPlayerNamesLocal(Array(count).fill("").map((_, i) => `Player ${i + 1}`));
+    setLocalPlayerNames(Array(count).fill("").map((_, i) => `Player ${i + 1}`));
   };
 
   const handleRoundsChange = (value: string) => {
@@ -46,19 +47,14 @@ const SkillLevels = () => {
   };
 
   const handleNameChange = (index: number, name: string) => {
-    const newNames = [...playerNames];
-    newNames[index] = name || `Player ${index + 1}`;
-    setPlayerNamesLocal(newNames);
+    const newNames = [...localPlayerNames];
+    newNames[index] = name;
+    setLocalPlayerNames(newNames);
+    setPlayerNames(newNames);
   };
 
-  useEffect(() => {
-    if (playerNames.length > 0) {
-      setPlayerNames(playerNames);
-    }
-  }, [playerNames, setPlayerNames]);
-
   const handleSelectDifficulty = (difficulty: string, tableUrl: string) => {
-    if (!players || playerNames.some(name => !name.trim())) {
+    if (!players || localPlayerNames.some(name => !name.trim())) {
       toast({
         title: "Missing Information",
         description: "Please enter all player names",
@@ -144,19 +140,18 @@ const SkillLevels = () => {
           </Select>
         </div>
 
-        {playerNames.length > 0 && (
-          <div className="space-y-4">
-            <label className="block text-sm font-medium">Player Names</label>
-            {playerNames.map((name, index) => (
-              <Input
-                key={index}
-                placeholder={`Player ${index + 1} name`}
-                value={name}
-                onChange={(e) => handleNameChange(index, e.target.value)}
-              />
-            ))}
-          </div>
-        )}
+        <div className="space-y-4">
+          <label className="block text-sm font-medium">Player Names</label>
+          {localPlayerNames.map((name, index) => (
+            <Input
+              key={index}
+              placeholder={`Player ${index + 1} name`}
+              value={name}
+              onChange={(e) => handleNameChange(index, e.target.value)}
+              className="w-full"
+            />
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
