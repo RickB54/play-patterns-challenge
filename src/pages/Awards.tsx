@@ -76,7 +76,7 @@ const Awards = () => {
   const { entries, addAward } = useProgressionStore();
   const { toast } = useToast();
   
-  const [selectedPlayer, setSelectedPlayer] = useState("");
+  const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
   const [selectedAward, setSelectedAward] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -140,7 +140,7 @@ const Awards = () => {
   const handleOpenChange = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
-      setSelectedPlayer("");
+      setSelectedPlayer(null);
       setSelectedAward("");
     }
   };
@@ -207,12 +207,15 @@ const Awards = () => {
       </div>
 
       <div className="flex flex-wrap gap-4 mb-6">
-        <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
+        <Select 
+          value={selectedPlayer || "all"} 
+          onValueChange={(value) => setSelectedPlayer(value === "all" ? null : value)}
+        >
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Filter by player" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Players</SelectItem>
+            <SelectItem value="all">All Players</SelectItem>
             {players.map((player) => (
               <SelectItem key={player} value={player}>
                 {player}
@@ -242,7 +245,7 @@ const Awards = () => {
           <Button 
             variant="ghost" 
             onClick={() => {
-              setSelectedPlayer("");
+              setSelectedPlayer(null);
               setSelectedDate(undefined);
             }}
           >
