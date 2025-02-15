@@ -148,9 +148,13 @@ const Awards = () => {
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate(-1)} className="p-2">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => navigate(-1)}
+        >
           <ArrowLeft className="w-6 h-6" />
-        </button>
+        </Button>
         <h2 className="text-2xl font-bold">Player Awards</h2>
         <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
