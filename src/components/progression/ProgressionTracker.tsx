@@ -1,4 +1,3 @@
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgressionStore } from "@/store/progressionStore";
 import { format } from "date-fns";
@@ -37,7 +36,6 @@ const ProgressionTracker = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<string>(ALL_OPTION);
   const [showClearDialog, setShowClearDialog] = useState(false);
 
-  // Get unique dates and players for dropdowns
   const uniqueDates = useMemo(() => {
     const dates = [...new Set(entries.map(entry => 
       format(new Date(entry.date), "MM/dd/yy")
@@ -49,7 +47,10 @@ const ProgressionTracker = () => {
     return [...new Set(entries.map(entry => entry.playerName || 'Anonymous'))];
   }, [entries]);
 
-  const filteredEntries = entries.filter((entry) => {
+  const filteredEntries = entries.map(entry => ({
+    ...entry,
+    averagePoints: entry.roundsPlayed > 0 ? entry.points / entry.roundsPlayed : 0
+  })).filter((entry) => {
     const matchesDate = selectedDate === ALL_OPTION || 
       format(new Date(entry.date), "MM/dd/yy") === selectedDate;
     
