@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Pencil, Trash2, Calendar as CalendarIcon } from "lucide-react";
@@ -115,6 +116,12 @@ const Journal = () => {
     setCalendarOpen(false);
   };
 
+  const handleCalendarViewSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+  };
+
+  const calendarDates = entries.map((entry) => new Date(entry.date));
+
   const filteredEntries = entries.filter((entry) => {
     if (!selectedDate) return true;
     const entryDate = new Date(entry.date);
@@ -125,14 +132,16 @@ const Journal = () => {
     );
   });
 
-  const calendarDates = entries.map((entry) => new Date(entry.date));
-
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate(-1)} className="p-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate(-1)}
+        >
           <ArrowLeft className="w-6 h-6" />
-        </button>
+        </Button>
         <h2 className="text-2xl font-bold">Journal</h2>
         <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
@@ -192,30 +201,24 @@ const Journal = () => {
             Calendar View
           </Button>
         </div>
-        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline">
-              <CalendarIcon className="w-4 h-4 mr-2" />
-              {selectedDate ? format(selectedDate, "PPP") : "Filter by date"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={handleCalendarSelect}
-              initialFocus
-              disabled={(date) =>
-                !calendarDates.some(
-                  (d) =>
-                    d.getDate() === date.getDate() &&
-                    d.getMonth() === date.getMonth() &&
-                    d.getFullYear() === date.getFullYear()
-                )
-              }
-            />
-          </PopoverContent>
-        </Popover>
+        {viewMode === "list" && (
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <CalendarIcon className="w-4 h-4 mr-2" />
+                {selectedDate ? format(selectedDate, "PPP") : "Filter by date"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={handleCalendarSelect}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
 
       {viewMode === "calendar" ? (
@@ -223,17 +226,64 @@ const Journal = () => {
           <Calendar
             mode="single"
             selected={selectedDate}
-            onSelect={setSelectedDate}
+            onSelect={handleCalendarViewSelect}
             className="rounded-md border"
-            disabled={(date) =>
-              !calendarDates.some(
-                (d) =>
-                  d.getDate() === date.getDate() &&
-                  d.getMonth() === date.getMonth() &&
-                  d.getFullYear() === date.getFullYear()
-              )
-            }
+            modifiers={{
+              hasEntry: calendarDates,
+            }}
+            modifiersStyles={{
+              hasEntry: {
+                fontWeight: "bold",
+                backgroundColor: "hsl(var(--primary))",
+                color: "hsl(var(--primary-foreground))",
+                borderRadius: "4px",
+              },
+            }}
           />
+          {selectedDate && filteredEntries.length > 0 && (
+            <ScrollArea className="h-[300px] mt-4">
+              <div className="space-y-4">
+                {filteredEntries.map((entry) => (
+                  <Card key={entry.id} className="p-4 space-y-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold">{entry.title}</h3>
+                          <span className="text-xl">
+                            {entry.mood === "happy" && "😊"}
+                            {entry.mood === "sad" && "😢"}
+                            {entry.mood === "neutral" && "😐"}
+                            {entry.mood === "excited" && "🎉"}
+                            {entry.mood === "tired" && "😴"}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {format(new Date(entry.date), "PPp")}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(entry)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(entry.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="whitespace-pre-wrap">{entry.content}</p>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
         </Card>
       ) : (
         <ScrollArea className="h-[calc(100vh-200px)]">
