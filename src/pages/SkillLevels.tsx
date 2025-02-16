@@ -53,6 +53,10 @@ const SkillLevels = () => {
     setPlayerNames(newNames);
   };
 
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    event.target.select();
+  };
+
   const handleSelectDifficulty = (difficulty: string, tableUrl: string) => {
     if (!players || localPlayerNames.some(name => !name.trim())) {
       toast({
@@ -148,6 +152,7 @@ const SkillLevels = () => {
               placeholder={`Player ${index + 1} name`}
               value={name}
               onChange={(e) => handleNameChange(index, e.target.value)}
+              onFocus={handleFocus}
               className="w-full"
             />
           ))}
