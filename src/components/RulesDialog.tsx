@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Dialog,
@@ -41,12 +42,16 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
     ),
     3: (
       <>
-        <h3 className="font-bold mb-4">Settings Menu:</h3>
+        <h3 className="font-bold mb-4">Settings & Features:</h3>
         <ul className="space-y-2 text-sm">
-          <li>• Rules of the Game: To review this comprehensive set of rules.</li>
-          <li>• See score: To review the score for each player.</li>
-          <li>• Winner's Circle: View final scores and rankings of all players.</li>
-          <li>• End Game: Ends the current game and resets all data.</li>
+          <li>• Fullscreen Mode: Toggle fullscreen view for a more immersive gaming experience.</li>
+          <li>• Shot Clock: Enable a timer to add pressure and keep the game moving.</li>
+          <li>• Progression Tracker: Monitor your improvement and gaming statistics over time.</li>
+          <li>• View Awards: See earned achievements and special recognitions.</li>
+          <li>• Journal: Keep notes about your games and track your learning progress.</li>
+          <li>• Rules of the Game: Access this comprehensive guide to game rules and features.</li>
+          <li>• Start New Round: Begin a fresh round while keeping the current game session.</li>
+          <li>• End Game: Conclude the current game and view final results in the Winner's Circle.</li>
         </ul>
       </>
     ),
