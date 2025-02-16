@@ -25,6 +25,7 @@ export const RulesDialog = ({ children }: RulesDialogProps) => {
           <li>• Set Number of Rounds: Choose how many rounds you would like to play. You can change your mind later if you wish.</li>
           <li>• Set Players: Choose the Number of Players participating from the drop down menu. Then input the Player Names.</li>
           <li>• Select Level of Difficulty: Choose one of the pool table pictures that you would like to start with according to the level of difficulty from one of the predetermined table setups. Select your desired skill level, ranging from Easy to Expert.</li>
+          <li>• Setup the pool table exactly as it is shown in the picture.</li>
         </ul>
       </>
     ),
