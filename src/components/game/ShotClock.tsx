@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useRef } from "react";
 import { Timer, X } from "lucide-react";
 import { useShotClockStore } from "@/store/shotClockStore";
 import {
@@ -13,20 +14,26 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const ShotClock = () => {
-  const { enabled, duration, setEnabled, setDuration } = useShotClockStore();
+  const { enabled, duration, setEnabled, setDuration, soundEnabled } = useShotClockStore();
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
   const [customTime, setCustomTime] = useState(duration.toString());
+  const alarmSound = useRef(new Audio('/stop-clock-alarm.wav'));
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isRunning && timeLeft > 0) {
       timer = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+        setTimeLeft((prev) => {
+          if (prev <= 1 && soundEnabled) {
+            alarmSound.current.play().catch(console.error);
+          }
+          return prev - 1;
+        });
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft, soundEnabled]);
 
   const handleStart = () => {
     setTimeLeft(duration);
