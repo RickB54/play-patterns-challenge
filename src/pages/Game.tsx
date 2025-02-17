@@ -129,15 +129,16 @@ const Game = () => {
 
   if (isPracticeMode) {
     return (
-      <div className="h-screen w-screen overflow-hidden bg-background">
-        <div className="container max-w-6xl mx-auto px-4 py-4 h-full flex flex-col">
-          <div className="flex justify-between items-center">
+      <div className="h-screen w-screen overflow-hidden bg-background flex flex-col">
+        <div className="container max-w-lg mx-auto px-4 py-4 flex-1 flex flex-col">
+          <PracticeMode 
+            difficulty={difficulty}
+            setDifficulty={setDifficulty}
+          />
+          <div className="flex justify-between items-center mt-auto pb-4">
             <button onClick={() => navigate("/settings")} className="p-2">
               <Settings className="w-6 h-6" />
             </button>
-            <div className="text-center text-xl font-semibold">
-              Practice Mode
-            </div>
             {isMobile && (
               <button onClick={toggleFullscreen} className="p-2">
                 {isFullscreen ? (
@@ -146,62 +147,6 @@ const Game = () => {
                   <Maximize2 className="w-6 h-6" />
                 )}
               </button>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-6 flex-1">
-            <GameControls 
-              allScoresEntered={atLeastOneScore}
-              difficulty={difficulty}
-              setDifficulty={setDifficulty}
-              handleSelectTable={handleSelectTable}
-            />
-            
-            {currentTableLocal && (
-              <>
-                <div className="flex-1 min-h-0">
-                  <PoolTableImage 
-                    currentTable={currentTableLocal} 
-                    setCurrentTableLocal={setCurrentTableLocal}
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 gap-3">
-                  <Card className="p-4 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
-                    <div className="flex flex-col items-center space-y-2">
-                      <span className="text-base font-medium text-purple-200">Practice Score</span>
-                      <div className="flex items-center space-x-3">
-                        <button
-                          onClick={() => handleScoreChange(0, false)}
-                          className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                        >
-                          <Minus className="w-5 h-5 text-[#D6BCFA]" />
-                        </button>
-                        <span className="text-xl font-bold min-w-[2ch] text-center text-white">
-                          {scores[0]}
-                        </span>
-                        <button
-                          onClick={() => handleScoreChange(0, true)}
-                          className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                        >
-                          <Plus className="w-5 h-5 text-[#D6BCFA]" />
-                        </button>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-
-                <ShotClock />
-
-                <Button 
-                  variant="destructive"
-                  size="lg"
-                  onClick={() => navigate("/")}
-                  className="mt-4"
-                >
-                  End Game
-                </Button>
-              </>
             )}
           </div>
         </div>
