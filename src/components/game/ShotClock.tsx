@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { audioManager } from "@/utils/audio";
 
 const ShotClock = () => {
   const { enabled, duration, setEnabled, setDuration, soundEnabled } = useShotClockStore();
@@ -31,6 +32,8 @@ const ShotClock = () => {
           return prev - 1;
         });
       }, 1000);
+    } else if (timeLeft === 0) {
+      setIsRunning(false);
     }
     return () => clearInterval(timer);
   }, [isRunning, timeLeft, soundEnabled]);
@@ -47,16 +50,18 @@ const ShotClock = () => {
 
   const handleDurationChange = (value: string) => {
     if (value === "custom") return;
-    setDuration(parseInt(value));
-    setTimeLeft(parseInt(value));
+    const newDuration = parseInt(value);
+    setDuration(newDuration);
+    setTimeLeft(newDuration);
   };
 
   const handleCustomTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setCustomTime(value);
     if (value && !isNaN(parseInt(value))) {
-      setDuration(parseInt(value));
-      setTimeLeft(parseInt(value));
+      const newDuration = parseInt(value);
+      setDuration(newDuration);
+      setTimeLeft(newDuration);
     }
   };
 
@@ -125,6 +130,12 @@ const ShotClock = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <div className="fixed bottom-20 right-4 bg-background/80 backdrop-blur-sm p-4 rounded-lg shadow-lg">
+        <div className="text-2xl font-bold">
+          {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+        </div>
+      </div>
     </div>
   );
 };
