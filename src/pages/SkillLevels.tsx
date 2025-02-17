@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -59,10 +60,6 @@ const SkillLevels = () => {
     newNames[index] = name;
     setLocalPlayerNames(newNames);
     setPlayerNames(newNames);
-  };
-
-  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    event.target.select();
   };
 
   const handleSelectDifficulty = (difficulty: string, tableUrl: string) => {
@@ -196,7 +193,6 @@ const SkillLevels = () => {
                 placeholder={`Player ${index + 1} name`}
                 value={name}
                 onChange={(e) => handleNameChange(index, e.target.value)}
-                onFocus={handleFocus}
                 className="w-full"
               />
             ))}
