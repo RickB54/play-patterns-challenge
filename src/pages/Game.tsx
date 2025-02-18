@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -43,11 +42,9 @@ const Game = () => {
   const [difficulty, setDifficulty] = useState(storedDifficulty || "");
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [atLeastOneScore, setAtLeastOneScore] = useState(false);
-  const [showRoundsDialog, setShowRoundsDialog] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const isPracticeMode = window.location.search.includes('practice=true');
-  const isGameComplete = currentRound > maxRounds;
 
   useEffect(() => {
     const activePlayerScores = scores.slice(0, playerCount);
@@ -101,165 +98,96 @@ const Game = () => {
     }
   };
 
-  const handleNavigateToWinnersCircle = () => {
-    setShowRoundsDialog(false);
-    navigate("/winners-circle");
-  };
-
-  const handleSelectTable = () => {
-    if (difficulty) {
-      console.log("Selecting new table with difficulty:", difficulty);
-      const newTable = getRandomTable(difficulty as any, usedTables[difficulty as keyof typeof usedTables]);
-      console.log("New table selected:", newTable);
-      setCurrentTableLocal(newTable);
-      setCurrentTable(newTable);
-      addUsedTable(difficulty, newTable);
-      incrementRound();
-
-      if (currentRound >= maxRounds) {
-        setShowRoundsDialog(true);
-      }
-    }
-  };
-
   const handleScoreChange = (index: number, increment: boolean) => {
     const newScore = increment ? scores[index] + 1 : Math.max(0, scores[index] - 1);
     updateScore(index, newScore);
   };
 
-  if (isPracticeMode) {
-    return (
-      <div className="h-screen w-screen overflow-hidden bg-background flex flex-col">
-        <div className="container max-w-lg mx-auto px-4 py-4 flex-1 flex flex-col">
-          <PracticeMode 
-            difficulty={difficulty}
-            setDifficulty={setDifficulty}
+  const handleEndPractice = () => {
+    navigate("/");
+  };
+
+  const renderGameContent = () => (
+    <>
+      {currentTableLocal && (
+        <div className="flex-1 min-h-0">
+          <PoolTableImage 
+            currentTable={currentTableLocal} 
+            setCurrentTableLocal={setCurrentTableLocal}
           />
-          <div className="flex justify-between items-center mt-auto pb-4">
-            <button onClick={() => navigate("/settings")} className="p-2">
-              <Settings className="w-6 h-6" />
-            </button>
-            {isMobile && (
-              <button onClick={toggleFullscreen} className="p-2">
-                {isFullscreen ? (
-                  <Minimize2 className="w-6 h-6" />
-                ) : (
-                  <Maximize2 className="w-6 h-6" />
-                )}
-              </button>
-            )}
-          </div>
         </div>
+      )}
+
+      <div className={`grid ${isPracticeMode ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4'} gap-3`}>
+        {Array.from({ length: isPracticeMode ? 1 : playerCount }).map((_, index) => (
+          <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+            <div className="flex flex-col items-center space-y-2">
+              <span className="text-base font-medium text-purple-200">
+                {isPracticeMode ? "Practice Score" : playerNames[index]}
+              </span>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => handleScoreChange(index, false)}
+                  className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                >
+                  <Minus className="w-5 h-5 text-[#D6BCFA]" />
+                </button>
+                <span className="text-xl font-bold min-w-[2ch] text-center text-white">
+                  {scores[index]}
+                </span>
+                <button
+                  onClick={() => handleScoreChange(index, true)}
+                  className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                >
+                  <Plus className="w-5 h-5 text-[#D6BCFA]" />
+                </button>
+              </div>
+            </div>
+          </Card>
+        ))}
       </div>
-    );
-  }
+
+      <ShotClock />
+
+      {isPracticeMode && (
+        <Button 
+          variant="destructive"
+          size="lg"
+          onClick={handleEndPractice}
+          className="w-full mt-4"
+        >
+          End Practice
+        </Button>
+      )}
+    </>
+  );
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">
       <div className="container max-w-6xl mx-auto px-4 py-4 h-full flex flex-col">
-        <div className="flex flex-col gap-4 flex-1">
-          <div className="flex justify-between items-center">
-            <button onClick={() => navigate("/settings")} className="p-2">
-              <Settings className="w-6 h-6" />
-            </button>
+        <div className="flex justify-between items-center mb-4">
+          <button onClick={() => navigate("/settings")} className="p-2">
+            <Settings className="w-6 h-6" />
+          </button>
+          {!isPracticeMode && (
             <div className="text-center text-xl font-semibold">
               Round {Math.min(currentRound, maxRounds)} of {maxRounds}
             </div>
-            {isMobile && (
-              <button onClick={toggleFullscreen} className="p-2">
-                {isFullscreen ? (
-                  <Minimize2 className="w-6 h-6" />
-                ) : (
-                  <Maximize2 className="w-6 h-6" />
-                )}
-              </button>
-            )}
-          </div>
-          
-          {isGameComplete && (
-            <div className="text-center">
-              <Button 
-                variant="destructive"
-                size="lg"
-                onClick={handleNavigateToWinnersCircle}
-                className="w-full max-w-md mx-auto"
-              >
-                End Game
-              </Button>
-              <p className="mt-2 text-muted-foreground">
-                All rounds completed! Enter your final scores below and click "End Game" when ready.
-              </p>
-            </div>
           )}
-
-          {currentTableLocal && (
-            <div className="flex-1 min-h-0">
-              <PoolTableImage 
-                currentTable={currentTableLocal} 
-                setCurrentTableLocal={setCurrentTableLocal}
-              />
-            </div>
+          {isMobile && (
+            <button onClick={toggleFullscreen} className="p-2">
+              {isFullscreen ? (
+                <Minimize2 className="w-6 h-6" />
+              ) : (
+                <Maximize2 className="w-6 h-6" />
+              )}
+            </button>
           )}
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {Array.from({ length: playerCount }).map((_, index) => (
-              <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
-                <div className="flex flex-col items-center space-y-2">
-                  <span className="text-base font-medium text-purple-200">{playerNames[index]}</span>
-                  <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => handleScoreChange(index, false)}
-                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                    >
-                      <Minus className="w-5 h-5 text-[#D6BCFA]" />
-                    </button>
-                    <span className="text-xl font-bold min-w-[2ch] text-center text-white">
-                      {scores[index]}
-                    </span>
-                    <button
-                      onClick={() => handleScoreChange(index, true)}
-                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                    >
-                      <Plus className="w-5 h-5 text-[#D6BCFA]" />
-                    </button>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-          
-          {!isGameComplete && (
-            <GameControls 
-              allScoresEntered={atLeastOneScore}
-              difficulty={difficulty}
-              setDifficulty={setDifficulty}
-              handleSelectTable={handleSelectTable}
-            />
-          )}
-
-          <div className="mt-auto">
-            <ShotClock />
-          </div>
         </div>
 
-        <AlertDialog open={showRoundsDialog} onOpenChange={setShowRoundsDialog}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Maximum Rounds Reached</AlertDialogTitle>
-              <AlertDialogDescription>
-                You have reached the required number of rounds. Do you want to continue?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={handleNavigateToWinnersCircle}>
-                No, go to Winner's Circle
-              </AlertDialogCancel>
-              <AlertDialogAction onClick={() => setShowRoundsDialog(false)}>
-                Yes, continue playing
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <div className="flex flex-col gap-4 flex-1">
+          {renderGameContent()}
+        </div>
       </div>
     </div>
   );
