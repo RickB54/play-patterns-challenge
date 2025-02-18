@@ -1,3 +1,4 @@
+
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -32,6 +33,10 @@ const Home = () => {
     }
   };
 
+  const handlePracticeMode = () => {
+    navigate('/skill-levels?practice=true');
+  };
+
   return (
     <div className="container max-w-lg mx-auto px-4 py-6 text-center">
       <div className="flex justify-end mb-4">
@@ -63,7 +68,7 @@ const Home = () => {
         </Button>
         
         <Button 
-          onClick={() => navigate('/game?practice=true')} 
+          onClick={handlePracticeMode} 
           variant="secondary"
           className="w-full bg-gray-700 hover:bg-gray-600 h-12 text-lg"
         >
