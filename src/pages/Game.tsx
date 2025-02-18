@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -10,16 +11,7 @@ import ShotClock from "@/components/game/ShotClock";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { useProgressionStore } from "@/store/progressionStore";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -43,6 +35,8 @@ const Game = () => {
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [atLeastOneScore, setAtLeastOneScore] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [practiceRound, setPracticeRound] = useState(1);
+  const addEntry = useProgressionStore(state => state.addEntry);
 
   const isPracticeMode = window.location.search.includes('practice=true');
 
@@ -72,7 +66,6 @@ const Game = () => {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     window.addEventListener('orientationchange', handleOrientationChange);
 
-    // Initial orientation lock
     if (isMobile && screen.orientation) {
       screen.orientation.lock('portrait').catch(console.error);
     }
@@ -101,9 +94,21 @@ const Game = () => {
   const handleScoreChange = (index: number, increment: boolean) => {
     const newScore = increment ? scores[index] + 1 : Math.max(0, scores[index] - 1);
     updateScore(index, newScore);
+    if (isPracticeMode) {
+      setPracticeRound(prev => prev + 1);
+    }
   };
 
   const handleEndPractice = () => {
+    // Record practice session in progression tracker
+    addEntry({
+      date: new Date().toISOString(),
+      points: scores[0], // In practice mode, we only have one player
+      skillLevels: [difficulty],
+      roundsPlayed: practiceRound,
+      averagePoints: scores[0] / practiceRound,
+      playerName: playerNames[0],
+    });
     navigate("/");
   };
 
@@ -169,11 +174,13 @@ const Game = () => {
           <button onClick={() => navigate("/settings")} className="p-2">
             <Settings className="w-6 h-6" />
           </button>
-          {!isPracticeMode && (
-            <div className="text-center text-xl font-semibold">
-              Round {Math.min(currentRound, maxRounds)} of {maxRounds}
-            </div>
-          )}
+          <div className="text-center text-xl font-semibold">
+            {isPracticeMode ? (
+              `Round ${practiceRound}`
+            ) : (
+              `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`
+            )}
+          </div>
           {isMobile && (
             <button onClick={toggleFullscreen} className="p-2">
               {isFullscreen ? (
