@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { useGameStore } from "@/store/gameStore";
@@ -17,12 +17,23 @@ import { tableImages } from "@/constants/tableImages";
 
 const SkillLevels = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isPracticeMode = location.search.includes('practice=true');
+  
   const { setDifficulty, setPlayerCount, setPlayerNames, setCurrentTable, setMaxRounds } = useGameStore();
   const { toast } = useToast();
+  const [playerName, setPlayerName] = useState("Player 1");
   const [players, setPlayers] = useState("2");
   const [rounds, setRounds] = useState("3");
   const [localPlayerNames, setLocalPlayerNames] = useState<string[]>(["Player 1", "Player 2"]);
   const [randomImages, setRandomImages] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (isPracticeMode) {
+      setPlayerCount(1);
+      setPlayerNames([playerName]);
+    }
+  }, [isPracticeMode, playerName, setPlayerCount, setPlayerNames]);
 
   useEffect(() => {
     const images: Record<string, string> = {};
@@ -35,22 +46,31 @@ const SkillLevels = () => {
   }, []);
 
   const handlePlayerCountChange = (value: string) => {
-    setPlayers(value);
-    const count = parseInt(value);
-    setPlayerCount(count);
-    setLocalPlayerNames(Array(count).fill("").map((_, i) => `Player ${i + 1}`));
+    if (!isPracticeMode) {
+      setPlayers(value);
+      const count = parseInt(value);
+      setPlayerCount(count);
+      setLocalPlayerNames(Array(count).fill("").map((_, i) => `Player ${i + 1}`));
+    }
   };
 
   const handleRoundsChange = (value: string) => {
-    setRounds(value);
-    setMaxRounds(parseInt(value));
+    if (!isPracticeMode) {
+      setRounds(value);
+      setMaxRounds(parseInt(value));
+    }
   };
 
   const handleNameChange = (index: number, name: string) => {
-    const newNames = [...localPlayerNames];
-    newNames[index] = name;
-    setLocalPlayerNames(newNames);
-    setPlayerNames(newNames);
+    if (isPracticeMode) {
+      setPlayerName(name);
+      setPlayerNames([name]);
+    } else {
+      const newNames = [...localPlayerNames];
+      newNames[index] = name;
+      setLocalPlayerNames(newNames);
+      setPlayerNames(newNames);
+    }
   };
 
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -58,7 +78,14 @@ const SkillLevels = () => {
   };
 
   const handleSelectDifficulty = (difficulty: string, tableUrl: string) => {
-    if (!players || localPlayerNames.some(name => !name.trim())) {
+    if (isPracticeMode && !playerName.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter your name",
+        variant: "destructive",
+      });
+      return;
+    } else if (!isPracticeMode && localPlayerNames.some(name => !name.trim())) {
       toast({
         title: "Missing Information",
         description: "Please enter all player names",
@@ -108,54 +135,72 @@ const SkillLevels = () => {
         >
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-3xl font-bold ml-4">Players & Skill Level</h1>
+        <h1 className="text-3xl font-bold ml-4">
+          {isPracticeMode ? "Practice Setup" : "Players & Skill Level"}
+        </h1>
       </div>
 
       <div className="mb-8 space-y-6">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Number of Rounds</label>
-          <Select value={rounds} onValueChange={handleRoundsChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select rounds" />
-            </SelectTrigger>
-            <SelectContent>
-              {[...Array(10)].map((_, i) => (
-                <SelectItem key={i + 1} value={(i + 1).toString()}>
-                  {i + 1} Round{i > 0 ? "s" : ""}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {!isPracticeMode && (
+          <>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Number of Rounds</label>
+              <Select value={rounds} onValueChange={handleRoundsChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select rounds" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...Array(10)].map((_, i) => (
+                    <SelectItem key={i + 1} value={(i + 1).toString()}>
+                      {i + 1} Round{i > 0 ? "s" : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Number of Players</label>
-          <Select value={players} onValueChange={handlePlayerCountChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select players" />
-            </SelectTrigger>
-            <SelectContent>
-              {[...Array(8)].map((_, i) => (
-                <SelectItem key={i + 1} value={(i + 1).toString()}>
-                  {i + 1} Player{i > 0 ? "s" : ""}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Number of Players</label>
+              <Select value={players} onValueChange={handlePlayerCountChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select players" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...Array(8)].map((_, i) => (
+                    <SelectItem key={i + 1} value={(i + 1).toString()}>
+                      {i + 1} Player{i > 0 ? "s" : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
 
         <div className="space-y-4">
-          <label className="block text-sm font-medium">Player Names</label>
-          {localPlayerNames.map((name, index) => (
+          <label className="block text-sm font-medium">
+            {isPracticeMode ? "Your Name" : "Player Names"}
+          </label>
+          {isPracticeMode ? (
             <Input
-              key={index}
-              placeholder={`Player ${index + 1} name`}
-              value={name}
-              onChange={(e) => handleNameChange(index, e.target.value)}
+              placeholder="Enter your name"
+              value={playerName}
+              onChange={(e) => handleNameChange(0, e.target.value)}
               onFocus={handleFocus}
               className="w-full"
             />
-          ))}
+          ) : (
+            localPlayerNames.map((name, index) => (
+              <Input
+                key={index}
+                placeholder={`Player ${index + 1} name`}
+                value={name}
+                onChange={(e) => handleNameChange(index, e.target.value)}
+                onFocus={handleFocus}
+                className="w-full"
+              />
+            ))
+          )}
         </div>
       </div>
 
