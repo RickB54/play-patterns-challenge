@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -94,19 +93,18 @@ const Game = () => {
   const handleScoreChange = (index: number, increment: boolean) => {
     const newScore = increment ? scores[index] + 1 : Math.max(0, scores[index] - 1);
     updateScore(index, newScore);
-    if (isPracticeMode) {
+    if (isPracticeMode && increment) {
       setPracticeRound(prev => prev + 1);
     }
   };
 
   const handleEndPractice = () => {
-    // Record practice session in progression tracker
     addEntry({
       date: new Date().toISOString(),
-      points: scores[0], // In practice mode, we only have one player
+      points: scores[0],
       skillLevels: [difficulty],
-      roundsPlayed: practiceRound,
-      averagePoints: scores[0] / practiceRound,
+      roundsPlayed: practiceRound - 1,
+      averagePoints: scores[0] / (practiceRound - 1),
       playerName: playerNames[0],
     });
     navigate("/");
@@ -123,25 +121,25 @@ const Game = () => {
         </div>
       )}
 
-      <div className={`grid ${isPracticeMode ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4'} gap-3`}>
-        {Array.from({ length: isPracticeMode ? 1 : playerCount }).map((_, index) => (
-          <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+      {isPracticeMode ? (
+        <div className="flex justify-center w-full">
+          <Card className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2 w-full max-w-[300px]">
             <div className="flex flex-col items-center space-y-2">
               <span className="text-base font-medium text-purple-200">
-                {isPracticeMode ? "Practice Score" : playerNames[index]}
+                {playerNames[0]}
               </span>
               <div className="flex items-center space-x-3">
                 <button
-                  onClick={() => handleScoreChange(index, false)}
+                  onClick={() => handleScoreChange(0, false)}
                   className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
                 >
                   <Minus className="w-5 h-5 text-[#D6BCFA]" />
                 </button>
                 <span className="text-xl font-bold min-w-[2ch] text-center text-white">
-                  {scores[index]}
+                  {scores[0]}
                 </span>
                 <button
-                  onClick={() => handleScoreChange(index, true)}
+                  onClick={() => handleScoreChange(0, true)}
                   className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
                 >
                   <Plus className="w-5 h-5 text-[#D6BCFA]" />
@@ -149,8 +147,37 @@ const Game = () => {
               </div>
             </div>
           </Card>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {Array.from({ length: playerCount }).map((_, index) => (
+            <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+              <div className="flex flex-col items-center space-y-2">
+                <span className="text-base font-medium text-purple-200">
+                  {playerNames[index]}
+                </span>
+                <div className="flex items-center space-x-3">
+                  <button
+                    onClick={() => handleScoreChange(index, false)}
+                    className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                  >
+                    <Minus className="w-5 h-5 text-[#D6BCFA]" />
+                  </button>
+                  <span className="text-xl font-bold min-w-[2ch] text-center text-white">
+                    {scores[index]}
+                  </span>
+                  <button
+                    onClick={() => handleScoreChange(index, true)}
+                    className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                  >
+                    <Plus className="w-5 h-5 text-[#D6BCFA]" />
+                  </button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <ShotClock />
 
