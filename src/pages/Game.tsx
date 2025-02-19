@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +13,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useProgressionStore } from "@/store/progressionStore";
 import { useToast } from "@/hooks/use-toast";
 
-// Define valid difficulty types
 type Difficulty = "easy" | "intermediate" | "advanced" | "expert";
 
 const Game = () => {
@@ -149,8 +147,8 @@ const Game = () => {
       )}
 
       {isPracticeMode ? (
-        <div className="flex justify-center w-full">
-          <Card className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2 w-full max-w-[300px]">
+        <div className="flex justify-center items-center w-full">
+          <Card className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2 w-full max-w-[300px] mx-auto">
             <div className="flex flex-col items-center space-y-2">
               <span className="text-base font-medium text-purple-200">
                 {playerNames[0]}
@@ -176,33 +174,35 @@ const Game = () => {
           </Card>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {Array.from({ length: playerCount }).map((_, index) => (
-            <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
-              <div className="flex flex-col items-center space-y-2">
-                <span className="text-base font-medium text-purple-200">
-                  {playerNames[index]}
-                </span>
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={() => handleScoreChange(index, false)}
-                    className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                  >
-                    <Minus className="w-5 h-5 text-[#D6BCFA]" />
-                  </button>
-                  <span className="text-xl font-bold min-w-[2ch] text-center text-white">
-                    {scores[index]}
+        <div className="flex justify-center items-center w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-[800px] mx-auto">
+            {Array.from({ length: playerCount }).map((_, index) => (
+              <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
+                <div className="flex flex-col items-center space-y-2">
+                  <span className="text-base font-medium text-purple-200">
+                    {playerNames[index]}
                   </span>
-                  <button
-                    onClick={() => handleScoreChange(index, true)}
-                    className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                  >
-                    <Plus className="w-5 h-5 text-[#D6BCFA]" />
-                  </button>
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => handleScoreChange(index, false)}
+                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                    >
+                      <Minus className="w-5 h-5 text-[#D6BCFA]" />
+                    </button>
+                    <span className="text-xl font-bold min-w-[2ch] text-center text-white">
+                      {scores[index]}
+                    </span>
+                    <button
+                      onClick={() => handleScoreChange(index, true)}
+                      className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
+                    >
+                      <Plus className="w-5 h-5 text-[#D6BCFA]" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            ))}
+          </div>
         </div>
       )}
 
