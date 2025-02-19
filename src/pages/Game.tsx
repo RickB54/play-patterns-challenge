@@ -14,6 +14,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useProgressionStore } from "@/store/progressionStore";
 import { useToast } from "@/hooks/use-toast";
 
+// Define valid difficulty types
+type Difficulty = "easy" | "intermediate" | "advanced" | "expert";
+
 const Game = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -33,7 +36,7 @@ const Game = () => {
     incrementRound
   } = useGameStore();
   
-  const [difficulty, setDifficulty] = useState(storedDifficulty || "");
+  const [difficulty, setDifficulty] = useState<Difficulty>(storedDifficulty as Difficulty || "intermediate");
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
   const [atLeastOneScore, setAtLeastOneScore] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -104,11 +107,12 @@ const Game = () => {
       }
     }
 
-    const newTable = getRandomTable(difficulty, usedTables[difficulty.toLowerCase() as keyof typeof usedTables]);
+    const validDifficulty = difficulty as Difficulty;
+    const newTable = getRandomTable(validDifficulty, usedTables[validDifficulty]);
     if (newTable) {
       setCurrentTable(newTable);
       setCurrentTableLocal(newTable);
-      addUsedTable(difficulty, newTable);
+      addUsedTable(validDifficulty, newTable);
       toast({
         title: "New Table",
         description: "A new table has been loaded",
