@@ -11,10 +11,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useProgressionStore } from "@/store/progressionStore";
+import { useToast } from "@/hooks/use-toast";
 
 const Game = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const { 
     difficulty: storedDifficulty, 
     usedTables, 
@@ -90,12 +92,32 @@ const Game = () => {
     }
   };
 
+  const handleNextTable = () => {
+    if (isPracticeMode) {
+      setPracticeRound(prev => prev + 1);
+    } else {
+      incrementRound();
+      if (currentRound >= maxRounds) {
+        navigate("/winners-circle");
+        return;
+      }
+    }
+
+    const newTable = getRandomTable(difficulty);
+    if (newTable) {
+      setCurrentTable(newTable);
+      setCurrentTableLocal(newTable);
+      addUsedTable(difficulty, newTable);
+      toast({
+        title: "New Table",
+        description: "A new table has been loaded",
+      });
+    }
+  };
+
   const handleScoreChange = (index: number, increment: boolean) => {
     const newScore = increment ? scores[index] + 1 : Math.max(0, scores[index] - 1);
     updateScore(index, newScore);
-    if (isPracticeMode && increment) {
-      setPracticeRound(prev => prev + 1);
-    }
   };
 
   const handleEndPractice = () => {
@@ -103,8 +125,8 @@ const Game = () => {
       date: new Date().toISOString(),
       points: scores[0],
       skillLevels: [difficulty],
-      roundsPlayed: practiceRound - 1,
-      averagePoints: scores[0] / (practiceRound - 1),
+      roundsPlayed: practiceRound,
+      averagePoints: scores[0] / practiceRound,
       playerName: playerNames[0],
     });
     navigate("/");
@@ -181,16 +203,26 @@ const Game = () => {
 
       <ShotClock />
 
-      {isPracticeMode && (
+      <div className="flex flex-col gap-2 mt-4">
         <Button 
-          variant="destructive"
           size="lg"
-          onClick={handleEndPractice}
-          className="w-full mt-4"
+          onClick={handleNextTable}
+          className="w-full"
         >
-          End Practice
+          Next Table
         </Button>
-      )}
+
+        {isPracticeMode && (
+          <Button 
+            variant="destructive"
+            size="lg"
+            onClick={handleEndPractice}
+            className="w-full"
+          >
+            End Practice
+          </Button>
+        )}
+      </div>
     </>
   );
 
