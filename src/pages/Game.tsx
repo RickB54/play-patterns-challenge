@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -103,7 +104,7 @@ const Game = () => {
       }
     }
 
-    const newTable = getRandomTable(difficulty);
+    const newTable = getRandomTable(difficulty, usedTables[difficulty.toLowerCase() as keyof typeof usedTables]);
     if (newTable) {
       setCurrentTable(newTable);
       setCurrentTableLocal(newTable);
