@@ -136,13 +136,6 @@ const Game = () => {
     navigate("/");
   };
 
-  const renderRoundDisplay = () => {
-    if (isPracticeMode) {
-      return `Practice Round ${practiceRound}`;
-    }
-    return `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`;
-  };
-
   const renderGameContent = () => (
     <>
       {currentTableLocal && (
@@ -245,7 +238,7 @@ const Game = () => {
             <Settings className="w-6 h-6" />
           </button>
           <div className="text-center text-xl font-semibold">
-            {renderRoundDisplay()}
+            {isPracticeMode ? `Round ${practiceRound}` : `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`}
           </div>
           {isMobile && (
             <button onClick={toggleFullscreen} className="p-2">
