@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -137,6 +136,13 @@ const Game = () => {
     navigate("/");
   };
 
+  const renderRoundDisplay = () => {
+    if (isPracticeMode) {
+      return `Practice Round ${practiceRound}`;
+    }
+    return `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`;
+  };
+
   const renderGameContent = () => (
     <>
       {currentTableLocal && (
@@ -239,11 +245,7 @@ const Game = () => {
             <Settings className="w-6 h-6" />
           </button>
           <div className="text-center text-xl font-semibold">
-            {isPracticeMode ? (
-              `Round ${practiceRound}`
-            ) : (
-              `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`
-            )}
+            {renderRoundDisplay()}
           </div>
           {isMobile && (
             <button onClick={toggleFullscreen} className="p-2">
