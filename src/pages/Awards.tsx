@@ -111,7 +111,7 @@ const Awards = () => {
       description: `${award.name} has been awarded to ${selectedPlayer}`,
     });
 
-    setSelectedPlayer("");
+    setSelectedPlayer(null);
     setSelectedAward("");
     setDialogOpen(false);
   };
@@ -127,13 +127,20 @@ const Awards = () => {
   }, []);
 
   const filteredAwards = allAwards.filter(award => {
+    if (!award) return false;
+
     const awardDate = new Date(award.date);
+    
+    // Player filter
     const matchesPlayer = !selectedPlayer || award.playerName === selectedPlayer;
+    
+    // Date filter
     const matchesDate = !selectedDate || (
-      awardDate.getDate() === selectedDate.getDate() &&
+      awardDate.getFullYear() === selectedDate.getFullYear() &&
       awardDate.getMonth() === selectedDate.getMonth() &&
-      awardDate.getFullYear() === selectedDate.getFullYear()
+      awardDate.getDate() === selectedDate.getDate()
     );
+
     return matchesPlayer && matchesDate;
   });
 
@@ -169,7 +176,7 @@ const Awards = () => {
             <div className="space-y-4 pt-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Select Player</label>
-                <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
+                <Select value={selectedPlayer || ""} onValueChange={setSelectedPlayer}>
                   <SelectTrigger>
                     <SelectValue placeholder="Choose a player" />
                   </SelectTrigger>
@@ -259,8 +266,8 @@ const Awards = () => {
       </div>
 
       <div className="grid gap-4">
-        {filteredAwards.map((award, index) => (
-          <Card key={index} className="p-4">
+        {filteredAwards.map((award) => (
+          <Card key={award.id} className="p-4">
             <div className="flex justify-between items-center">
               <div>
                 <div className="flex items-center gap-2 mb-1">
