@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -120,7 +119,8 @@ const Awards = () => {
     if (entry.awards) {
       return [...acc, ...entry.awards.map(award => ({
         ...award,
-        playerName: entry.playerName
+        playerName: entry.playerName,
+        date: new Date(award.date).toISOString()
       }))];
     }
     return acc;
@@ -129,20 +129,20 @@ const Awards = () => {
   const filteredAwards = allAwards.filter(award => {
     if (!award) return false;
 
-    const awardDate = new Date(award.date);
-    
-    // Player filter
-    const matchesPlayer = !selectedPlayer || award.playerName === selectedPlayer;
-    
-    // Date filter
-    const matchesDate = !selectedDate || (
-      awardDate.getFullYear() === selectedDate.getFullYear() &&
-      awardDate.getMonth() === selectedDate.getMonth() &&
-      awardDate.getDate() === selectedDate.getDate()
-    );
+    const playerMatches = selectedPlayer === null || award.playerName === selectedPlayer;
 
-    return matchesPlayer && matchesDate;
-  });
+    let dateMatches = true;
+    if (selectedDate) {
+      const awardDate = new Date(award.date);
+      dateMatches = (
+        awardDate.getFullYear() === selectedDate.getFullYear() &&
+        awardDate.getMonth() === selectedDate.getMonth() &&
+        awardDate.getDate() === selectedDate.getDate()
+      );
+    }
+
+    return playerMatches && dateMatches;
+  }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const handleOpenChange = (open: boolean) => {
     setDialogOpen(open);
@@ -219,11 +219,13 @@ const Awards = () => {
 
       <div className="flex flex-wrap gap-4 mb-6">
         <Select 
-          value={selectedPlayer || "all"} 
+          value={selectedPlayer !== null ? selectedPlayer : "all"} 
           onValueChange={(value) => setSelectedPlayer(value === "all" ? null : value)}
         >
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter by player" />
+            <SelectValue placeholder="Filter by player">
+              {selectedPlayer || "All Players"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Players</SelectItem>
@@ -246,13 +248,13 @@ const Awards = () => {
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={setSelectedDate}
+              onSelect={(date) => setSelectedDate(date)}
               initialFocus
             />
           </PopoverContent>
         </Popover>
 
-        {(selectedPlayer || selectedDate) && (
+        {(selectedPlayer !== null || selectedDate) && (
           <Button 
             variant="ghost" 
             onClick={() => {
