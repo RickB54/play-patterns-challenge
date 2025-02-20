@@ -30,6 +30,14 @@ export const InstructionsDialog = ({ children }: InstructionsDialogProps) => {
               <li>• Score points based on your performance of each round</li>
               <li>• Single and Multiplayer Modes</li>
               <li>• Track your progress with an integrated Score Keeper</li>
+              <li>• View and manage player achievements in the Awards section:
+                <ul className="pl-6 mt-2 space-y-2">
+                  <li>- Add new awards using the "+" button</li>
+                  <li>- Filter awards by player name and date</li>
+                  <li>- Track special achievements like Perfect Games and Quick Victories</li>
+                  <li>- View award details including description and date earned</li>
+                </ul>
+              </li>
             </ul>
           </div>
         </DialogContent>
