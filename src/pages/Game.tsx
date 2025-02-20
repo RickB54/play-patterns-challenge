@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -240,7 +241,7 @@ const Game = () => {
           </button>
           <div className="text-center text-xl font-semibold">
             {isPracticeMode 
-              ? `Practice Round ${practiceRound}` 
+              ? `Round ${practiceRound}`  {/* Removed "of Y" format for practice mode */}
               : `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`
             }
           </div>
