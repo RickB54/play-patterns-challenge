@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Settings, Minus, Plus, Maximize2, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -257,7 +256,16 @@ const Game = () => {
         </div>
 
         <div className="flex flex-col gap-4 flex-1">
-          {renderGameContent()}
+          {isPracticeMode ? (
+            <PracticeMode 
+              difficulty={difficulty} 
+              setDifficulty={setDifficulty}
+              currentRound={practiceRound}
+              onIncrementRound={() => setPracticeRound(prev => prev + 1)}
+            />
+          ) : (
+            renderGameContent()
+          )}
         </div>
       </div>
     </div>

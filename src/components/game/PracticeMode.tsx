@@ -14,9 +14,16 @@ import { Plus, Minus } from "lucide-react";
 interface PracticeModeProps {
   difficulty: string;
   setDifficulty: (value: string) => void;
+  currentRound: number;
+  onIncrementRound: () => void;
 }
 
-const PracticeMode = ({ difficulty, setDifficulty }: PracticeModeProps) => {
+const PracticeMode = ({ 
+  difficulty, 
+  setDifficulty,
+  currentRound,
+  onIncrementRound
+}: PracticeModeProps) => {
   const navigate = useNavigate();
   const { usedTables, addUsedTable, setCurrentTable, currentTable } = useGameStore();
   const [currentTableLocal, setCurrentTableLocal] = useState<string | null>(currentTable);
