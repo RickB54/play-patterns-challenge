@@ -241,7 +241,7 @@ const Game = () => {
           </button>
           <div className="text-center text-xl font-semibold">
             {isPracticeMode 
-              ? `Round ${practiceRound}`  {/* Removed "of Y" format for practice mode */}
+              ? `Round ${practiceRound}`
               : `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`
             }
           </div>
