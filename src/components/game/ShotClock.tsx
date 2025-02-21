@@ -22,17 +22,19 @@ const ShotClock = () => {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isRunning && timeLeft > 0) {
+    if (isRunning && timeLeft >= 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => {
-          if (prev <= 1 && soundEnabled) {
+          const newTime = prev - 1;
+          if (newTime === 0 && soundEnabled) {
             audioManager.playStopClockAlarm();
           }
-          return prev - 1;
+          return newTime;
         });
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft < 0) {
       setIsRunning(false);
+      setTimeLeft(0);
     }
     return () => clearInterval(timer);
   }, [isRunning, timeLeft, soundEnabled]);
