@@ -17,7 +17,7 @@ export const useShotClockStore = create<ShotClockState>()(
     (set) => ({
       enabled: false,
       duration: 60,
-      soundEnabled: false,
+      soundEnabled: true,
       setEnabled: (enabled) => set({ enabled }),
       setDuration: (duration) => set({ duration }),
       setSoundEnabled: (enabled) => {

@@ -2,10 +2,12 @@
 import { useNavigate } from "react-router-dom";
 import DifficultySelector from "./DifficultySelector";
 
+type Difficulty = "easy" | "intermediate" | "advanced" | "expert";
+
 interface GameControlsProps {
   allScoresEntered: boolean;
-  difficulty: string;
-  setDifficulty: (value: string) => void;
+  difficulty: Difficulty;
+  setDifficulty: (value: Difficulty) => void;
   handleSelectTable: () => void;
 }
 
