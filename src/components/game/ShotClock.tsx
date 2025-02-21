@@ -44,6 +44,7 @@ const ShotClock = () => {
     if (isRunning) {
       setIsRunning(false);
       setTimeLeft(duration);
+      audioManager.stopAlarm(); // Stop the alarm when the timer is stopped
     } else {
       setTimeLeft(duration);
       setIsRunning(true);

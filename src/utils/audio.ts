@@ -52,6 +52,11 @@ class AudioManager {
       this.stopClockAlarm.play().catch(console.error);
     }
   }
+
+  stopAlarm(): void {
+    this.stopClockAlarm.pause();
+    this.stopClockAlarm.currentTime = 0;
+  }
 }
 
 export const audioManager = AudioManager.getInstance();
