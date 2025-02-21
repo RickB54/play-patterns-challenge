@@ -1,3 +1,4 @@
+
 import {
   Select,
   SelectContent,
@@ -6,8 +7,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type Difficulty = "easy" | "intermediate" | "advanced" | "expert";
+
 interface DifficultySelectorProps {
-  difficulty: string;
+  difficulty: Difficulty;
   setDifficulty: (value: string) => void;
 }
 

@@ -11,9 +11,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Minus } from "lucide-react";
 
+type Difficulty = "easy" | "intermediate" | "advanced" | "expert";
+
 interface PracticeModeProps {
-  difficulty: string;
-  setDifficulty: (value: string) => void;
+  difficulty: Difficulty;
+  setDifficulty: (value: Difficulty) => void;
   currentRound: number;
   onIncrementRound: () => void;
 }
@@ -45,7 +47,10 @@ const PracticeMode = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <DifficultySelector difficulty={difficulty} setDifficulty={setDifficulty} />
+      <DifficultySelector 
+        difficulty={difficulty} 
+        setDifficulty={(value: string) => setDifficulty(value as Difficulty)} 
+      />
       
       <Button 
         onClick={handleSelectTable} 
