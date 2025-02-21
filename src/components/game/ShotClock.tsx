@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Timer } from "lucide-react";
+import { Timer, Settings } from "lucide-react";
 import { useShotClockStore } from "@/store/shotClockStore";
 import {
   Dialog,
@@ -19,6 +19,7 @@ const ShotClock = () => {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
   const [customTime, setCustomTime] = useState(duration.toString());
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -39,14 +40,14 @@ const ShotClock = () => {
     return () => clearInterval(timer);
   }, [isRunning, timeLeft, soundEnabled]);
 
-  const handleStart = () => {
-    setTimeLeft(duration);
-    setIsRunning(true);
-  };
-
-  const handleStop = () => {
-    setIsRunning(false);
-    setTimeLeft(duration);
+  const toggleTimer = () => {
+    if (isRunning) {
+      setIsRunning(false);
+      setTimeLeft(duration);
+    } else {
+      setTimeLeft(duration);
+      setIsRunning(true);
+    }
   };
 
   const handleDurationChange = (value: string) => {
@@ -73,10 +74,17 @@ const ShotClock = () => {
           {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
         </div>
         
-        <Dialog>
+        <button 
+          onClick={toggleTimer}
+          className={`p-2 ${isRunning ? 'bg-destructive' : 'bg-primary'} rounded-full shadow-lg transition-colors`}
+        >
+          <Timer className="w-6 h-6" />
+        </button>
+
+        <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
           <DialogTrigger asChild>
-            <button className="p-2 bg-primary rounded-full shadow-lg">
-              <Timer className="w-6 h-6" />
+            <button className="p-2 bg-secondary rounded-full shadow-lg">
+              <Settings className="w-6 h-6" />
             </button>
           </DialogTrigger>
           <DialogContent>
@@ -108,26 +116,6 @@ const ShotClock = () => {
                   />
                 </div>
               </RadioGroup>
-              
-              <div className="flex justify-between items-center">
-                <div className="space-x-2">
-                  {!isRunning ? (
-                    <button
-                      onClick={handleStart}
-                      className="px-4 py-2 bg-primary text-primary-foreground rounded"
-                    >
-                      Start
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleStop}
-                      className="px-4 py-2 bg-destructive text-destructive-foreground rounded"
-                    >
-                      Stop
-                    </button>
-                  )}
-                </div>
-              </div>
             </div>
           </DialogContent>
         </Dialog>
