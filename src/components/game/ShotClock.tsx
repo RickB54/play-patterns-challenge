@@ -1,6 +1,6 @@
 
-import { useState, useEffect, useRef } from "react";
-import { Timer, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Timer } from "lucide-react";
 import { useShotClockStore } from "@/store/shotClockStore";
 import {
   Dialog,
@@ -19,7 +19,6 @@ const ShotClock = () => {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(false);
   const [customTime, setCustomTime] = useState(duration.toString());
-  const alarmSound = useRef(new Audio('/stop-clock-alarm.wav'));
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -27,7 +26,7 @@ const ShotClock = () => {
       timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1 && soundEnabled) {
-            alarmSound.current.play().catch(console.error);
+            audioManager.playStopClockAlarm();
           }
           return prev - 1;
         });

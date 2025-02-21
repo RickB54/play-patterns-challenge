@@ -1,7 +1,7 @@
 
 class AudioManager {
   private static instance: AudioManager;
-  private soundEnabled: boolean = false;
+  private soundEnabled: boolean = true; // Changed default to true
   private scoreSound: HTMLAudioElement;
   private timerSound: HTMLAudioElement;
   private stopClockAlarm: HTMLAudioElement;
