@@ -1,11 +1,13 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgressionStore } from "@/store/progressionStore";
 import { format } from "date-fns";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, FileText, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import ProgressionGraph from "./ProgressionGraph";
+import ProgressionPrintView from "./ProgressionPrintView";
 import {
   Select,
   SelectContent,
@@ -35,6 +37,8 @@ const ProgressionTracker = () => {
   const [selectedDate, setSelectedDate] = useState<string>(ALL_OPTION);
   const [selectedPlayer, setSelectedPlayer] = useState<string>(ALL_OPTION);
   const [showClearDialog, setShowClearDialog] = useState(false);
+  const [showGraphs, setShowGraphs] = useState(false);
+  const [showPrintView, setShowPrintView] = useState(false);
 
   const uniqueDates = useMemo(() => {
     const dates = [...new Set(entries.map(entry => 
@@ -96,6 +100,17 @@ const ProgressionTracker = () => {
     });
   };
 
+  if (showPrintView) {
+    return (
+      <ProgressionPrintView
+        entries={filteredEntries}
+        onClose={() => setShowPrintView(false)}
+        selectedPlayer={selectedPlayer}
+        selectedDate={selectedDate}
+      />
+    );
+  }
+
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
@@ -145,7 +160,7 @@ const ProgressionTracker = () => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-2 justify-between">
-            <div className="flex gap-2 w-full md:w-auto">
+            <div className="flex flex-wrap gap-2 w-full md:w-auto">
               {(selectedDate !== ALL_OPTION || selectedPlayer !== ALL_OPTION) && (
                 <Button 
                   variant="outline" 
@@ -160,11 +175,27 @@ const ProgressionTracker = () => {
               )}
               <Button 
                 variant="outline"
+                onClick={() => setShowGraphs(!showGraphs)}
+                className="flex-1 md:flex-none"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                {showGraphs ? "Hide" : "Show"} Graphs
+              </Button>
+              <Button 
+                variant="outline"
                 onClick={exportToCSV}
                 className="flex-1 md:flex-none"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Export CSV
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => setShowPrintView(true)}
+                className="flex-1 md:flex-none"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Export PDF
               </Button>
             </div>
             <Button 
@@ -177,6 +208,26 @@ const ProgressionTracker = () => {
           </div>
         </div>
       </Card>
+
+      {showGraphs && filteredEntries.length > 0 && (
+        <div className="space-y-4 mb-6">
+          <ProgressionGraph
+            entries={filteredEntries}
+            metric="points"
+            title="Total Points"
+          />
+          <ProgressionGraph
+            entries={filteredEntries}
+            metric="averagePoints"
+            title="Average Points Per Round"
+          />
+          <ProgressionGraph
+            entries={filteredEntries}
+            metric="roundsPlayed"
+            title="Rounds Played"
+          />
+        </div>
+      )}
 
       <ScrollArea className="h-[600px] w-full rounded-md border">
         <div className="relative w-full">

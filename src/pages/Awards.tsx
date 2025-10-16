@@ -79,6 +79,11 @@ const Awards = () => {
   const [selectedAward, setSelectedAward] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [dialogOpen, setDialogOpen] = useState(false);
+  
+  // Filter dialog state (temporary until Apply is clicked)
+  const [tempPlayer, setTempPlayer] = useState<string | null>(null);
+  const [tempDate, setTempDate] = useState<Date>();
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
 
   const players = [...new Set(entries.map(entry => entry.playerName))];
   
@@ -152,6 +157,20 @@ const Awards = () => {
     }
   };
 
+  const handleFilterApply = () => {
+    setSelectedPlayer(tempPlayer);
+    setSelectedDate(tempDate);
+    setFilterDialogOpen(false);
+  };
+
+  const handleFilterDialogOpen = (open: boolean) => {
+    setFilterDialogOpen(open);
+    if (open) {
+      setTempPlayer(selectedPlayer);
+      setTempDate(selectedDate);
+    }
+  };
+
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
@@ -218,58 +237,106 @@ const Awards = () => {
       </div>
 
       <div className="flex flex-wrap gap-4 mb-6">
-        <Select 
-          value={selectedPlayer !== null ? selectedPlayer : "all"} 
-          onValueChange={(value) => setSelectedPlayer(value === "all" ? null : value)}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter by player">
-              {selectedPlayer || "All Players"}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Players</SelectItem>
-            {players.map((player) => (
-              <SelectItem key={player} value={player}>
-                {player}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="w-[200px]">
-              <CalendarIcon className="w-4 h-4 mr-2" />
-              {selectedDate ? format(selectedDate, "PPP") : "Filter by date"}
+        <Dialog open={filterDialogOpen} onOpenChange={handleFilterDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <Plus className="w-4 h-4" />
+              Filter Awards
+              {(selectedPlayer !== null || selectedDate) && (
+                <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
+                  Active
+                </span>
+              )}
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => setSelectedDate(date)}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Filter Awards</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Player</label>
+                <Select 
+                  value={tempPlayer !== null ? tempPlayer : "all"} 
+                  onValueChange={(value) => setTempPlayer(value === "all" ? null : value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose player" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Players</SelectItem>
+                    {players.map((player) => (
+                      <SelectItem key={player} value={player}>
+                        {player}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Date</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start">
+                      <CalendarIcon className="w-4 h-4 mr-2" />
+                      {tempDate ? format(tempDate, "PPP") : "Choose date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={tempDate}
+                      onSelect={setTempDate}
+                      initialFocus
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button onClick={handleFilterApply} className="flex-1">
+                  Apply Filters
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setTempPlayer(null);
+                    setTempDate(undefined);
+                  }}
+                  className="flex-1"
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {(selectedPlayer !== null || selectedDate) && (
-          <Button 
-            variant="ghost" 
-            onClick={() => {
-              setSelectedPlayer(null);
-              setSelectedDate(undefined);
-            }}
-          >
-            Clear Filters
-          </Button>
+          <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-md text-sm">
+            <span className="font-medium">Active filters:</span>
+            {selectedPlayer && <span className="text-muted-foreground">{selectedPlayer}</span>}
+            {selectedDate && <span className="text-muted-foreground">{format(selectedDate, "PPP")}</span>}
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => {
+                setSelectedPlayer(null);
+                setSelectedDate(undefined);
+              }}
+              className="ml-2 h-6 px-2"
+            >
+              Clear All
+            </Button>
+          </div>
         )}
       </div>
 
       <div className="grid gap-4">
-        {filteredAwards.map((award) => (
-          <Card key={award.id} className="p-4">
+        {filteredAwards.map((award, index) => (
+          <Card key={`${award.id}-${index}`} className="p-4">
             <div className="flex justify-between items-center">
               <div>
                 <div className="flex items-center gap-2 mb-1">
