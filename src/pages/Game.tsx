@@ -150,10 +150,11 @@ const Game = () => {
   const renderGameContent = () => (
     <>
       {currentTableLocal && (
-        <div className={isLandscape ? "w-full h-screen flex items-center justify-center bg-black" : "flex-1 min-h-0"}>
+        <div className={isLandscape ? "w-full flex items-center justify-center bg-black py-4" : "flex-1 min-h-0"}>
           <PoolTableImage 
             currentTable={currentTableLocal} 
             setCurrentTableLocal={setCurrentTableLocal}
+            isEnlarged={isLandscape}
           />
           {!isLandscape && (
             <Button 
@@ -161,7 +162,7 @@ const Game = () => {
               className="w-full mt-2"
               variant="outline"
             >
-              View Full Screen
+              Enlarge Table View
             </Button>
           )}
         </div>
@@ -280,109 +281,8 @@ const Game = () => {
 
         <div className={isLandscape ? "w-full" : "flex flex-col gap-4 flex-1"}>
           {isLandscape ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col overflow-y-auto">
               {renderGameContent()}
-              <div className="container max-w-6xl mx-auto px-4 py-4">
-                <div className="text-center text-xl font-semibold mb-4">
-                  {isPracticeMode 
-                    ? `Round ${practiceRound}`
-                    : `Round ${Math.min(currentRound, maxRounds)} of ${maxRounds}`
-                  }
-                </div>
-                {isPracticeMode ? (
-                  <PracticeMode 
-                    difficulty={difficulty} 
-                    setDifficulty={setDifficulty}
-                    currentRound={practiceRound}
-                    onIncrementRound={() => setPracticeRound(prev => prev + 1)}
-                  />
-                ) : (
-                  <>
-                    {isPracticeMode ? (
-                      <div className="flex justify-center items-center w-full mb-4">
-                        <Card className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2 w-full max-w-[300px] mx-auto">
-                          <div className="flex flex-col items-center space-y-2">
-                            <span className="text-base font-medium text-purple-200">
-                              {playerNames[0]}
-                            </span>
-                            <div className="flex items-center space-x-3">
-                              <button
-                                onClick={() => handleScoreChange(0, false)}
-                                className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                              >
-                                <Minus className="w-5 h-5 text-[#D6BCFA]" />
-                              </button>
-                              <span className="text-xl font-bold min-w-[2ch] text-center text-white">
-                                {scores[0]}
-                              </span>
-                              <button
-                                onClick={() => handleScoreChange(0, true)}
-                                className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                              >
-                                <Plus className="w-5 h-5 text-[#D6BCFA]" />
-                              </button>
-                            </div>
-                          </div>
-                        </Card>
-                      </div>
-                    ) : (
-                      <div className="flex justify-center items-center w-full mb-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-[800px] mx-auto">
-                          {Array.from({ length: playerCount }).map((_, index) => (
-                            <Card key={index} className="p-3 glass-card bg-[#1A1F2C] border-[#6E59A5] border-2">
-                              <div className="flex flex-col items-center space-y-2">
-                                <span className="text-base font-medium text-purple-200">
-                                  {playerNames[index]}
-                                </span>
-                                <div className="flex items-center space-x-3">
-                                  <button
-                                    onClick={() => handleScoreChange(index, false)}
-                                    className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                                  >
-                                    <Minus className="w-5 h-5 text-[#D6BCFA]" />
-                                  </button>
-                                  <span className="text-xl font-bold min-w-[2ch] text-center text-white">
-                                    {scores[index]}
-                                  </span>
-                                  <button
-                                    onClick={() => handleScoreChange(index, true)}
-                                    className="p-1.5 rounded-full hover:bg-[#6E59A5]/30 transition-colors score-button"
-                                  >
-                                    <Plus className="w-5 h-5 text-[#D6BCFA]" />
-                                  </button>
-                                </div>
-                              </div>
-                            </Card>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <ShotClock />
-
-                    <div className="flex flex-col gap-2 mt-4">
-                      <Button 
-                        size="lg"
-                        onClick={handleNextTable}
-                        className="w-full"
-                      >
-                        Next Table
-                      </Button>
-
-                      {isPracticeMode && (
-                        <Button 
-                          variant="destructive"
-                          size="lg"
-                          onClick={handleEndPractice}
-                          className="w-full"
-                        >
-                          End Practice
-                        </Button>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
             </div>
           ) : isPracticeMode ? (
             <PracticeMode 

@@ -5,9 +5,10 @@ import { useToast } from "@/hooks/use-toast";
 interface PoolTableImageProps {
   currentTable: string | null;
   setCurrentTableLocal: (table: string | null) => void;
+  isEnlarged?: boolean;
 }
 
-const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImageProps) => {
+const PoolTableImage = ({ currentTable, setCurrentTableLocal, isEnlarged = false }: PoolTableImageProps) => {
   const { toast } = useToast();
   const [retryCount, setRetryCount] = useState(0);
 
@@ -60,11 +61,11 @@ const PoolTableImage = ({ currentTable, setCurrentTableLocal }: PoolTableImagePr
   const imageUrl = currentTable.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
 
   return (
-    <Card className="p-4 glass-card">
+    <Card className={`glass-card ${isEnlarged ? 'p-2' : 'p-4'}`}>
       <img
         src={imageUrl}
         alt="Pool Table Setup"
-        className="w-full h-auto rounded-lg"
+        className={`w-full h-auto rounded-lg ${isEnlarged ? 'max-w-[150%] mx-auto' : ''}`}
         onError={handleImageError}
         key={`${imageUrl}-${retryCount}`}
         onLoad={() => console.log("Image loaded successfully:", imageUrl)}
